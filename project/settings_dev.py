@@ -4,7 +4,7 @@ DEBUG_TOOLBAR = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'building_and_safety',
+        'NAME': 'django_data_analysis',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
