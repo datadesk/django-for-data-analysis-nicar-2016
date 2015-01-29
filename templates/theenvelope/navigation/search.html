@@ -1,0 +1,69 @@
+<div id="basicsearch"> 
+    <form class="tribForm" method="get" action="/search/dispatcher.front" onSubmit="javascript:return checkForm(this,'Query')">    
+        <ul> 
+            <li class="horiz"> 
+                <input type="text" id="searchText" class="adv_search_input"
+                    onblur="if (this.value=='') this.value = 'Search'" onfocus="if (this.value=='Search') this.value = ''"
+                    name="Query" value="Search" /> 
+                <input name="target" value="adv_article" type="hidden" /> 
+                <input type="submit" class="adv_submit" alt="Search" value="" /> 
+            </li> 
+        </ul> 
+    </form> 
+</div> 
+<div id="search_overlay"> 
+    <form class="tribForm" method="get" action="http://www.latimes.com/search/dispatcher.front"
+            onSubmit="javascript:return checkForm(this,'Query')"> 
+        <ul> 
+            <li class="horiz"> 
+                <input type="text" id="searchText" maxlength="100" class="adv_search_input" name="Query" /> 
+                <input name="target" value="adv_all" type="hidden" /> 
+                <input type="submit" class="adv_submit" alt="Search" value=""/> 
+            </li> 
+        </ul> 
+    </form> 
+    <a id="adv_search_open" href="http://www.latimes.com/">Advanced Search</a> 
+</div> 
+<div id="adv_search"> 
+    <div class="adv_search_head"> 
+        <h3>Advanced Search</h3> 
+        <a href="http://www.latimes.com/" id="adv_search_close">X</a> 
+    </div> 
+    <form class="tribForm" method="get" name="adv_search_form" action="http://www.latimes.com/search/dispatcher.front"
+            onSubmit="return advSearch.checkAdvForm(this);"> 
+        <input type="hidden" id="Query" name="Query" value=""/> 
+        <input type="hidden" id="date" name="date" value=""/> 
+        <input type="hidden" id="target" name="target" value="adv_article"/> 
+        <input type="hidden" name="srchType" value="advSearch"/> 
+        
+        <ul> 
+            <li><label for="include_all">include all of these words: <input type="text" id="include_all" maxlength="100"/></label></li> 
+            <li><label for="include_any">include any of these words: <input type="text" id="include_any" maxlength="100"/></label></li> 
+            <li><label for="include_exact">include this exact phrase: <input type="text" id="include_exact" maxlength="100"/></label></li> 
+            <li><label for="exclude">exclude: <input type="text" id="exclude" maxlength="100"/></label></li> 
+            
+            <li class="fixed_date"> 
+                <label class="inline"><input type="radio" id="top_date_range_pre" name="range" value="pre" checked="checked"> Select a date range</label> 
+                <div id="top_date_range_pre_div"> 
+                    <select id="date_range_predefined"> 
+                        <option value="">this week</option> 
+                        <option value="" selected="selected">past 30 days</option> 
+                        <option value="">past 3 months</option> 
+                        <option value="">past year</option> 
+                        
+                    </select> 
+                </div> 
+            </li> 
+            <li class="custom_date"> 
+                <label><input type="radio" id="top_date_range_cust" name="range" value="cust"> Create a custom date range</label> 
+                <div id="top_date_range_cust_div"> 
+                    <label class="inline custom_from">From: <input type="text" id="date_range_custom_from" disabled="disabled" class="inline disabled" /></label> 
+                    <label class="inline">To: <input type="text" id="date_range_custom_to" disabled="disabled" class="inline disabled" /></label> 
+                </div> 
+            </li> 
+            <li> 
+                <input class="submit" type="submit" value="Search"/> 
+            </li> 
+        </ul> 
+    </form> 
+</div> 

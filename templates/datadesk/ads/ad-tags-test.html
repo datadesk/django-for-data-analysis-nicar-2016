@@ -1,0 +1,23 @@
+{% extends 'datadesk/base.html' %}
+
+{% block banner-ad %}
+    <script language="JavaScript"  type="text/javascript">ord=Math.random()*10000000000000000;url_script=window.location.href;document.write('<script language="JavaScript" src="http://ad.doubleclick.net/adj/trb.latimes/datadesk/test;tile=1;ptype=sf;pos=t;sz=728x90;ord=' + ord + '?" type="text/javascript"><\/script>');</script><noscript><a href="http://ad.doubleclick.net/jump/ trb.latimes/datadesk/test;ptype=sf;pos=t;tile=1;sz=728x90;ord=123456789?" target="_blank"><img src="http://ad.doubleclick.net/ad/ trb.latimes/datadesk/test;ptype=sf;pos=t;tile=1;sz=728x90;ord=123456789?" width="728" height="90" border="0" alt=""></a></noscript>
+{% endblock %}
+
+{% block content %}
+
+<div id="underscore-test"></div>
+
+<script type="text/javascript">
+window.onload = function(){
+    var testContainer = document.getElementById("underscore-test");
+
+    if (_.VERSION) {
+        testContainer.innerHTML = "Underscore version " + _.VERSION + " loaded!";
+    } else {
+        testContainer.innerHTML = "Underscore not loaded. Underscore is being redefined to " + _;
+    }
+};
+</script>
+
+{% endblock %}

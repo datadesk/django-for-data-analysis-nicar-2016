@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html><head>
+<title>ad iframe</title>
+<script type="text/javascript">
+// set the IAB variable to trigger indicate a friendly iframe
+var inDapIF = true;
+</script>
+
+<script type='text/javascript'>
+// script for synchronous GPT ad tags
+(function() {
+  var useSSL = 'https:' == document.location.protocol;
+  var src = (useSSL ? 'https:' : 'http:') +
+    '//www.googletagservices.com/tag/js/gpt.js';
+  document.write('<scr' + 'ipt src="' + src + '"></scr' + 'ipt>');
+})();
+</script>
+<script type='text/javascript'>
+    var params = window.location.href.split('?')[1].split('&');
+    data = {};
+    for (x in params) {
+        data[params[x].split('=')[0]] = params[x].split('=')[1];
+    }
+    data.iu = unescape(data.iu);
+    data.width = data.sz.split('x')[0];
+    data.height = data.sz.split('x')[1];
+</script>
+<style>
+    body { margin: 0; }
+</style>
+</head>
+<body>
+<div id='div-gpt-ad'>
+  <script type='text/javascript'>
+    var service = googletag.pubads();
+    service.setCorrelator(parseInt(data.ord));
+
+    var adslot = googletag
+      .defineSlot(data.iu, [parseInt(data.width), parseInt(data.height)], 'div-gpt-ad')
+      .addService(service)
+      .setTargeting('ptype', data.ptype)
+      .setTargeting('ss', data.ss)
+      .setTargeting('tile', data.tile)
+      .setTargeting('pos', data.pos)
+      .setTargeting('rg', data.rg)
+      .setTargeting('c', data.c)
+      .setTargeting('ord', data.ord);
+    if (data.rg === 'r') {
+      adslot
+        .setTargeting('by', data.by)
+        .setTargeting('gr', data.gr)
+        .setTargeting('zc', data.zc);
+    }
+    if (data.ref) {
+      adslot.setTargeting('ref', data.ref);
+    }
+    if (data.ll) {
+      adslot.setTargeting('ll', data.ll);
+    }
+
+    googletag.enableServices();
+    googletag.display('div-gpt-ad');
+  </script>
+</div>
+</body>
+</html>

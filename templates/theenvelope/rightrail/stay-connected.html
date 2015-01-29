@@ -1,0 +1,42 @@
+<div class="clear"></div>
+<div class="stay-connected-box">
+    <div class="box-header">
+        About The Data Desk
+    </div>
+    <p>
+        This page was created by the <a href="http://projects.latimes.com/index/">Data Desk</a>, a team of 
+        reporters and Web developers in downtown L.A.
+    </p>
+    <div class="clear pad5vert"></div>
+    <ul>
+        <li>
+            {% block latest-link %}
+            <a href="http://projects.latimes.com/index/">
+                Track our latest projects &raquo;
+            </a>
+            {% endblock %}
+        </li>
+        <li>
+            {% block twitter-link %}
+            <a href="http://twitter.com/latdatadesk">
+                Follow @latdatadesk on Twitter &raquo;
+            </a>
+            {% endblock %}
+        </li>
+        <li>
+            {% block github-link %}
+            <a href="http://github.com/datadesk">
+                Fork our open-source code on Github &raquo;
+            </a>
+            {% endblock %}
+        </li>
+        <li>
+            {% block email-link %}
+            <a href="http://projects.latimes.com/contact/">
+                Send us e-mail &raquo;
+            </a>
+            {% endblock %}
+        </li>
+    </ul>
+</div>
+<div class="clear"></div>

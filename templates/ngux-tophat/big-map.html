@@ -1,0 +1,168 @@
+{% extends "ngux-tophat/base.html" %}
+
+{% block footer %}{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-0.8-dev/leaflet.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="http://d1qqc1e9kvmdh8.cloudfront.net/css/ngux-big-map-0.2.3.min.css" />
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-0.8-dev/leaflet.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block nav %}
+<div id="tophat-container">
+    <div id="tophat">
+        <span id="tophat-dropdown">
+            <hr />
+            <hr />
+            <hr />
+        </span>
+        <a id="tophat-logo" href="http://www.latimes.com/"></a>
+        <div class="tophat-links">
+            {% include "ngux-tophat/nav/links.html" %}
+            <div class="tophat-sharebuttons visible-desktop">
+                <div class="sharebuttons">
+                    <i class="LATFacebook" data-socialshare-type="facebook"></i>
+                    <i class="LATTwitter" data-socialshare-type="twitter"></i>
+                    <i class="LATEmail" data-socialshare-type="email"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block container %}
+<div class="container big-map-container" id="container">
+    {% block content %}
+        {% block map-holder %}
+        <div class="row-fluid" id="big-map-holder">
+
+            {% block big-box %}
+            <div id="big-box" class="visible-desktop">
+                <div id="big-box-close">
+                    <a><i class="LATClose01"></i></a>
+                </div>
+                <h1>{% block big-box-headline %}{% endblock %}</h1>
+                <p class="dateline">
+                    {% block big-box-dateline %}{% endblock %}
+                </p>
+                <div class="description">
+                    {% block big-box-description %}{% endblock %}
+                </div>
+                {% block big-box-footnotes %}
+                <div id="footnotes">
+                    <p>Sources: {% block big-box-sources %}{% endblock %}</p>
+                    <p>Credits: {% block big-box-credits %}{% endblock %}</p>
+                </div>
+                {% endblock %}
+            </div>
+
+            <div class="big-box-control leaflet-bar leaflet-control">
+                <a class="big-box-btn leaflet-bar-part leaflet-bar-part-single">
+                    ?
+                </a>
+            </div>
+
+            <script type="text/javascript">
+                $("#big-box-close a").click(function (e) {
+                    $("#big-box").removeClass('visible-desktop').hide();
+                    $(".big-box-control").show();
+                });
+                $('.big-box-btn').click(function(e){ 
+                    $("#big-box").addClass('visible-desktop').show();
+                    $(".big-box-control").hide();
+                });
+            </script>
+            {% endblock %}
+
+            {% block small-box-modal %}
+                <div class="modal" id="small-box-modal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><i class="LATClose01"></i></button>
+                                <h1>{% block small-box-modal-headline %}{% endblock %}</h1>
+                            </div>
+                            <div class="modal-body">
+                                <div class="description">
+                                {% block small-box-modal-description %}{% endblock %}
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+
+            {% block small-box %}
+            <div class="small-box hidden-desktop">
+                <h1>{% block small-box-headline %}{% endblock %}</h1>
+                <div class="small-box-control leaflet-bar leaflet-control">
+                    <a class="small-box-btn leaflet-bar-part leaflet-bar-part-single hidden-desktop">
+                        ?
+                    </a>
+                </div>
+                <script type="text/javascript">
+                    $('.small-box-btn').click(function(e){ 
+                        $('#small-box-modal').modal('toggle');
+                    });
+                </script>
+            </div>
+            {% endblock %}
+
+            {% block big-map-canvas %}
+            <div id="big-map-canvas"></div>
+            {% endblock %}
+
+            {% block cube-ad %}
+            <div id="big-map-cube" class="visible-desktop">
+                {% include "ngux-tophat/ads/cube.html" %}
+            </div>
+            {% endblock %}
+
+            {% block about-latimes %}
+            <div class="modal" id="tos-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><i class="LATClose01"></i></button>
+                            <h1>About latimes.com</h1>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <p>The Los Angeles Times is the largest metropolitan daily newspaper in the country, 
+                            with a daily readership of 1.4 million and 2.5 million on Sunday, more than 22 million unique 
+                            latimes.com visitors monthly and a combined print and online local weekly audience of 4.1 million. 
+                            The Pulitzer Prize-winning Times has been covering Southern California for more than 130 years.</p>
+
+                            <div class="tos">
+                                <a href="http://www.latimes.com/lat-terms,0,7374802.story">Terms of Service</a> | 
+                                <a href="http://privacy.tribune.com">Privacy Policy</a> | 
+                                <a href="http://www.latimes.com/lat-about-our-ads,0,3875412.htmlstory">About Our Ads</a> | 
+                                <a href="http://www.latimes.com/services/site/la-reprint-request-splash,0,6731163.htmlstory">© <script type="text/javascript">document.write(new Date().getFullYear())</script></a> | 
+                                <a href="http://www.latimes.com/about/">About This Site</a>
+                            </div>
+                        </div> 
+
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    var href = "<a style='cursor:pointer;' onclick=\"$('#tos-modal').modal('toggle');\">About latimes.com</a> | "
+                    $(".leaflet-control-attribution").prepend(href);
+                });
+            </script>
+            {% endblock %}
+
+        </div>
+        {% endblock %}
+    {% endblock %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+    <script type="text/javascript">
+    function dailyDealsFeed(obj) {
+        var x;
+        var y =1;
+        document.write('<h2 class="daily-deals-head"><a href="http://www.latimes.com/shopping/dailydeal/signup/"><img src="http://www.latimes.com/includes/dailydeals/deals150px.png" /></a></h2>');
+        document.write("<div id='daily-deals'>");
+
+        for (x = 0; x < obj.count ; x++) {
+        //var photo = jQuery(this).find('[nodeName=media:thumbnail]').attr("url");  
+        var buildstring = "<div class='deals-item'>";
+        buildstring +="<a href=" + obj.value.items[x].link + "><img class='deal-pic' src=" + obj.value.items[x]['media:thumbnail'].url + " /></a><a href=" + obj.value.items[x].link + "><h3>" + obj.value.items[x].title + "</h3></a></div>";
+        document.write(buildstring);
+
+        buildstring = null;
+        y++;
+    }
+        document.write("<div class='clear'></div>")
+        document.write("</div>");
+    }
+    </script>
+
+
+     <div class="feedContent1">
+
+       <script type="text/javascript" src="http://pipes.yahoo.com/pipes/pipe.run?_id=f2332d346e257ae1fb4625f833b81d97&_render=json&_callback=dailyDealsFeed"></script>
+
+
+    </div>
+

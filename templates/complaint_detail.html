@@ -1,0 +1,84 @@
+{% extends 'ngux-tophat/base.html' %}
+{% load humanize toolbox_tags %}
+
+{% block extra-css %}
+    <link rel="stylesheet" href="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-0.7.2/leaflet.css">
+    <style type="text/css">
+        #map {height:200px;}
+        .related-complaints {font-family:Arial, sans-serif; font-size:14px;}
+    </style>
+{% endblock %}
+
+{% block extra-js %}
+    <script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-0.7.2/leaflet.js"></script>
+{% endblock%}
+
+{% block content %}
+<h1>Complaint {{ object.csr }}</h1>
+<p>{{ object.full_address }}</p>
+<p>Priority {{ object.csr_priority }} complaint - {{ object.csr_problem_type }}</p>
+
+<div class="row">
+    <div id="map" class="map span6"></div>
+</div>
+
+<p>Received {{ object.date_received }}</p>
+
+{% if object.date_closed %}
+<p>Closed {{ object.date_closed }}</p>
+<p><strong>{{ object.days_since_complaint }}</strong> days until the complaint was addressed</p>
+{% else %}
+<p>Case was not addressed as of July 13, 2014.</p>    
+<p><strong>{{ object.days_since_complaint }}</strong> days since the complaint was filed</p>
+{% endif %}
+
+{% if object.inspector %}<p>Inspector: {{object.inspector}}, {{object.inspector_phone_number}}</p>{% endif %}
+{% if object.lat_visited == True %}<p>This location has been visited by an L.A. Times reporter</p>{% endif %}
+{% if object.notes %}{{ object.notes|linebreaks }}{% endif %}
+
+
+<div class="related-complaints">
+    {% if object.get_related_complaints %}
+    <h3>Other complaints filed at this address</h3>
+    <ul>
+        {% for c in object.get_related_complaints %}
+        <li>{{ c.date_received }} - {{ c.csr_problem_type }}{% if c.date_closed %}, closed {{c.date_closed}}{% endif %}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h3>No other complaints filed at this address</h3>
+    {% endif %}
+</div>
+
+<script type="text/javascript">
+    var mapOptions = {
+        minZoom: 13,
+        maxZoom: 16,
+        scrollWheelZoom: false
+    }
+
+    var map = new L.Map('map', mapOptions),
+        center = new L.LatLng({{object.point_4326.y}},{{object.point_4326.x}});
+
+    L.Map.prototype.addQuietLaBaseLayer = function(version) {
+        var layerOptions = {
+                attribution: "Map data (c) <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>",
+                subdomains: [
+                    'tiles1',
+                    'tiles2',
+                    'tiles3',
+                    'tiles4'
+                ]
+            };
+        var url = "http://{s}.latimes.com/quiet-la-" + version + "/{z}/{x}/{y}.png";    
+        this.addLayer(new L.TileLayer(url, layerOptions));
+    }; 
+
+    var complaint = L.marker([{{object.point_4326.y}},{{object.point_4326.x}}]);
+
+    map.setView(center,15);
+    map.addQuietLaBaseLayer("0.4.0");
+    map.addLayer(complaint);
+
+</script>
+{% endblock %}

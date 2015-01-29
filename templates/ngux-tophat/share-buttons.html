@@ -1,0 +1,19 @@
+<div class="sharebuttons"
+    {% if data_url %}data-url="{{ data_url }}"{% endif %}
+    {% if data_title %}data-title="{{ data_title }}"{% endif %}
+    {% if data_description %}data-description="{{ data_description }}"{% endif %}
+    {% if data_image %}data-image="{{ data_image }}"{% endif %}>
+    <div class="sharebuttons_submenu">
+        <i class="LATPinterest" data-socialshare-type="pinterest"></i>
+        <i class="LATGooglePlus" data-socialshare-type="googleplus"></i>
+        <i class="LATLinkedIn" data-socialshare-type="linkedin"></i>
+        <i class="LATStumbleUpon" data-socialshare-type="stumbleupon"></i>
+        <i class="LATDigg" data-socialshare-type="digg"></i>
+    </div>
+    <i class="LATFacebook" data-socialshare-type="facebook"></i>
+    <i class="LATTwitter" data-socialshare-type="twitter" {% if hashtag %}data-hash-tag="{{ hashtag }}"{% endif %}></i>
+    <i data-triggered="false" class="LATShare" data-socialshare-type="shareParent"></i>
+    <i class="LATEmail" data-socialshare-type="email"></i>
+    <i class="LATPrinter" data-socialshare-type="print"></i>
+    <div class="clear"></div>
+</div>

@@ -1,0 +1,11 @@
+
+    <div class="span10" id="comments">
+        <h2 style="font-size:25px; margin-bottom:10px;" class="facebook_comments">{% if obj.facebook_share_question %}{{ obj.facebook_share_question }}{% else %}Readers: What&rsquo;s your take? Share it here.{% endif %}</h2>
+        <fb:comments style="width:100%" href="http://ballots.latimes.com{{ obj.get_absolute_url }}"></fb:comments>
+    </div>
+
+    <div id="rail" class="span5">
+
+        {% include "datadesk/ads/cube.html" %}
+
+    </div>

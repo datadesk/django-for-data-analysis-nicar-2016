@@ -1,0 +1,13 @@
+<div class="clear"></div>
+<div class="{% block wrapper-class %}module{% endblock %}">
+    <div style="{% block style %}border: 3px solid #EBE2C0; padding: 10px;{% endblock %} {% block extra-style %}{% endblock %}">
+        {% block body %}
+        {% endblock %}
+        <div class="clear"/></div>
+        {% block linkblock %}
+            <div>{% block link %}{% endblock %}</div>
+        {% endblock %}
+        <div class="clear"/></div>
+    </div>
+</div>
+<div class="clear"></div>

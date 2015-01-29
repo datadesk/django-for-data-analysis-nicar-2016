@@ -1,0 +1,387 @@
+{% extends 'ngux-tophat/base.html' %}
+{% load humanize toolbox_tags %}
+
+{% block extra-css %}
+    <link rel="stylesheet" href="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-0.7.2/leaflet.css">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/jquery.geocodify.css">
+    <style type="text/css">
+    body, html {height:100%;}
+    h3 {font:14px Arial, sans-serif; margin:0;}
+    #tophat, #footer-container #footer {width: auto;}
+    #tophat-container {margin-bottom:0;}
+    .container {width:100%; height:calc(100% - 100px); padding-bottom:0;}
+    .title-holder {position:absolute; top:10px; left:10px; background-color:#fff; background-color:rgba(255,255,255,0.9); width:35%; max-width:500px; z-index:1000; padding:20px; max-height:90%;}
+    .sharebuttons {background:none;}
+    .map-canvas {width:100%; height:100%;} 
+    .map-holder {position:relative; height:100%;}
+    .preloader {height: 500px; vertical-align: middle; text-align: center; margin-top: 190px;}
+    .geocoder {position:absolute; z-index:1000; top:10px; right:45px;}
+    .geocoder input {margin-bottom:0;}
+    .legend {padding:10px; width:190px; margin-bottom:10px; position:absolute; z-index:100; background-color:#fff; background-color:rgba(255,255,255,0.9); top:50px; right:45px; border:1px solid #ccc; box-sizing:border-box;}
+    .legend div {font:13px Arial, sans-serif; color: #222; }
+    .legend h3 {margin:10px 0 4px}
+    .legend form {margin-bottom:0;}
+    .legend input[type="checkbox"] {margin-top:0;}
+    .legend .swatch {float:left; clear:both; height:14px; width:14px; margin-right:5px;position:relative; bottom:-1px; }
+    .swatch.round {border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;}
+    .swatch-holder { margin-bottom:3px; }
+    .leaflet-container a {color:#FF5443;}
+    .leaflet-popup-content h4 { font:16px Arial, sans-serif; font-weight:bold; color:#333; margin-bottom:10px; padding-bottom: 2px; border-bottom: 1px solid #ccc; }
+    .leaflet-popup-content p { font:14px Arial, sans-serif; margin:0 0 5px 0;}
+
+    .priority-1 {background-color:#bd0026; background-color:rgba(189,0,38,0.8);}
+    .priority-2 {background-color:#f03b20; background-color:rgba(240,60,32,0.8);}
+    .priority-3 {background-color:#fd8d3c; background-color:rgba(253,140,60,0.8);}
+
+    .level-1 {background-color:#f2f0f7; background-color:rgba(242, 240, 247, 0.7);}
+    .level-2 {background-color:#cbc9e2; background-color:rgba(203, 201, 226, 0.7);}
+    .level-3 {background-color:#9e9ac8; background-color:rgba(158, 154, 200, 0.7);}
+    .level-4 {background-color:#756bb1; background-color:rgba(117, 107, 177, 0.7);}
+    .level-5 {background-color:#54278f; background-color:rgba(84, 39, 143, 0.7);}
+
+    .porteno-btn {position:absolute; top:10px; left:10px; z-index:1000; background-color:#fff; background-image:none; color:#222; border:1px solid #ccc; -webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.65); -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.65); box-shadow: 0 1px 5px rgba(0,0,0,0.65);border-color:#ccc;}
+    .porteno-btn:hover {background-color:#e6e6e6; color:#222;}
+    .porteno-btn:focus {background-color:#fff; color:#222;}
+    .title-holder .porteno-btn {position:static; top:0; left:0;}
+    </style>
+{% endblock %}
+
+{% block extra-js %}
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="{{STATIC_URL}}js/jquery.geocodify-0.2.js"></script>
+    <script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-0.7.2/leaflet.js"></script>
+{% endblock %}
+
+{% block nav %}
+    <div id="tophat-container">
+        <div id="tophat" class="tophat-small">
+            <span id="tophat-dropdown" class="tophat-dropdown-small">
+                <hr />
+                <hr />
+                <hr />
+            </span>
+            <a id="tophat-logo" href="http://www.latimes.com/"></a>
+            <div id="tophat-title" class="hidden-desktop">          
+                {{object.headline|safe}}
+            </div>
+            <div class="tophat-links">
+                {% include "ngux-tophat/nav/links.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block banner-ad %}{% endblock %}
+
+{% block content %}
+<div class="row-fluid map-holder" id="map-holder">
+
+    <button id="show-intro" class="porteno-btn btn btn-primary btn-sm" style="display:none;">Show intro</button>
+
+    <div class="title-holder visible-desktop">
+        {% include 'ngux-tophat/share-buttons.html' %}
+        <h1>Building and safety complaints open one year after filing</h1>
+        <p class="byline">
+            By <span class="author">Armand Emamdjomeh</span>
+        </p>
+        <p class="dateline">
+            <time datetime="{{ object.pub_date|date:"Y-m-d" }}" pubdate>{{ object.pub_date }}</time>
+        </p>
+        <div class="description">
+            {{ object.description|safe|linebreaks }}                 
+        </div>
+        <button id="hide-intro" class="porteno-btn btn btn-primary btn-sm visible-desktop">Hide intro</button>
+    </div>
+
+    <div id="map-canvas" class="map-canvas">
+        <div class="preloader"><img src="http://d1qqc1e9kvmdh8.cloudfront.net/img/preloader.gif"></div>
+        <form id="geocoder" class="geocoder"></form>
+    </div>
+
+    <div class="legend">
+        <h3>Complaint priority</h3>
+        <div class="swatch-holder"><div class="swatch round priority-2"></div>CSR 2</div>    
+        <div class="swatch-holder"><div class="swatch round priority-3"></div>CSR 3</div>    
+
+        <h3>Avg. days to response</h3>
+        <div class="swatch-holder"><div class="swatch level-5"></div>{{breakpoints.4|floatformat:0}} - {{breakpoints.5|floatformat:0}}</div>    
+        <div class="swatch-holder"><div class="swatch level-4"></div>{{breakpoints.3|floatformat:0}} - {{breakpoints.4|floatformat:0}}</div>    
+        <div class="swatch-holder"><div class="swatch level-3"></div>{{breakpoints.2|floatformat:0}} - {{breakpoints.3|floatformat:0}}</div>    
+        <div class="swatch-holder"><div class="swatch level-2"></div>{{breakpoints.1|floatformat:0}} - {{breakpoints.2|floatformat:0}}</div>    
+        <div class="swatch-holder"><div class="swatch level-1"></div>{{breakpoints.0|floatformat:0}} - {{breakpoints.1|floatformat:0}}</div>    
+    </div>
+</div>
+
+<script type="text/template" id="tooltip-template">
+    <h4><a href="/complaint/<%= csr %>/"><%= address %></a></h4>
+    <p>CSR number <a href="/complaint/<%= csr %>/"><%= csr %></a></p>
+    <p>Received <%= date %></p>
+    <% if (closed_date !== null) { %><p>Closed <%= closed_date %></p><% } %>
+    <p>Priority <%= priority %> complaint</p>
+    <p><%= problem %></p>
+    <% if (inspector !== null) { %>
+        <p><%= inspector %>, <%= inspector_phone %></p>
+        <p><%= notes %></p>
+    <% } %>
+</script>
+
+<script type="text/template" id="neighborhood-tooltip-template">
+    <h4><%= name %></h4>
+    <p><%= avg %> days average response time</p>
+</script>
+
+<script src='/api/complaints.geojson'></script>
+<script src='/api/closed_complaints.geojson'></script>
+
+<script src='/api/neighborhoods.geojson'></script>
+
+<script type="text/javascript">
+    var mapMarkers = {},
+        tooltipTemplate = $('#tooltip-template').html(),
+        neighborhoodTooltipTemplate = $('#neighborhood-tooltip-template').html(),
+        winWidth = $(window).width(),
+        breakpoints = {{ breakpoints }};
+
+    var defaultRadius = 3,
+        hoverRadius = 8,
+        maxZoom = 16,
+        minZoom = 11,
+        zoomRadius;
+
+    var pointStyles = {
+        "3": {
+            weight: 0,
+            fillColor: '#fd8d3c',
+            fillOpacity: .8                
+        },
+        "2": {
+            weight: 0,
+            fillColor: '#f03b20',
+            fillOpacity: .8              
+        },
+        "1": {
+            weight: 0,
+            fillColor: '#bd0026',
+            fillOpacity: .8              
+        }
+    };
+
+    var neighborhoodFillColors = ['#f2f0f7','#cbc9e2','#9e9ac8','#756bb1','#54278f'];
+
+    if (winWidth > 980) {
+        zoomRadius = {
+            11: 3,
+            12: 3,
+            13: 3,
+            14: 3.5,
+            15: 4,
+            16: 5
+        };      
+    } else {
+        zoomRadius = {
+            11: 3,
+            12: 3,
+            13: 3,
+            14: 3.5,
+            15: 5,
+            16: 7
+        };
+    }
+
+    var mapOptions = {
+        minZoom: minZoom,
+        maxZoom: maxZoom,
+        scrollWheelZoom: true,
+        maxBounds:  new L.LatLngBounds(
+            new L.LatLng(34.54163119530972, -117.32437133789061),
+            new L.LatLng(33.55627344791359, -119.67681884765624)
+        ),
+        attributionControl: true,
+        zoomControl: false   
+    };        
+    var map = new L.Map('map-canvas', mapOptions),
+        center = new L.LatLng(34.0500,-118.5000);
+
+    L.Map.prototype.addQuietLaBaseLayer = function(version) {
+        var layerOptions = {
+                attribution: "Map data (c) <a href='http://www.openstreetmap.org/'>OpenStreetMap</a> contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>",
+                subdomains: [
+                    'tiles1',
+                    'tiles2',
+                    'tiles3',
+                    'tiles4'
+                ]
+            };
+        var url = "http://{s}.latimes.com/quiet-la-" + version + "/{z}/{x}/{y}.png";    
+        this.addLayer(new L.TileLayer(url, layerOptions));
+    }; 
+
+    var onEachFeature = function(feature, layer) {
+        var props = feature.properties,
+            priority = props["p"];
+
+        var context = {
+            address: props["a"],
+            date: props["d"],
+            closed_date: props["c"],
+            priority: priority,
+            problem: props["t"],
+            inspector: props["i"],
+            inspector_phone: props["ip"],
+            notes: props["n"],
+            csr: props["id"]
+        };
+
+        var popupContent = _.template(tooltipTemplate, context);
+        layer.bindPopup(popupContent);
+
+        layer.on('mouseover', function(){ 
+            this.setRadius(hoverRadius).bringToFront(); 
+        })
+        .on('mouseout', function(){
+            this.setRadius(zoomRadius[map.getZoom()]);
+        });        
+    };
+
+    var onEachNeighborhoodFeature = function(feature, layer) {
+        var props = feature.properties;
+
+        var context = {
+            name: props["name"],
+            avg: parseFloat(props["avg"]).toFixed(2)
+        };
+
+        var popupContent = _.template(neighborhoodTooltipTemplate, context);
+        layer.bindPopup(popupContent);
+
+        layer.on('mouseover', function(){ 
+            this.setStyle({opacity:0.9, weight:2}); 
+        })
+        .on('mouseout', function(){
+            this.setStyle({opacity:0.5, weight:1});
+        });      
+
+    };
+
+    var pointToLayer = function(feature, latlng) {
+        var priority = feature.properties['p'];
+        var marker = new L.CircleMarker(latlng, pointStyles[priority]).setRadius(defaultRadius);
+        mapMarkers[feature.properties.id] = marker;
+
+        return marker;
+    };
+
+    var getColor = function(n) {
+        for (var i = breakpoints.length - 1; i >= 0; i--) {
+            if (n > breakpoints[i]) {
+                return neighborhoodFillColors[i];
+            }
+        }
+    };
+
+    var neighborhoodStyle = function(feature) {
+        return {
+            fillColor: getColor(feature.properties.avg),
+            weight: 1,
+            opacity: .5,
+            color: '#999',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+    }
+
+    // Only filtering in level 2 complaints, temporarily
+    var complaintsLayer = L.geoJson(open_complaints, {
+        onEachFeature: onEachFeature,
+        pointToLayer: pointToLayer,
+        filter: function(feature){
+            if(feature.properties["p"] === "2"){
+                return true;
+            }
+        }
+    });
+
+    var closedComplaintsLayer = L.geoJson(closed_complaints, {
+        onEachFeature: onEachFeature,
+        pointToLayer: pointToLayer,
+        filter: function(feature){
+            if(feature.properties["p"] === "2"){
+                return true;
+            }
+        }
+    });
+
+    var neighborhoodsLayer = L.geoJson(neighborhoods, {
+        onEachFeature: onEachNeighborhoodFeature,
+        style: neighborhoodStyle
+    });
+
+    var complaintLayers = {
+        "Open": complaintsLayer,
+        "Closed": closedComplaintsLayer
+    };
+
+    map.setView(center,minZoom);
+    map.addQuietLaBaseLayer("0.4.0");
+    map.addLayer(neighborhoodsLayer);
+    map.addLayer(complaintsLayer);
+    map.addLayer(closedComplaintsLayer);
+
+    new L.Control.Zoom({ position: 'topright' }).addTo(map);
+    L.control.layers(null, complaintLayers, {collapsed: false, position:'bottomright'}).addTo(map);
+
+    map.on('zoomend', function(){
+        var currentZoom = map.getZoom(),
+            newRadius = zoomRadius[currentZoom];
+        
+        for (marker in mapMarkers) {
+            var feature = mapMarkers[marker];
+            feature.setRadius(newRadius);
+        }
+    }).on('popupopen', function(e) {
+        var px = map.project(e.popup._latlng);
+        px.y -= e.popup._container.clientHeight/2
+        map.panTo(map.unproject(px),{animate: true});
+    });
+
+
+    $('#container')
+        .on('click', '#hide-intro', function() {
+            $('.title-holder').removeClass('visible-desktop').css({'display':'none'});
+            $('#show-intro').css({'display':'block'});  
+        })
+        .on('click', '#show-intro', function() {
+            $('.title-holder').addClass('visible-desktop').css({'display':'block'});
+            $('#show-intro').css({'display':'none'});  
+        });
+
+        $(document).ready(function(){
+            $("#geocoder").geocodify({
+                onSelect: function (result) { 
+                    var locatorIcon = L.divIcon({
+                        className: 'LATLocation',
+                        iconSize: null
+                    });
+
+                    console.log(result.geometry);
+
+                    var coords = L.latLng([result.geometry.location.k, result.geometry.location.B]);
+                    var locator = L.marker(coords, {icon: locatorIcon});
+                    if(mapMarkers.locator){
+                        map.removeLayer(mapMarkers.locator);
+                    }
+                    map.setView(coords, 16);
+                    map.addLayer(locator);
+                    mapMarkers.locator = locator;
+                },
+                initialText: "Search by address",
+                viewportBias: new google.maps.LatLngBounds(
+                    new google.maps.LatLng(33.55627344791359, -119.67681884765624),
+                    new google.maps.LatLng(34.54163119530972, -117.32437133789061)
+                )
+            });
+        });
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+/*
+ * These are merely overrides for the slightly hackish Envelope template.
+ * The styles here encompass most of the differences between the normal
+ * latimes.com template and the Envelope's gold color scheme.
+ */
+
+body {
+    color: #333;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 14px;
+}
+div#container div#header {
+    background-image: url("http://www.latimes.com/includes/uploads/2010/09/B009552F_theEnvelopeHeader.gif") !important;
+    background-repeat: no-repeat !important;
+}
+div#header {
+    background-color: #FFFFFF;
+    height: 64px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+div#navigation { font-weight: bold }
+div#navigation div#layerOne {
+    background-image: url("http://latimesblogs.latimes.com/images/env-nav-bg.gif") !important;
+    display: inline-block;
+    height: 38px;
+    position: relative;
+    width: 100%;
+}
+ul#root li.navLink a {
+    padding: 17px 5px 16px 4px;
+    margin: 0px 7px;
+    color: #545454;
+    font-weight: bold;
+}
+ul#root li.shop a {
+    color: #009900 !important;
+}
+ul#root li ul.level2 {
+    height: 30px;
+}
+
+ul#root li.highlight ul.level2 li a, ul#root li ul.level2 li a {
+    color: #997A00;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 25px;
+    margin: 0;
+    padding: 0 7px 6px;
+    position: relative;
+    top: 2px;
+}
+
+ul#root li.highlight ul.level2 li a:hover, ul#root li ul.level2 li a:hover {
+    color: #997A00;
+}
+ul#root li a.mainNav span {
+    line-height: 5px;
+    padding-bottom: 10px;
+    padding-right: 5px;
+    padding-top: 6px;
+}
+ul#root li.highlight a {
+    background: none;
+    cursor: pointer;
+}
+ul#root li.highlight a {
+    background-image: url(http://www.latimes.com/media/graphic/2010-09/56179036.png);
+    background-origin: padding-box;
+    background-position: 0px 4px;
+    background-repeat: no-repeat;
+    bottom: 10px;
+}
+ul#root li.highlight a.mainNav span {
+    background: url("http://www.latimes.com/media/graphic/2010-09/56179036.png") no-repeat scroll right -50px transparent;
+    padding-left: 0;
+}
+h1, h2, h3, h4, h5, h1 a, h2 a, h3 a, h4 a, h5 a, a {
+    color: #333;
+    font-weight: normal;
+}
+.black-line-box h2 {
+    border-bottom: 1px solid #EBE2C0;
+    border-top: 3px solid #997A00;
+    font-size: 24px;
+    line-height: 37px;
+    margin-bottom: 0;
+    padding: 0;
+    text-transform: none;
+}

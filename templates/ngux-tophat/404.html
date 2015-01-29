@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - {{ block.super }}{% endblock %}
+{% block omniture-pageName %}{{ block.super }}page not found:page not found{% endblock %}
+{% block omniture-contenttype %}page not found{% endblock %}
+{% block omniture-channel %}page not found{% endblock %}
+{% block omniture-full-tribune-path %}page not found{% endblock %}
+{% block omniture-full-latimes-path %}page not found{% endblock %}
+{% block omniture-base-latimes-path %}page not found{% endblock %} 
+
+{% block content %}
+<div style="margin-left:12px;">
+    <h1 class="detail-title pad10vert">We're sorry.</h1>
+    <div style="font-size:16px">
+        <p>We couldn't find the page you requested.</p>
+        <p style="margin-top:12px;">
+            There might be a mistake in the URL, or the link could be out of date.
+        </p>
+        <p style="margin-top:12px;">
+            You could try:
+        </p>
+        <ul class="bullets">
+            <li style="margin:10px 0 0 20px;">Typing the URL again.</li>
+            <li style="margin:10px 0 0 20px;">Visiting <a href="/">the site index</a> to look for the information you want.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

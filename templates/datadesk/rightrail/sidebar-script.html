@@ -1,0 +1,153 @@
+<script type="text/javascript">
+jQuery(document).ready(function(){
+
+    function dateparse(pubDate){
+            date = new Date(pubDate);
+            m = date.getMonth() + 1; 
+            d = date.getDate();
+            y = date.getFullYear();
+            h = date.getHours();
+            if (h > 12){
+            h -= 12;
+                var ampm =  "p.m.";
+            }
+            else if (h == 12) {
+                var ampm =  "p.m.";
+            }
+            else {
+                var ampm = "a.m.";
+            }
+            mm = date.getMinutes();
+            if (mm < 10) {
+                mm = "0" + mm; 
+            }
+            hhmm = ", " + h + ":" + mm + " " +ampm;
+            if (h == 0){
+                hhmm = "";
+            }
+            var timestamp = m + "/" + d + "/" + y + hhmm;
+            return timestamp;
+    }
+
+
+    function latest(){
+        var latestfeedcontainer = document.getElementById('latest-container')
+        var latestfeedurl = "http://feeds.feedburner.com/latimes/thelatest"
+        var latestfeedlimit = 5
+        var latestrssoutput = ""
+
+        function latestsetup(){
+            var feedpointer = new google.feeds.Feed(latestfeedurl)
+            feedpointer.setNumEntries(latestfeedlimit)
+            feedpointer.load(displayfeed)
+        }
+
+        function displayfeed(result){
+            if (!result.error) {
+                var latestfeeds = result.feed.entries
+                latestrssoutput += "<ul class='feed-list'>"
+                for (var i = 0; i < latestfeeds.length; i++) {
+                    var pubDate = latestfeeds[i].publishedDate;
+                    var timestamp = dateparse(pubDate);
+                    latestrssoutput += "<li class='tabs-headlines'><h3><a href=" + latestfeeds[i].link + ">" + latestfeeds[i].title + "</a></h3><span>" + timestamp + "</span></li>"
+                }
+                latestrssoutput += "</ul>"
+                latestfeedcontainer.innerHTML = latestrssoutput;
+            }
+        }
+        latestsetup();
+        
+        
+        }
+        
+        function mviewed(){
+            var mviewedfeedcontainer = document.getElementById('most-viewed-container')
+            var mviewedfeedurl = "http://xml.latimes.com/news/mostviewed_rss2.0.xml"
+            var mviewedfeedlimit = 5
+            var mviewedfeedoutput = ""
+            
+            function mviewedsetup(){
+                var feedpointer = new google.feeds.Feed(mviewedfeedurl)
+                feedpointer.setNumEntries(mviewedfeedlimit)
+                feedpointer.load(displayfeed)
+            }
+            
+            function displayfeed(result){
+                if (!result.error) {
+                    var mviewedfeeds = result.feed.entries
+                    mviewedfeedoutput += "<ul class='feed-list'>"
+                    for (var i = 0; i < mviewedfeeds.length; i++) {
+                        var pubDate = mviewedfeeds[i].publishedDate;
+                        var timestamp = dateparse(pubDate);
+                            mviewedfeedoutput += "<li class='tabs-headlines'><h3><a href=" + mviewedfeeds[i].link + ">" + mviewedfeeds[i].title + "</a></h3><span>" + timestamp + "</span></li>"
+                    }
+                    mviewedfeedoutput += "</ul>"
+                    mviewedfeedcontainer.innerHTML = mviewedfeedoutput;
+                }
+            }
+            mviewedsetup();
+        }
+
+
+    var icymifeedcontainer = document.getElementById("incase-holder")
+    var icymifeedurl = "http://www.latimes.com/mynews/emamdt35t/sandbox1/rss2.0.xml?39";
+    var icymifeedlimit = 4;
+    var icymirssoutput = "";
+    
+    function icymisetup(){
+        var feedpointer = new google.feeds.Feed(icymifeedurl);
+        feedpointer.setNumEntries(icymifeedlimit);
+        feedpointer.load(displayfeed);
+    }
+    
+    function displayfeed(result){
+        if (!result.error) {
+            var icymifeeds = result.feed.entries;
+            for (var i = 0; i < icymifeeds.length; i++) {
+                var headline = icymifeeds[i].title;
+                var icymipatt = new RegExp(/\s\|/);
+                
+                if(icymipatt.test(headline) == true) {
+                    headline = headline.substring(0, headline.indexOf(icymipatt.exec(headline)));
+                }       
+                                
+                if (icymifeeds[i].mediaGroups != null) {
+                    icymirssoutput += "<div class='incase-box-main'><a href=" + icymifeeds[i].link + "><img src='" + icymifeeds[i].mediaGroups[0].contents[0].url + "' /></a><h3><a href=" + icymifeeds[i].link + ">" + headline + "</a></h3><div class='clear'></div></div>";
+                }
+                else {
+                    icymirssoutput += "<div class='incase-box-main'><h3><a href=" + icymifeeds[i].link + ">" + icymifeeds[i].title + "</a></h3><div class='clear'></div></div>"; 
+                }
+            }
+            icymifeedcontainer.innerHTML = icymirssoutput;
+        }
+        else {
+            icymirssoutput += " ";
+        }
+    }
+
+    latest();
+    mviewed();
+    icymisetup();
+
+    jQuery('div.tab-content:first').show()
+    
+    jQuery('li.tab a').bind('click', function(){
+        jQuery('li.tab.curTab').removeClass('curTab');
+        jQuery(this).parent().addClass('curTab');
+        var activeTab = jQuery(this).attr('name');
+        jQuery('div.tab-content').hide();
+        jQuery('#' + activeTab + '-container').show();
+        return false;
+    });
+
+    jQuery('#most-viewed-container').delegate('a', 'click', function(){
+        s.tl(this, 'o', 'latimes.com: MV Box: Most Viewed');
+    });
+    jQuery('#most-emailed-container').delegate('a', 'click', function(){
+        s.tl(this, 'o', 'latimes.com: MV Box: Most Emailed');
+    });
+    jQuery('#latest-container').delegate('a', 'click', function(){
+        s.tl(this, 'o', 'latimes.com: MV Box: Latest News');
+    });
+});
+</script>

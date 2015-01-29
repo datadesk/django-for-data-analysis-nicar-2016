@@ -1,0 +1,115 @@
+<div id="social-header" style="margin-top:20px;">
+        <img class="social-logo" src="http://www.latimes.com/media/graphic/2012-03/68914434.png" /><span>Connect</span>
+        <img id="connect-facebook" data-tooltip="fb" class="social-icon" src="http://www.latimes.com/media/thumbnails/graphic/2010-10/57077505-26140120.gif" />
+        <img id="connect-twitter" data-tooltip="twitter" class="social-icon" src="http://www.latimes.com/media/thumbnails/graphic/2010-10/57073722-26135930.gif" />
+        <img id="connect-googleplus" data-tooltip="googleplus" class="social-icon" src="http://www.latimes.com/media/graphic/2012-03/68914452.jpg" />
+        <a href="http://www.latimes.com/about/rss/"><img id="connect-rss" src="http://www.latimes.com/media/graphic/2010-10/57073722.gif"/></a>
+</div>
+<div class="rr-box-thin" id="fbrecommend">
+
+<h3><a href="http://www.facebook.com/latimes">Recommended on Facebook</a></h3>
+<div class="fb_numberholder">
+<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com/latimes&amp;layout=button_count&amp;show_faces=false&amp;width=100&amp;action=like&amp;font=verdana&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe></div>
+
+
+<div style="width: 292px; height: 130px; overflow-y: scroll; overflow-x: hidden;">
+
+<div style="width: 290px; height: 410px; ">
+
+
+
+<iframe src="http://www.facebook.com/plugins/recommendations.php?site=http%3A%2F%2Fwww.latimes.com%2C+http%3A%2F%2Flatimesblogs.latimes.com&amp;width=280&amp;height=450&amp;header=false&amp;colorscheme=light&amp;font=verdana&amp;border_color=%23ffffff&amp;max_age=3&amp;action=recommend" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:280px; height:410px;" allowTransparency="true"></iframe></div>
+</div>
+
+</div>
+
+<script type="text/javascript">
+
+/* Sticky Tooltip script (v1.0)
+* Created: Nov 25th, 2009. This notice must stay intact for usage 
+* Author: Dynamic Drive at http://www.dynamicdrive.com/
+* Visit http://www.dynamicdrive.com/ for full source code
+*/
+
+var stickytooltip={
+    tooltipoffsets: [0, -20], //additional x and y offset from mouse cursor for tooltips
+    fadeinspeed: 250, //duration of fade effect in milliseconds
+    positiontooltip:function($, $tooltip, e){
+        var x=e.pageX+this.tooltipoffsets[0], y=e.pageY+this.tooltipoffsets[1]
+        var tipw=$tooltip.outerWidth(), tiph=$tooltip.outerHeight(),
+        x=x-(tipw/2)
+        //x=(x+tipw>$(document).scrollLeft()+$(window).width())? x-tipw-(stickytooltip.tooltipoffsets[0]*2) : x
+        y=y-tiph
+        $tooltip.css({left:x, top:y})
+    },  
+    
+    showbox:function($, $tooltip, e){
+        $tooltip.show()
+        this.positiontooltip($, $tooltip, e)
+    },
+
+    hidebox:function($, $tooltip){
+        if (jQuery('#googleplus').css('display') == 'block') {
+            $tooltip.fadeOut(2000)
+        }
+        else {
+            $tooltip.fadeOut(500)
+        }
+    },
+
+    init:function(targetselector, tipid){
+        jQuery(document).ready(function($){
+            var $targets=$(targetselector)
+            var $tooltip=$('#'+tipid).appendTo(document.body)
+            if ($targets.length==0)
+                return
+            var $alltips=$tooltip.find('div.newtip')
+
+            stickytooltip.hidebox($, $tooltip)
+            
+            $targets.hover(function(e){
+                $alltips.hide().filter('#'+$(this).attr('data-tooltip')).show()
+                $tooltip.stop(true, true)
+                stickytooltip.showbox($, $tooltip, e)
+            }, function(e){
+                stickytooltip.hidebox($, $tooltip)
+            })
+
+            $tooltip.hover(function(){
+                jQuery(this).stop(true, true)
+                stickytooltip.showbox($, $tooltip)              
+            }, function(){
+                stickytooltip.hidebox($, $tooltip)                              
+            })
+
+            $(this).bind("click", function(e){
+                if (e.button==0){
+                    stickytooltip.hidebox($, $tooltip)
+                }
+            })
+
+        }) //end dom ready
+    }
+}
+
+stickytooltip.init("*[data-tooltip]", "mystickytooltip")
+</script>
+
+<div id="mystickytooltip" class="stickytooltip">
+    <div style="padding:5px; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;">
+
+        <div id="fb" class="newtip">
+            <iframe src="http://www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Flatimes&amp;width=292&amp;height=179&amp;colorscheme=light&amp;show_faces=true&amp;border_color&amp;stream=false&amp;header=false" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:179px; z-index:99999999; zoom:1; display:block;"></iframe>
+        </div>
+
+        <div id="twitter" class="newtip">
+            <a href="https://twitter.com/latimes" class="twitter-follow-button" data-show-count="false" data-show-screen-name="true">Follow @latimes</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </div>
+
+        <div id="googleplus" class="newtip">
+            <div style="height:90px; overflow:hidden;"><g:plus href="https://plus.google.com/112727226361732924638" rel="author" width="100" height="131"></g:plus></div>
+        </div>  
+
+    </div>
+</div>

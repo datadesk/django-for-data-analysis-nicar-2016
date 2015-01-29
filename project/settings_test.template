@@ -1,0 +1,10 @@
+DEBUG = True
+DEVELOPMENT, PRODUCTION = True, False
+DEBUG_TOOLBAR = True
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'test.db'
+    }
+}
+STATIC_URL = '/static/'

@@ -1,0 +1,285 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html {% block extra-html %}{% endblock %}>
+<head>
+    {% block chartbeat-top %}<script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>{% endblock %}
+    
+    <!-- METADATA -->
+    <title>{% block title %}The Envelope - Los Angeles Times{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="description" content="{% block description %}{% endblock %}" />
+    <meta name="keywords" content="{% block keywords %}data desk, los angeles times, latimes, l.a. times{% endblock %}" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+    <link rel="shortcut icon" type="image/x-icon" href="http://theenvelope.latimes.com/favicon.ico">
+    {% block extra-meta %}{% endblock %}
+    
+    <!-- CSS -->
+    <link href="http://d1qqc1e9kvmdh8.cloudfront.net/css/style-0.22.css" media="all" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        {% include "theenvelope/style.css" %}
+    </style>
+    
+    {% if LEAFLET %}
+        <link href="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-{% if LEAFLET_VERSION %}{{ LEAFLET_VERSION }}{% else %}0.2.1{% endif %}/leaflet.css" media="all" rel="stylesheet" type="text/css" />
+        <!--[if lte IE 8]><link rel="stylesheet" href="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-{% if LEAFLET_VERSION %}{{ LEAFLET_VERSION }}{% else %}0.2.1{% endif %}/leaflet.ie.css" /><![endif]-->
+    {% endif %}
+    {% block extra-css %}
+    {% endblock %}
+    
+    <!-- JAVASCRIPT -->
+    <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAHIAK-cNeRHqEa2rZN_8ojRR_JaWt-qqAK1ijXjq80nxiBFAzoRQ5cVR_J40prGXzcVU9JpeOU-01dA"></script>
+    <script type="text/javascript">
+        {% block jquery %}google.load("jquery", "1.5.2");{% endblock %}
+        google.load("feeds", "1");
+    </script>
+    {% block underscore %}<script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/underscore-1.1.6-min.js" type="text/javascript"></script>{% endblock %}
+    {% if GMAPS %}
+        {% block gmaps %}<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>{% endblock %}
+    {% endif %}
+    {% if GEOCODIFY %}
+        {% if not GMAPS %}
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+        {% endif %}
+        <script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/jquery.geocodify-{% if GEOCODIFY_VERSION %}{{ GEOCODIFY_VERSION }}{% else %}0.1{% endif %}-min.js" type="text/javascript"></script>
+    {% endif %}
+    {% if LEAFLET %}
+        <script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-{% if LEAFLET_VERSION %}{{ LEAFLET_VERSION }}{% else %}0.2.1{% endif %}/leaflet.js" type="text/javascript"></script>
+    {% endif %}
+    <script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/navigation-1.1-min.js" type="text/javascript"></script>
+    <script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/search-min.js" type="text/javascript"></script>
+    {% block extra-js %}{% endblock %}
+    
+    <!-- RSS -->
+    {% block extra-rss %}{% endblock %}
+    
+    {% block extra-head %}{% endblock %}
+</head>
+<body {% block extra-body %}{% endblock %} >
+
+    <div id="container" class="">
+        
+        <div id="branding">
+            <div id="masthead">
+                <!-- CLASSIFIED BAR -->
+                <div id="classified-bar" class="clearfix">
+                    {% include "theenvelope/navigation/classified-bar.html" %}
+                </div><!-- close #classified-bar -->
+                
+                <!-- HEADER -->
+                <div id="header" class=" clearfix">
+                    <div id="headerAd"></div>
+                    <div id="homepageLink">
+                        <a title="theenvelope.latimes.com" alt="Home" href="http://theenvelope.latimes.com/">&nbsp;</a>
+                    </div>
+                    <div id="logo">
+                        <a title="theenvelope.latimes.com" alt="Home" href="http://theenvelope.latimes.com/">
+                            <img alt="theenvelope.latimes.com" src="http://theenvelope.latimes.com/images/logo.png">
+                        </a>
+                    </div>
+                </div><!-- close #header -->
+                
+                <!-- MENU -->
+                <div id="navigation" class="clearfix">
+                    {% include "theenvelope/navigation/menu.html" %}
+                </div><!-- close #navigation -->
+                
+                <!-- INIT FOR NAVIGATION FEATURES -->
+                <script type="text/javascript">
+                    latnav.boot({% block defaulttabpath %}"http://www.latimes.com/news/local"{% endblock %}, {% block lowertabpath %}"http://crime.latimes.com/"{% endblock %});
+                </script>
+            </div><!-- close #masthead -->
+            
+            {% block billboard-ad %}
+            {% endblock %}
+        
+        </div><!-- close #branding -->
+        
+        <ul id="hotLinks"></ul>
+        
+        {% block banner-ad %}
+            {% include "theenvelope/ads/banner.html" %}
+        {% endblock %}
+        
+        <div class="clear pad5vert"></div>
+
+        <!-- CONTENT BODY -->
+        <div id="content" {% block extra-content %}{% endblock %}>
+            
+            <div class="content-body">
+                {% block content %}{% endblock %}
+            </div>
+            
+            <div>
+            {% block footer %}{% endblock %}
+            </div>
+            
+        </div>
+
+        {% block rightrail %}
+            <div id="rail">
+                {% include "theenvelope/ads/cube.html" %}
+            </div>
+        {% endblock %}
+                
+        <div id="contentBottom">
+            
+            {% block mezzanine %}
+                {% include "theenvelope/navigation/mezzanine.html" %}
+            {% endblock %}
+            
+            <div class="clear"></div>
+            
+            {% block footer-ad %}
+                {% include "theenvelope/ads/footer.html" %}
+            {% endblock %}
+            
+            
+        </div><!-- close #bottomContainer -->
+            
+
+        <div class="clear"></div>
+    
+        <!-- FOOTER -->
+        <div id="footer">
+   
+            {% include "theenvelope/navigation/footer.html" %}
+
+        </div><!-- close #footer -->
+
+        <!-- banner ad -->
+        {% block navigation-ad %}
+            {% include "theenvelope/ads/navigation.html" %}
+        {% endblock %}
+
+        {% block stats %}
+
+            <!-- STATISTICS AND TRACKING BELOW -->
+            <!-- Google Analytics code -->
+            <script type="text/javascript">
+
+              var _gaq = _gaq || [];
+              _gaq.push(['_setAccount', '{% block google-analytics-id %}UA-22575524-1{% endblock %}']);
+              _gaq.push(['_trackPageview']);
+
+              (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+              })();
+
+            </script>
+
+            <!-- SiteCatalyst code version: H.1.
+            Copyright 1997-2005 Omniture, Inc. More info available at
+            http://www.omniture.com -->
+
+            <script type="text/javascript" src="http://www.latimes.com/hive/javascripts/metrics/s_code_trb.js"></script>
+            <script language="JavaScript">
+            <!--
+
+            {% block omniture %}
+            s.pageName="{% block omniture-pageName %}Data Desk - Latimes.com / news / local - db.{% endblock %}";
+            s.server="latimes.com"; 
+            s.channel="Latimes.com:news:local";
+
+            s.prop38="database";
+            s.eVar21="database";
+            s.prop20=""
+    
+            /* E-commerce Variables */
+            s.events=""; 
+            s.eVar20="";
+
+            s.hier1="Latimes.com:news:local"; 
+            s.hier2="news:local";
+            s.hier4="news:local";
+            {% endblock %}
+
+            //AD Block Detection
+            //Description:     Check if any IMG, IFRAME, or SCRIPT elements are ad blocked (set to not display).
+            //        Also check for the occurance of any Norton installed code to block popups or ads ( ie.)SymError ).
+            //        Only need to find 1 occurrance of any of the above to confirm ad blocking is used. 
+            //        No need to continue searching through other portions of the page.
+
+            var imgArray = document.images;
+            var iframeArray = document.getElementsByTagName("iframe");
+            var scriptArray = document.getElementsByTagName("script");
+            var isAdBlocked = 0;
+
+
+            if(window.SymError || window.SymWinOpen || window.SymRealWinOpen)
+            {    isAdBlocked=1; }
+
+            if (!isAdBlocked)
+            {    for (var i=0; i<imgArray.length; i++)
+                {        if(imgArray[i].style.display == 'none')
+                    {            isAdBlocked=1;            break;} }    }
+
+            if (!isAdBlocked)
+            {    for (var j=0; j<iframeArray.length; j++)
+                {    if (iframeArray[j].style.display == 'none')
+                    {            isAdBlocked=1;            break;} }    }
+
+            if (!isAdBlocked)
+            {    for (var j=0; j<scriptArray.length; j++)
+                {        if (scriptArray[j].style.display == 'none')
+                    {            isAdBlocked=1;            break;} }    }
+
+            if(isAdBlocked)
+            {    s.prop50="ad blocking";}
+
+            /************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+            var s_code=s.t();if(s_code)document.write(s_code)//-->  </script>
+            <script language="JavaScript"><!--
+            if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+            //--></script><!--/DO NOT REMOVE/-->
+            <!-- End SiteCatalyst code version: H.1. -->
+
+            <!-- START REVENUE SCIENCE PIXELLING CODE -->
+            <script type="text/javascript" src="http://js.revsci.net/gateway/gw.js?csid=B08725"></script>
+            <script type="text/javascript">
+            <!--
+                DM_addEncToLoc("Site", (s.server));
+                DM_addEncToLoc("channel", (s.channel));
+                DM_addEncToLoc("keyword", (s.prop3));
+                DM_cat(s.hier1);
+                DM_tag();
+            // -->
+            </script>
+            <!-- END REVENUE SCIENCE PIXELLING CODE -->
+            <img width="1" alt="" height="1" src="http://pixel1739.everesttech.net/1739/p?ev_transid=121509852926119682678&amp;ev_Latimes.com_news_s_pageview=1">
+        
+        {% endblock %}
+        
+    </div><!-- close #container-->
+
+{% block body-bottom %}
+{% endblock %}
+
+{% block chartbeat-bottom %}
+<script type="text/javascript">
+var _sf_async_config={uid:13068,domain:"{% block chartbeat-domain %}documents.latimes.com{% endblock %}"};
+(function(){
+  function loadChartbeat() {
+    window._sf_endpt=(new Date()).getTime();
+    var e = document.createElement('script');
+    e.setAttribute('language', 'javascript');
+    e.setAttribute('type', 'text/javascript');
+    e.setAttribute('src',
+       (("https:" == document.location.protocol) ? "https://a248.e.akamai.net/chartbeat.download.akamai.com/102508/" : "http://static.chartbeat.com/") +
+       "js/chartbeat.js");
+    document.body.appendChild(e);
+  }
+  var oldonload = window.onload;
+  window.onload = (typeof window.onload != 'function') ?
+     loadChartbeat : function() { oldonload(); loadChartbeat(); };
+})();
+</script>
+{% endblock %}
+
+</body>
+    <!--Good with data?-->
+    <!--Tired of grinding on the same old apps? -->
+    <!--Want to use your skills in defense of truth, justice and the American way?-->
+    <!--Email ben.welsh@latimes.com and let me know you're out there.-->
+</html>
