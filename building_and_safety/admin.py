@@ -10,5 +10,4 @@ class ComplaintAdmin(OSMGeoAdmin):
 
 admin.site.register(Complaint, ComplaintAdmin)
 admin.site.register(NeighborhoodV6, OSMGeoAdmin)
-admin.site.register(CensusTract, OSMGeoAdmin)
 admin.site.register(InspectionDistrict, OSMGeoAdmin)

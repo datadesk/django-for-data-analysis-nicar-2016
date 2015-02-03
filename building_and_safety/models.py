@@ -49,7 +49,9 @@ class Complaint(models.Model):
     area_planning_commission = models.CharField(max_length=20, blank=True, null=True)
     case_number_csr = models.CharField(max_length=255, blank=True, null=True)
     response_days = models.CharField(max_length=4, null=True, blank=True, help_text="Since open and closed cases calculate this differently, it's useless.")
-    lat_long = models.CharField(max_length=255, blank=True, null=True)
+    # lat_long = models.CharField(max_length=255, blank=True, null=True)
+    lat = models.FloatField(null=True)
+    lon = models.FloatField(null=True)
 
     # Add-ons
     point_4326 = models.PointField(srid=4326, null=True, blank=True, verbose_name="Complaint Location")
@@ -276,15 +278,6 @@ class NeighborhoodV6(models.Model):
 
         # return the WKT of the result
         return simple.wkt
-
-
-class CensusTract(models.Model):
-    tract_id = models.CharField(max_length=11)
-    polygon_4326 = models.MultiPolygonField(srid=4326, null=True, blank=True)
-    objects = models.GeoManager()
-
-    def __unicode__(self):
-        return unicode(self.tract_id)
 
 
 class InspectionDistrict(models.Model):

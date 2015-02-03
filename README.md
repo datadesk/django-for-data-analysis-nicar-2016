@@ -20,3 +20,6 @@ To do this, we'll use a publicly available dataset from the [City of L.A.'s data
 - python manage.py migrate 
 
 ## Getting started: The Models ##
+
+- load Complaints data
+- load Neighborhoods data
