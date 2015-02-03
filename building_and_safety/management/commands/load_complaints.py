@@ -14,31 +14,51 @@ class Command(BaseCommand):
     help = "Load complaints filed to the city department of building and safety into the database."
 
     def parse_booleans(self, value):
+        """
+        Quick method to return True or False from the text values in the CSV
+        """
         if value == "Y":
             return True
         else:
             return False    
 
     def parse_date(self, d):
+        """
+        Get a python date object from the date column in CSV
+        """
         if d:
             parsed_date = datetime.strptime(d, "%m/%d/%Y").date()
             return parsed_date
 
     def flush_complaints(self):
+        """
+        Wipe all the complaints in the database.
+        So we don't accidentally dupe ourselves. 
+        """
         Complaint.objects.all().delete()
 
     def parse_lat_lon(self, s):
+        """
+        Read the latitude/longitude row into a tuple
+        and return lat/lon values 
+        """
         if s:
             t = make_tuple(s)
-            return Point(t[1], t[0])
+            return t[1], t[0]
 
     def get_is_closed(self, c):
+        """
+        If there's no closed date, a complaint is still "open"
+        """
         if c.date_closed != None:
             return True
         else:
             return False
 
     def parse_priority(self, p):
+        """
+        Convert the values in a spreadsheet to integers
+        """
         if p == "NORM":
             return 3
         elif p == "HIGH":
@@ -60,6 +80,14 @@ class Command(BaseCommand):
             return s
 
     def handle(self, *args, **options):
+        """
+        Load in our CSVs of open and closed complaints, 
+        creating Complaint objects and adding them to a list
+        which is then batch loaded into the database.
+
+        We batch load them to keep from hitting the database for every record, 
+        which would take approximately forever. 
+        """
         self.data_dir = os.path.join(settings.ROOT_DIR, 'building_and_safety', 'data')
         self.flush_complaints()
 
@@ -92,10 +120,10 @@ class Command(BaseCommand):
                     area_planning_commission = row["Area Planning Commission (APC)"],
                     case_number_csr = row["Case Number Related to CSR"],
                     response_days = self.parse_int(row["Response Days"]),
-                    lat_long = row["Latitude/Longitude"],
+                    lat = parse_lat_lon(row["Latitude/Longitude"])[1],
+                    lon = parse_lat_lon(row["Latitude/Longitude"])[0]
                     )
 
-                c.point_4326 = self.parse_lat_lon(c.lat_long)
                 c.is_closed = self.get_is_closed(c)
 
                 complaint_list.append(c)

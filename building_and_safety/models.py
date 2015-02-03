@@ -28,7 +28,7 @@ def get_kmf_median(kmf):
 
 class Complaint(models.Model):
     """
-    A list of complaints filed to the L.A. department of Building and Safety
+    A list of complaints filed to the L.A. Department of Building and Safety
     """
     csr = models.IntegerField(db_index=True)
     ladbs_inspection_district = models.CharField(max_length=4, blank=True, null=True)
@@ -54,7 +54,6 @@ class Complaint(models.Model):
     lon = models.FloatField(null=True)
 
     # Add-ons
-    point_4326 = models.PointField(srid=4326, null=True, blank=True, verbose_name="Complaint Location")
     is_closed = models.BooleanField()
     more_than_one_year = models.BooleanField(default=False)
     gt_30_days = models.BooleanField(default=False)
@@ -281,6 +280,10 @@ class NeighborhoodV6(models.Model):
 
 
 class InspectionDistrict(models.Model):
+    """
+    Building inspection districts from the Department of Building and Safety.
+    We probably won't use these. 
+    """
     district_number = models.CharField(max_length=4, blank=True, null=True)
     polygon_4326 = models.MultiPolygonField(srid=4326, null=True, blank=True)
     # number of complaints in that district from July 13, 2013 - July 12 2014
