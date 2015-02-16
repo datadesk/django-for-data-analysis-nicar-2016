@@ -130,13 +130,9 @@ class Command(BaseCommand):
 
                 c.is_closed = self.get_is_closed(c)
 
-                # TODO
-                # We can eliminate a lot of management commands here by setting the values on load
-                # set_full_address
-                # get_days_since_complaint
-                # get_days_past_due
+                c.days_since_complaint = c.get_days_since_complaint(c)
+                c.days_past_due = c.get_days_past_due(c) 
                 c.full_address = c.get_full_address(c)
-                # c.days_since_complaint = TK
 
                 complaint_list.append(c)
 
