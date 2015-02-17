@@ -427,7 +427,7 @@ def open_complaints_json(request):
     Pull all the open complaints that were open for more than a year.
     """
     complaints = Complaint.objects\
-        .filter(is_closed=False, gt_90_days=True).exclude(point_4326=None)
+        .filter(is_closed=False, gt_90_days=True).exclude(lat=None, lon=None)
 
     complaints = list(complaints)
     features = [complaint.as_geojson_dict() for complaint in complaints]
@@ -445,7 +445,7 @@ def closed_complaints_json(request):
     Pull all the closed complaints that were open for more than a year.
     """
     complaints = Complaint.objects\
-        .filter(is_closed=True, gt_90_days=True).exclude(point_4326=None)
+        .filter(is_closed=True, gt_90_days=True).exclude(lat=None, lon=None)
 
     complaints = list(complaints)
     features = [complaint.as_geojson_dict() for complaint in complaints]

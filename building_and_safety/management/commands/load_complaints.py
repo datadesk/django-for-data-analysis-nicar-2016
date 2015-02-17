@@ -95,6 +95,7 @@ class Command(BaseCommand):
         which would take approximately forever. 
         """
         self.data_dir = os.path.join(settings.ROOT_DIR, 'building_and_safety', 'data')
+        logger.debug("flushing complaints")
         self.flush_complaints()
 
         complaint_list = []
@@ -131,10 +132,14 @@ class Command(BaseCommand):
                     )
 
                 c.is_closed = self.get_is_closed(c)
-
                 c.days_since_complaint = c.get_days_since_complaint()
+                c.more_than_one_year = c.get_gt_t_days(365)
+                c.gt_180_days = c.get_gt_t_days(180)
+                c.gt_90_days = c.get_gt_t_days(90)
+                c.gt_30_days = c.get_gt_t_days(30)
+
                 if c.date_due:
-                    c.days_past_due = c.get_days_past_due() 
+                    c.past_due_date, c.days_past_due_date = c.get_days_past_due()
                 c.full_address = c.get_full_address()
 
                 complaint_list.append(c)

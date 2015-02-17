@@ -23,4 +23,4 @@ To do this, we'll use a publicly available dataset from the [City of L.A.'s data
 
 - load Complaints data
 `python manage.py load_complaints`
-- load Neighborhoods data
+This command creates a Complaint record for every row in our two csvs. 

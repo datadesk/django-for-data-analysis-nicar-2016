@@ -1,8 +1,8 @@
-from django.contrib.gis.db import models
+from django.db import models
 from django.db.models import Q
 from datetime import datetime
 
-class OlderThanOneYearManager(models.GeoManager):
+class OlderThanOneYearManager(models.Manager):
     """
     Get all complaints that are older than one year from July 13, 2014, 
     since complaints that aren't a year old yet are of no use to us.

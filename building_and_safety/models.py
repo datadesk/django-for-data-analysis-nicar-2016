@@ -63,6 +63,8 @@ class Complaint(models.Model):
     past_due_date = models.BooleanField(default=False)
     days_past_due_date = models.IntegerField(null=True)
     full_address = models.CharField(max_length=255, blank=True, null=True)
+
+    # Fields to fill out manually
     inspector = models.CharField(max_length=255, blank=True, null=True)
     inspector_phone_number = models.CharField(max_length=255, blank=True, null=True)
     notes = models.TextField(null=True, blank=True)
@@ -107,21 +109,12 @@ class Complaint(models.Model):
         else:
             t = most_recent_date - self.date_received
 
-        self.days_since_complaint = t.days
-        
-        if self.days_since_complaint > 365:
-            self.more_than_one_year = True
-        else:
-            self.more_than_one_year = False
-        
-        if self.days_since_complaint > 180:
-            self.gt_180_days = True
+        return t.days
 
-        if self.days_since_complaint > 90:
-            self.gt_90_days = True
-
-        if self.days_since_complaint > 30:
-            self.gt_30_days = True
+    def get_gt_t_days(self, n):
+        if self.days_since_complaint > n:
+            return True
+        return False
 
     def get_days_past_due(self):
         most_recent_date = datetime.strptime("7/13/2014", "%m/%d/%Y").date()
@@ -131,8 +124,9 @@ class Complaint(models.Model):
             t = most_recent_date - self.date_due
 
         if t.days > 0:
-            self.past_due_date = True
-            self.days_past_due_date = t.days
+            return True, t.days
+        else:
+            return False, 0
 
     def as_geojson_dict(self):
         """
@@ -143,8 +137,8 @@ class Complaint(models.Model):
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    float(lon),
-                    float(lat)
+                    float(self.lon),
+                    float(self.lat)
                 ]
             },
             "properties": {
