@@ -12,8 +12,6 @@ AWS_BUCKET_NAME = '' # For your static files
 AWS_BACKUP_BUCKET_NAME = '' # For database backups
 AWS_BACKUP_BUCKET_DIRECTORY = '' # A prefix for the database backup key
 
-POSTGIS_VERSION = (2,1)
-
 try:
     from settings_dev import *
 except ImportError:

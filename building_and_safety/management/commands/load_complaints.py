@@ -45,6 +45,8 @@ class Command(BaseCommand):
         if s:
             t = make_tuple(s)
             return t[1], t[0]
+        else:
+            return (None, None)
 
     def get_is_closed(self, c):
         """
@@ -124,15 +126,16 @@ class Command(BaseCommand):
                     area_planning_commission = row["Area Planning Commission (APC)"],
                     case_number_csr = row["Case Number Related to CSR"],
                     response_days = self.parse_int(row["Response Days"]),
-                    lat = parse_lat_lon(row["Latitude/Longitude"])[1],
-                    lon = parse_lat_lon(row["Latitude/Longitude"])[0]
+                    lat = self.parse_lat_lon(row["Latitude/Longitude"])[1],
+                    lon = self.parse_lat_lon(row["Latitude/Longitude"])[0]
                     )
 
                 c.is_closed = self.get_is_closed(c)
 
-                c.days_since_complaint = c.get_days_since_complaint(c)
-                c.days_past_due = c.get_days_past_due(c) 
-                c.full_address = c.get_full_address(c)
+                c.days_since_complaint = c.get_days_since_complaint()
+                if c.date_due:
+                    c.days_past_due = c.get_days_past_due() 
+                c.full_address = c.get_full_address()
 
                 complaint_list.append(c)
 
