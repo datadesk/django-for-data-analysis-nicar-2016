@@ -63,8 +63,6 @@ class Complaint(models.Model):
         help_text="Days since the complaint was filed or days since filed until it was addressed.")
     past_due_date = models.BooleanField(default=False)
     days_past_due_date = models.IntegerField(null=True)
-    neighborhoodv6 = models.ForeignKey('NeighborhoodV6', null=True, blank=True,
-        help_text='Neighborhood the complaint occurred in.')
     full_address = models.CharField(max_length=255, blank=True, null=True)
     inspector = models.CharField(max_length=255, blank=True, null=True)
     inspector_phone_number = models.CharField(max_length=255, blank=True, null=True)

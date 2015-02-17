@@ -21,8 +21,6 @@ urlpatterns = patterns('',
     url(r'^complaints-map/$', ComplaintsMap.as_view(), name='complaints-map'),
     url(r'^inspection_districts/$', InspectionDistricts.as_view(), name='inspection-districts'),
     url(r'^visited_complaints/$', VisitedComplaints.as_view(), name='visited-complaints'),
-    url(r'^api/inspection-districts.geojson$', inspection_district_json, name='inspection-district-json'),
-    url(r'^inspection-districts-map/$', InspectionDistrictsMap.as_view(), name='inspection-districts-map'),
 )
 
 if settings.DEBUG:

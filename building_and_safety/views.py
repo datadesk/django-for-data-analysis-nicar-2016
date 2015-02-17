@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView, TemplateView
-from building_and_safety.models import Complaint, NeighborhoodV6, InspectionDistrict
+from building_and_safety.models import Complaint
 
 from lifelines import KaplanMeierFitter
 

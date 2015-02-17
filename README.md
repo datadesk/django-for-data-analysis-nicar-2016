@@ -16,7 +16,7 @@ To do this, we'll use a publicly available dataset from the [City of L.A.'s data
 ### Database setup ###
 - createdb django_data_analysis
 - python manage.py syncdb
-- python manage.py schemamigration building-and-safety --init
+- python manage.py schemamigration building_and_safety --init
 - python manage.py migrate 
 
 ## Getting started: The Models ##

@@ -9,5 +9,3 @@ class ComplaintAdmin(OSMGeoAdmin):
     search_fields = ['csr','full_address']
 
 admin.site.register(Complaint, ComplaintAdmin)
-admin.site.register(NeighborhoodV6, OSMGeoAdmin)
-admin.site.register(InspectionDistrict, OSMGeoAdmin)
