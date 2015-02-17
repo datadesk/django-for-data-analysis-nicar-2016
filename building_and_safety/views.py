@@ -256,31 +256,6 @@ class ComplaintTypeBreakdown(TemplateView):
         return locals()
 
 
-class NeighborhoodAnalysis(TemplateView):
-    template_name = 'neighborhood_analysis.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(NeighborhoodAnalysis, self).get_context_data(**kwargs)
-        sort_field = kwargs['field']
-
-        all_complaints = Complaint.objects.exclude(days_since_complaint__lt=0)
-
-        context['total_complaints'] = Complaint.objects.all().count()
-        context['geocoded_complaints'] = Complaint.objects.exclude(point_4326=None).count()
-        context['percent_complaints_geocoded'] = calculate.percentage(context['geocoded_complaints'], context['total_complaints'])
-        context['avg_wait_time'] = Complaint.objects.filter(is_closed=True)\
-            .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
-        all_complaints_kmf = get_kmf_fit(all_complaints)
-        context['median_wait_time'] = get_kmf_median(all_complaints_kmf)
-
-        # Only interested in parts of L.A. city so filter out everyting else.
-        context['neighborhoods'] = NeighborhoodV6.objects.filter(county='los-angeles',type='segment-of-a-city')\
-            .annotate(null_population=Count('population'))\
-            .order_by('-null_population','-%s' % sort_field)
-
-        return context
-
-
 class ComplaintsMap(TemplateView):
     template_name = 'complaints_map.html'
 
@@ -482,43 +457,3 @@ def closed_complaints_json(request):
     response = json.dumps(objects)
     return HttpResponse(response, content_type='text/json')
 
-
-def neighborhoods_json(request):
-    qs = NeighborhoodV6.objects.filter(county="los-angeles", type='segment-of-a-city')
-
-    neighborhoods = [hood.as_geojson() for hood in qs]
-
-    objects = {
-        'type': "FeatureCollection",
-        'features': neighborhoods
-    }
-
-    response = "neighborhoods = %s;" % json.dumps(objects)
-    return HttpResponse(response, content_type='text/json')
-
-
-def inspection_district_json(request):
-    qs = InspectionDistrict.objects.all()
-
-    districts = [district.as_geojson() for district in qs]
-    objects = {
-        'type': "FeatureCollection",
-        'features': districts
-    }
-    response = "districts = %s;" % json.dumps(objects)
-    return HttpResponse(response, content_type='text/json')
-
-
-class InspectionDistrictsMap(TemplateView):
-    template_name = 'inspection_districts_map.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(InspectionDistrictsMap, self).get_context_data(**kwargs)
-        # make a list of the avg days to response
-        complaints = InspectionDistrict.objects.all()\
-            .values_list('complaints', flat=True)
-        # filter out null values
-        complaints = [x for x in complaints if x is not None]
-        context['breakpoints'] = calculate.equal_sized_breakpoints(complaints, 5)
-
-        return context
