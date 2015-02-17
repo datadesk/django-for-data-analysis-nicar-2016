@@ -3,9 +3,8 @@ import logging
 import managers
 import calculate
 from datetime import datetime
+from django.db import models
 from django.db.models import Avg
-from django.contrib.gis.db import models
-from django.contrib.gis.geos import Point, Polygon, MultiPolygon
 from django.utils import dateformat
 
 from lifelines import KaplanMeierFitter
@@ -72,7 +71,7 @@ class Complaint(models.Model):
     housing_dept_related = models.BooleanField(default=False)
 
     # Managers
-    objects = models.GeoManager()
+    objects = models.Manager()
     gt_one_year = managers.OlderThanOneYearManager()
 
     class Meta:
