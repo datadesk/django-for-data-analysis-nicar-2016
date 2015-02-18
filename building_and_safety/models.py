@@ -142,6 +142,8 @@ class Complaint(models.Model):
                 ]
             },
             "properties": {
+                "address": self.full_address,
+                "csr": self.csr,
                 "date": dateformat.format(self.date_received, 'F j, Y'),
                 "closed": self.get_closed_date(),
                 "type": self.csr_problem_type,

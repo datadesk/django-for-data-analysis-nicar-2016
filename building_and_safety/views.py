@@ -261,12 +261,6 @@ class ComplaintsMap(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ComplaintsMap, self).get_context_data(**kwargs)
-        # make a list of the avg days to response
-        avgs = NeighborhoodV6.objects.filter(county="los-angeles", type='segment-of-a-city')\
-            .values_list('avg_days_to_response', flat=True)
-        # filter out null values
-        avgs = [x for x in avgs if x is not None]
-        context['breakpoints'] = calculate.equal_sized_breakpoints(avgs, 5)
         return context
 
 
@@ -330,7 +324,7 @@ class AreaPlanningCommissions(TemplateView):
     def get_context_data(self, **kwargs):
         regions = ["East Los Angeles","Central","South Los Angeles","Harbor","North Valley","South Valley","West Los Angeles"]
         apc_dict = collections.OrderedDict()
-        
+
         all_complaints = Complaint.objects.filter(days_since_complaint__gte=0)
         all_complaints_2011 = all_complaints.filter(date_received__year=2011)
         all_complaints_2012 = all_complaints.filter(date_received__year=2012)
@@ -439,8 +433,8 @@ def open_complaints_json(request):
     """
     Pull all the open complaints that were open for more than a year.
     """
-    complaints = Complaint.objects\
-        .filter(is_closed=False, gt_90_days=True).exclude(lat=None, lon=None)
+    complaints = Complaint.gt_one_year\
+        .filter(is_closed=False, more_than_one_year=True).exclude(lat=None, lon=None)
 
     complaints = list(complaints)
     features = [complaint.as_geojson_dict() for complaint in complaints]
@@ -458,7 +452,7 @@ def closed_complaints_json(request):
     Pull all the closed complaints that were open for more than a year.
     """
     complaints = Complaint.objects\
-        .filter(is_closed=True, gt_90_days=True).exclude(lat=None, lon=None)
+        .filter(is_closed=True, more_than_one_year=True).exclude(lat=None, lon=None)
 
     complaints = list(complaints)
     features = [complaint.as_geojson_dict() for complaint in complaints]

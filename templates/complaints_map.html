@@ -101,14 +101,7 @@
     <div class="legend">
         <h3>Complaint priority</h3>
         <div class="swatch-holder"><div class="swatch round priority-2"></div>CSR 2</div>    
-        <div class="swatch-holder"><div class="swatch round priority-3"></div>CSR 3</div>    
-
-        <h3>Avg. days to response</h3>
-        <div class="swatch-holder"><div class="swatch level-5"></div>{{breakpoints.4|floatformat:0}} - {{breakpoints.5|floatformat:0}}</div>    
-        <div class="swatch-holder"><div class="swatch level-4"></div>{{breakpoints.3|floatformat:0}} - {{breakpoints.4|floatformat:0}}</div>    
-        <div class="swatch-holder"><div class="swatch level-3"></div>{{breakpoints.2|floatformat:0}} - {{breakpoints.3|floatformat:0}}</div>    
-        <div class="swatch-holder"><div class="swatch level-2"></div>{{breakpoints.1|floatformat:0}} - {{breakpoints.2|floatformat:0}}</div>    
-        <div class="swatch-holder"><div class="swatch level-1"></div>{{breakpoints.0|floatformat:0}} - {{breakpoints.1|floatformat:0}}</div>    
+        <div class="swatch-holder"><div class="swatch round priority-3"></div>CSR 3</div>       
     </div>
 </div>
 
@@ -119,27 +112,12 @@
     <% if (closed_date !== null) { %><p>Closed <%= closed_date %></p><% } %>
     <p>Priority <%= priority %> complaint</p>
     <p><%= problem %></p>
-    <% if (inspector !== null) { %>
-        <p><%= inspector %>, <%= inspector_phone %></p>
-        <p><%= notes %></p>
-    <% } %>
 </script>
-
-<script type="text/template" id="neighborhood-tooltip-template">
-    <h4><%= name %></h4>
-    <p><%= avg %> days average response time</p>
-</script>
-
-<script src='/api/complaints.geojson'></script>
-<script src='/api/closed_complaints.geojson'></script>
-<script src='/api/neighborhoods.geojson'></script>
 
 <script type="text/javascript">
     var mapMarkers = {},
         tooltipTemplate = $('#tooltip-template').html(),
-        neighborhoodTooltipTemplate = $('#neighborhood-tooltip-template').html(),
-        winWidth = $(window).width(),
-        breakpoints = {{ breakpoints }};
+        winWidth = $(window).width();
 
     var defaultRadius = 3,
         hoverRadius = 8,
@@ -217,18 +195,15 @@
 
     var onEachFeature = function(feature, layer) {
         var props = feature.properties,
-            priority = props["p"];
+            priority = props["priority"];
 
         var context = {
-            address: props["a"],
-            date: props["d"],
-            closed_date: props["c"],
+            address: props["address"],
+            csr: props["csr"],
+            date: props["date"],
+            closed_date: props["closed"],
             priority: priority,
-            problem: props["t"],
-            inspector: props["i"],
-            inspector_phone: props["ip"],
-            notes: props["n"],
-            csr: props["id"]
+            problem: props["type"],
         };
 
         var popupContent = _.template(tooltipTemplate, context);
@@ -242,92 +217,48 @@
         });        
     };
 
-    var onEachNeighborhoodFeature = function(feature, layer) {
-        var props = feature.properties;
-
-        var context = {
-            name: props["name"],
-            avg: parseFloat(props["avg"]).toFixed(2)
-        };
-
-        var popupContent = _.template(neighborhoodTooltipTemplate, context);
-        layer.bindPopup(popupContent);
-
-        layer.on('mouseover', function(){ 
-            this.setStyle({opacity:0.9, weight:2}); 
-        })
-        .on('mouseout', function(){
-            this.setStyle({opacity:0.5, weight:1});
-        });      
-
-    };
-
     var pointToLayer = function(feature, latlng) {
-        var priority = feature.properties['p'];
+        var priority = feature.properties['priority'];
         var marker = new L.CircleMarker(latlng, pointStyles[priority]).setRadius(defaultRadius);
         mapMarkers[feature.properties.id] = marker;
 
         return marker;
     };
 
-    var getColor = function(n) {
-        for (var i = breakpoints.length - 1; i >= 0; i--) {
-            if (n > breakpoints[i]) {
-                return neighborhoodFillColors[i];
-            }
-        }
-    };
-
-    var neighborhoodStyle = function(feature) {
-        return {
-            fillColor: getColor(feature.properties.avg),
-            weight: 1,
-            opacity: .5,
-            color: '#999',
-            dashArray: '3',
-            fillOpacity: 0.7
-        };
-    }
-
-    // Only filtering in level 2 complaints, temporarily
-    var complaintsLayer = L.geoJson(open_complaints, {
-        onEachFeature: onEachFeature,
-        pointToLayer: pointToLayer,
-        filter: function(feature){
-            if(feature.properties["p"] === "2"){
-                return true;
-            }
-        }
-    });
-
-    var closedComplaintsLayer = L.geoJson(closed_complaints, {
-        onEachFeature: onEachFeature,
-        pointToLayer: pointToLayer,
-        filter: function(feature){
-            if(feature.properties["p"] === "2"){
-                return true;
-            }
-        }
-    });
-
-    var neighborhoodsLayer = L.geoJson(neighborhoods, {
-        onEachFeature: onEachNeighborhoodFeature,
-        style: neighborhoodStyle
-    });
-
-    var complaintLayers = {
-        "Open": complaintsLayer,
-        "Closed": closedComplaintsLayer
-    };
-
     map.setView(center,minZoom);
     map.addQuietLaBaseLayer("0.4.0");
-    map.addLayer(neighborhoodsLayer);
-    map.addLayer(complaintsLayer);
-    map.addLayer(closedComplaintsLayer);
+
+    var complaintsLayer, closedComplaintsLayer, complaintLayers;
+
+    $.getJSON('/api/complaints.json', function(data) {
+        var features = data.features;
+        // Only filtering in level 2 complaints, temporarily
+        complaintsLayer = L.geoJson(features, {
+            onEachFeature: onEachFeature,
+            pointToLayer: pointToLayer
+        });
+
+        $.getJSON('/api/closed_complaints.json', function(data) {
+            var features = data.features;
+            closedComplaintsLayer = L.geoJson(features, {
+                onEachFeature: onEachFeature,
+                pointToLayer: pointToLayer
+            });
+
+            complaintLayers = {
+                "Open": complaintsLayer,
+                "Closed": closedComplaintsLayer
+            };
+
+            map.addLayer(complaintsLayer);
+            map.addLayer(closedComplaintsLayer);
+        });
+
+    });
+
 
     new L.Control.Zoom({ position: 'topright' }).addTo(map);
-    L.control.layers(null, complaintLayers, {collapsed: false, position:'bottomright'}).addTo(map);
+    // L.control.layers(null, complaintLayers, {collapsed: false, position:'bottomright'}).addTo(map);
 
     map.on('zoomend', function(){
         var currentZoom = map.getZoom(),
