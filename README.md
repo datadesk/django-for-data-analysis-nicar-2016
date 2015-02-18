@@ -10,14 +10,18 @@ To do this, we'll use a publicly available dataset from the [City of L.A.'s data
 ## Setup ##
 
 ### Installation ###
-- pip install numpy==1.8.1 before requirements.txt ( we have to install numpy first due to some bugs with the numpy install )
-- pip install -r requirements.txt
+```bash
+$ pip install numpy==1.8.1 before requirements.txt ( we have to install numpy first due to some bugs with the numpy install )
+$ pip install -r requirements.txt
+```
 
 ### Database setup ###
-- createdb django_data_analysis
-- python manage.py syncdb
-- python manage.py schemamigration building_and_safety --init
-- python manage.py migrate 
+```bash
+$ createdb django_data_analysis
+$ python manage.py syncdb
+$ python manage.py schemamigration building_and_safety --init
+$ python manage.py migrate 
+```
 
 ## Getting started: The Models ##
 - First, let's look at our models. There are a couple of fields we're concerned with or need more explanation.
@@ -39,20 +43,26 @@ To do this, we'll use a publicly available dataset from the [City of L.A.'s data
 
 
 - load Complaints data
-`python manage.py load_complaints`
 
+```bash
+$ python manage.py load_complaints
+```
 
 This command creates a Complaint record for every row in our two csvs. Note that instead of saving every individual record as it's loaded, we use Django's bulk_create method to create them in batches of 500. This saves a ton of time as we're not hitting the database for row in the CSV.
 
 ### What are we looking at here? ###
 We can use basic Django commands to get a feel the data we're looking at. 
 
-`python manage.py shell`
-`from building_and_safety.models import *`
-`complaints = Complaint.objects.all()`
-`complaints.count()`
-`>>> 71120`
-`complaints.filter(is_closed=True).count()`
-`>>> 67060`
-`complaints.filter(more_than_one_year=True).count()`
-`>>> 1231`
+```bash
+$ python manage.py shell
+```
+```bash
+>>> from building_and_safety.models import *
+>>> complaints = Complaint.objects.all()
+>>> complaints.count()
+71120
+>>> complaints.filter(is_closed=True).count()
+67060
+>>> complaints.filter(more_than_one_year=True).count()
+1231
+```
