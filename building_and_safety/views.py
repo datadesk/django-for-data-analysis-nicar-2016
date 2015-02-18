@@ -299,9 +299,38 @@ class InspectionDistricts(TemplateView):
         districts = Complaint.objects.order_by('ladbs_inspection_district')\
                     .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district')
         district_dict = collections.OrderedDict()
+
+        for d in districts:
+            district = {}
+            district_complaints = Complaint.objects.filter(days_since_complaint__gte=0,ladbs_inspection_district=d)
+            district["open"] = district_complaints.filter(is_closed=False).count()
+            district["closed"] = district_complaints.filter(is_closed=True).count() 
+            district["2011"] = district_complaints.filter(date_received__year=2011).count()
+            district["2012"] = district_complaints.filter(date_received__year=2012).count()
+            district["2013"] = district_complaints.filter(date_received__year=2013).count()
+            district["2014"] = district_complaints.filter(date_received__year=2014).count()
+            district["by_due"] = district_complaints.filter(past_due_date=True).count()
+            district["total"] = district["open"] + district["closed"]
+            district["percent_open"] = calculate.percentage(district["open"], district["total"])
+            district["percent_past_due"] = calculate.percentage(district["by_due"], district["total"])
+            district["region"] = ' / '.join(district_complaints.order_by('area_planning_commission')\
+                .values_list('area_planning_commission', flat=True).distinct('area_planning_commission'))
+            district_dict[d] = district
+
+        return locals()
+
+
+class AreaPlanningCommissions(TemplateView):
+    """
+    Render a template showing the number of open and closed cases for each 
+    Area Planning Comission
+    """
+    template_name = "area_planning_commissions.html"
+
+    def get_context_data(self, **kwargs):
         regions = ["East Los Angeles","Central","South Los Angeles","Harbor","North Valley","South Valley","West Los Angeles"]
         apc_dict = collections.OrderedDict()
-
+        
         all_complaints = Complaint.objects.filter(days_since_complaint__gte=0)
         all_complaints_2011 = all_complaints.filter(date_received__year=2011)
         all_complaints_2012 = all_complaints.filter(date_received__year=2012)
@@ -342,23 +371,6 @@ class InspectionDistricts(TemplateView):
         all_complaints_2014_districts = all_complaints_2014.order_by('ladbs_inspection_district')\
                 .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
         all_complaints_2014_per_inspector = all_complaints_2014_total / all_complaints_2014_districts
-
-        for d in districts:
-            district = {}
-            district_complaints = Complaint.objects.filter(days_since_complaint__gte=0,ladbs_inspection_district=d)
-            district["open"] = district_complaints.filter(is_closed=False).count()
-            district["closed"] = district_complaints.filter(is_closed=True).count() 
-            district["2011"] = district_complaints.filter(date_received__year=2011).count()
-            district["2012"] = district_complaints.filter(date_received__year=2012).count()
-            district["2013"] = district_complaints.filter(date_received__year=2013).count()
-            district["2014"] = district_complaints.filter(date_received__year=2014).count()
-            district["by_due"] = district_complaints.filter(past_due_date=True).count()
-            district["total"] = district["open"] + district["closed"]
-            district["percent_open"] = calculate.percentage(district["open"], district["total"])
-            district["percent_past_due"] = calculate.percentage(district["by_due"], district["total"])
-            district["region"] = ' / '.join(district_complaints.order_by('area_planning_commission')\
-                .values_list('area_planning_commission', flat=True).distinct('area_planning_commission'))
-            district_dict[d] = district
 
         for r in regions:
             region = {}
@@ -412,6 +424,7 @@ class InspectionDistricts(TemplateView):
             apc_dict[r] = region 
 
         return locals()
+
 
 def negative_date_cases_csv(request):
     """

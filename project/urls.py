@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     # This is the URL Varnish will ping to check the server health.
     url(r'^app_status/$', 'toolbox.views.app_status', name='status'),
+    url(r'^area_planning_commissions/$', AreaPlanningCommissions.as_view(), name='area-planning-commissions'),    
     url(r'^complaint/(?P<csr>[0-9]{6})/$', ComplaintDetail.as_view(), name="complaint_detail"),
     url(r'^complaint_analysis/$', ComplaintAnalysis.as_view(), name='complaint_analysis'),
     url(r'^complaint_type_breakdown/$', ComplaintTypeBreakdown.as_view(), name='complaint_type_breakdown'),
