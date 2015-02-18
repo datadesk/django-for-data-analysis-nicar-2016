@@ -50,19 +50,36 @@ $ python manage.py load_complaints
 
 This command creates a Complaint record for every row in our two csvs. Note that instead of saving every individual record as it's loaded, we use Django's bulk_create method to create them in batches of 500. This saves a ton of time as we're not hitting the database for row in the CSV.
 
-### What are we looking at here? ###
+### What are we looking at here? Exploring the data ###
 We can use basic Django commands to get a feel the data we're looking at. 
 
 ```bash
 $ python manage.py shell
 ```
+
+Let's use this to answer a couple of basic questions about the data:
+- How many complaints do we have total?
+- How many are still unaddressed?
+- How many complaints went more than a year before being addressed?
+
 ```bash
 >>> from building_and_safety.models import *
 >>> complaints = Complaint.objects.all()
 >>> complaints.count()
 71120
->>> complaints.filter(is_closed=True).count()
-67060
+>>> complaints.filter(is_closed=False).count()
+4060
 >>> complaints.filter(more_than_one_year=True).count()
 1231
 ```
+
+We can use this for more complicated questions too. 
+- How are the complaints older than one year distributed throughout the planning commissions? Are some worse than others?
+
+```bash
+>>> from django.db.models import Count
+>>> complaints.filter(more_than_one_year=True).values('area_planning_commission').annotate(count=Count("csr")).order_by('-count')
+[{'count': 618, 'area_planning_commission': u'East Los Angeles'}, {'count': 394, 'area_planning_commission': u'Central'}, {'count': 86, 'area_planning_commission': u'West Los Angeles'}, {'count': 60, 'area_planning_commission': u'South Valley'}, {'count': 56, 'area_planning_commission': u'South Los Angeles'}, {'count': 8, 'area_planning_commission': u'North Valley'}, {'count': 7, 'area_planning_commission': u''}, {'count': 2, 'area_planning_commission': u'Harbor'}]
+```
+
+Now we're on to something.
