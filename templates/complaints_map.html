@@ -29,15 +29,9 @@
     .leaflet-popup-content h4 { font:16px Arial, sans-serif; font-weight:bold; color:#333; margin-bottom:10px; padding-bottom: 2px; border-bottom: 1px solid #ccc; }
     .leaflet-popup-content p { font:14px Arial, sans-serif; margin:0 0 5px 0;}
 
-    .priority-1 {background-color:#bd0026; background-color:rgba(189,0,38,0.8);}
-    .priority-2 {background-color:#f03b20; background-color:rgba(240,60,32,0.8);}
-    .priority-3 {background-color:#fd8d3c; background-color:rgba(253,140,60,0.8);}
-
-    .level-1 {background-color:#f2f0f7; background-color:rgba(242, 240, 247, 0.7);}
-    .level-2 {background-color:#cbc9e2; background-color:rgba(203, 201, 226, 0.7);}
-    .level-3 {background-color:#9e9ac8; background-color:rgba(158, 154, 200, 0.7);}
-    .level-4 {background-color:#756bb1; background-color:rgba(117, 107, 177, 0.7);}
-    .level-5 {background-color:#54278f; background-color:rgba(84, 39, 143, 0.7);}
+    .priority-1 {background-color:#bd0026;}
+    .priority-2 {background-color:#f03b20;}
+    .priority-3 {background-color:#fd8d3c;}
 
     .porteno-btn {position:absolute; top:10px; left:10px; z-index:1000; background-color:#fff; background-image:none; color:#222; border:1px solid #ccc; -webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.65); -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.65); box-shadow: 0 1px 5px rgba(0,0,0,0.65);border-color:#ccc;}
     .porteno-btn:hover {background-color:#e6e6e6; color:#222;}
@@ -256,6 +250,21 @@
 
     });
 
+    $.getJSON('{{STATIC_URL}}json/la_city.json', function(data) {
+        var la_city_styles = {
+            color: '#444444',
+            dashArray: '5, 5',
+            fillOpacity: 0,
+            opacity: 1,
+            weight: 1
+        };
+
+        var la_city_layer = L.geoJson(data.features, {
+            style: la_city_styles
+        });
+
+        map.addLayer(la_city_layer);
+    });
 
     new L.Control.Zoom({ position: 'topright' }).addTo(map);
     // L.control.layers(null, complaintLayers, {collapsed: false, position:'bottomright'}).addTo(map);
