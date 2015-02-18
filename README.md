@@ -45,3 +45,14 @@ To do this, we'll use a publicly available dataset from the [City of L.A.'s data
 This command creates a Complaint record for every row in our two csvs. Note that instead of saving every individual record as it's loaded, we use Django's bulk_create method to create them in batches of 500. This saves a ton of time as we're not hitting the database for row in the CSV.
 
 ### What are we looking at here? ###
+We can use basic Django commands to get a feel the data we're looking at. 
+
+`python manage.py shell`
+`from building_and_safety.models import *`
+`complaints = Complaint.objects.all()`
+`complaints.count()`
+`>>> 71120`
+`complaints.filter(is_closed=True).count()`
+`>>> 67060`
+`complaints.filter(more_than_one_year=True).count()`
+`>>> 1231`
