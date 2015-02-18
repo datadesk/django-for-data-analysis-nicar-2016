@@ -53,16 +53,16 @@ class Complaint(models.Model):
     lon = models.FloatField(null=True)
 
     # Add-ons
+    full_address = models.CharField(max_length=255, blank=True, null=True)
     is_closed = models.BooleanField()
-    more_than_one_year = models.BooleanField(default=False)
     gt_30_days = models.BooleanField(default=False)
     gt_90_days = models.BooleanField(default=False)
     gt_180_days = models.BooleanField(default=False)
+    more_than_one_year = models.BooleanField(default=False)
     days_since_complaint = models.IntegerField(null=True, verbose_name="Days since complaint was filed",
         help_text="Days since the complaint was filed or days since filed until it was addressed.")
     past_due_date = models.BooleanField(default=False)
     days_past_due_date = models.IntegerField(null=True)
-    full_address = models.CharField(max_length=255, blank=True, null=True)
 
     # Fields to fill out manually
     inspector = models.CharField(max_length=255, blank=True, null=True)
