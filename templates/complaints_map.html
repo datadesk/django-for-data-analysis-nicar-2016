@@ -15,9 +15,7 @@
     .map-canvas {width:100%; height:100%;} 
     .map-holder {position:relative; height:100%;}
     .preloader {height: 500px; vertical-align: middle; text-align: center; margin-top: 190px;}
-    .geocoder {position:absolute; z-index:1000; top:10px; right:45px;}
-    .geocoder input {margin-bottom:0;}
-    .legend {padding:10px; width:190px; margin-bottom:10px; position:absolute; z-index:100; background-color:#fff; background-color:rgba(255,255,255,0.9); top:50px; right:45px; border:1px solid #ccc; box-sizing:border-box;}
+    .legend {padding:10px; width:190px; margin-bottom:10px; position:absolute; z-index:100; background-color:#fff; background-color:rgba(255,255,255,0.9); top:10px; right:45px; border:1px solid #ccc; box-sizing:border-box;}
     .legend div {font:13px Arial, sans-serif; color: #222; }
     .legend h3 {margin:10px 0 4px}
     .legend form {margin-bottom:0;}
@@ -42,7 +40,6 @@
 
 {% block extra-js %}
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    <script src="{{STATIC_URL}}js/jquery.geocodify-0.2.js"></script>
     <script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-0.7.2/leaflet.js"></script>
 {% endblock %}
 
@@ -89,7 +86,6 @@
 
     <div id="map-canvas" class="map-canvas">
         <div class="preloader"><img src="http://d1qqc1e9kvmdh8.cloudfront.net/img/preloader.gif"></div>
-        <form id="geocoder" class="geocoder"></form>
     </div>
 
     <div class="legend">
@@ -292,33 +288,6 @@
         .on('click', '#show-intro', function() {
             $('.title-holder').addClass('visible-desktop').css({'display':'block'});
             $('#show-intro').css({'display':'none'});  
-        });
-
-        $(document).ready(function(){
-            $("#geocoder").geocodify({
-                onSelect: function (result) { 
-                    var locatorIcon = L.divIcon({
-                        className: 'LATLocation',
-                        iconSize: null
-                    });
-
-                    console.log(result.geometry);
-
-                    var coords = L.latLng([result.geometry.location.k, result.geometry.location.B]);
-                    var locator = L.marker(coords, {icon: locatorIcon});
-                    if(mapMarkers.locator){
-                        map.removeLayer(mapMarkers.locator);
-                    }
-                    map.setView(coords, 16);
-                    map.addLayer(locator);
-                    mapMarkers.locator = locator;
-                },
-                initialText: "Search by address",
-                viewportBias: new google.maps.LatLngBounds(
-                    new google.maps.LatLng(33.55627344791359, -119.67681884765624),
-                    new google.maps.LatLng(34.54163119530972, -117.32437133789061)
-                )
-            });
         });
 
 </script>
