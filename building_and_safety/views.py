@@ -129,7 +129,7 @@ class ComplaintAnalysis(TemplateView):
             .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']        
 
         # A much better means of getting expected wait times is to use a survival analysis function
-        # In this case, we use the Python package lifelines to establish our survival analysis
+        # In this case, we use a Kaplan-Meier estimator from the Python package lifelines
         # We repeat this for all complaints, and for each CSR priority levels.
         all_complaints = Complaint.objects.exclude(days_since_complaint__lt=0)
         kmf_fit = get_kmf_fit(all_complaints)
@@ -151,6 +151,7 @@ class ComplaintAnalysis(TemplateView):
         median_wait_time_csr3_kmf = get_kmf_median(kmf_fit_csr3)
         mean_wait_time_csr3_kmf = get_kmf_mean(kmf_fit_csr3)
 
+        # Repeat the process, dividing complaints by year
         complaints_2011 = Complaint.objects.filter(date_received__year=2011)
         complaints_2012 = Complaint.objects.filter(date_received__year=2012)
         complaints_2013 = Complaint.objects.filter(date_received__year=2013)
@@ -166,6 +167,7 @@ class ComplaintAnalysis(TemplateView):
         complaints_2013_median_wait_time = get_kmf_median(complaints_2013_kmf_fit)
         complaints_2014_median_wait_time = get_kmf_median(complaints_2014_kmf_fit)
 
+        # and again, for the East side
         eastside_complaints_2011 = complaints_2011.filter(area_planning_commission="East Los Angeles")
         eastside_complaints_2012 = complaints_2012.filter(area_planning_commission="East Los Angeles")
         eastside_complaints_2013 = complaints_2013.filter(area_planning_commission="East Los Angeles")
@@ -248,6 +250,9 @@ class ComplaintAnalysis(TemplateView):
 
 
 class ComplaintTypeBreakdown(TemplateView):
+    """
+    Break down complaints by the type received in each Area Planning Commission.
+    """
     template_name = "complaint_type_breakdown.html"
 
     def get_context_data(self, **kwargs):
@@ -258,6 +263,8 @@ class ComplaintTypeBreakdown(TemplateView):
             qs = Complaint.objects.filter(area_planning_commission=region, days_since_complaint__gte=0)
             regions[region] = {}
 
+            # Grab the top 10 types of complaints in each area 
+            # (There are way too many to list all of them) 
             types = Complaint.objects.filter(area_planning_commission=region)\
                 .values('csr_problem_type').annotate(count=Count('csr_problem_type')).order_by('-count')[0:10]
 
