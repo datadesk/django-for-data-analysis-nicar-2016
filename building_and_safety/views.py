@@ -286,6 +286,9 @@ class ComplaintsMap(TemplateView):
 
 
 class ComplaintDetail(DetailView):
+    """
+    Detail field with additional information about each complaint.
+    """
     template_name = "complaint_detail.html"
     model = Complaint
     slug_field = "csr"

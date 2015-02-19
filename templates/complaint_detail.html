@@ -57,8 +57,10 @@
         scrollWheelZoom: false
     }
 
-    var map = new L.Map('map', mapOptions),
-        center = new L.LatLng({{object.point_4326.y}},{{object.point_4326.x}});
+    var lat = {{object.lat}},
+        lon = {{object.lon}},
+        map = new L.Map('map', mapOptions),
+        center = new L.LatLng(lon,lat);
 
     L.Map.prototype.addQuietLaBaseLayer = function(version) {
         var layerOptions = {
@@ -74,7 +76,7 @@
         this.addLayer(new L.TileLayer(url, layerOptions));
     }; 
 
-    var complaint = L.marker([{{object.point_4326.y}},{{object.point_4326.x}}]);
+    var complaint = L.marker([lon,lat]);
 
     map.setView(center,15);
     map.addQuietLaBaseLayer("0.4.0");
