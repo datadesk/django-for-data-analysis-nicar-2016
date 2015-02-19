@@ -73,14 +73,7 @@
                     <td class="data">{{ median_wait_time_csr1_kmf }}</td>    
                     <td class="data">{{ median_wait_time_csr2_kmf }}</td>    
                     <td class="data">{{ median_wait_time_csr3_kmf }}</td>    
-                </tr>                
-                <tr>
-                    <td>Mean days wait until complaint is inspected or otherwise addressed (KMF survival analysis)</td>
-                    <td class="data">{{ mean_wait_time_kmf|floatformat:2 }}</td>
-                    <td class="data">{{ mean_wait_time_csr1_kmf|floatformat:2 }}</td>    
-                    <td class="data">{{ mean_wait_time_csr2_kmf|floatformat:2 }}</td>    
-                    <td class="data">{{ mean_wait_time_csr3_kmf|floatformat:2 }}</td>    
-                </tr> 
+                </tr>
             </tbody>
         </table>        
 
@@ -93,9 +86,6 @@
                     <th class="data">total complaints</th>
                     <th class="data">Avg complaints / yr.</th>
                     <th class="data">Avg days to inspect</th>
-                    <th class="data">CSR1 avg</th>
-                    <th class="data">CSR2 avg</th>
-                    <th class="data">CSR3 avg</th>
                     <th class="data">Median days</th>
                     <th class="data">CSR1 KMF median</th>
                     <th class="data">CSR2 KMF median</th>
@@ -110,9 +100,6 @@
                     <td class="data">{{ value.total|intcomma }}</td>
                     <td class="data">{{ value.avg_complaints_per_year|floatformat:0|intcomma }}</td>
                     <td class="data">{{ value.avg_days_to_resolve|floatformat:2 }}</td>
-                    <td class="data">{{ value.avg_days_csr1|floatformat:2 }}</td>
-                    <td class="data">{{ value.avg_days_csr2|floatformat:2 }}</td>
-                    <td class="data">{{ value.avg_days_csr3|floatformat:2 }}</td>
                     <td class="data">{{ value.median_wait_kmf }}</td>
                     <td class="data">{{ value.median_wait_kmf_csr1 }}</td>
                     <td class="data">{{ value.median_wait_kmf_csr2 }}</td>
@@ -146,78 +133,6 @@
                 {% endfor%}
             </tbody>            
         </table>    
-
-        <h4>Wait times by year</h4>
-        <table class="table table-striped table-bordered table-condensed">
-            <thead>
-                <tr>
-                    <th>Area</th>
-                    <th class="data">Median wait</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Citywide 2011</td>
-                    <td class="data">{{ complaints_2011_median_wait_time }}</td>
-                </tr>
-                <tr>
-                    <td>Eastside 2011</td>
-                    <td class="data">{{ eastside_complaints_2011_median_wait_time }}</td>
-                </tr>
-                <tr>
-                    <td>Citywide 2012</td>
-                    <td class="data">{{ complaints_2012_median_wait_time }}</td>
-                </tr>
-                <tr>
-                    <td>Eastside 2012</td>
-                    <td class="data">{{ eastside_complaints_2012_median_wait_time }}</td>
-                </tr>
-                <tr>
-                    <td>Citywide 2013</td>
-                    <td class="data">{{ complaints_2013_median_wait_time }}</td>
-                </tr>
-                <tr>
-                    <td>Eastside 2013</td>
-                    <td class="data">{{ eastside_complaints_2013_median_wait_time }}</td>
-                </tr>
-                <tr>
-                    <td>Citywide 2013 CSR 1 Complaints</td>
-                    <td class="data">{{ csr_1_complaints_2013_median_wait }}</td>
-                </tr>
-                <tr>
-                    <td>Citywide 2014</td>
-                    <td class="data">{{ complaints_2014_median_wait_time }}</td>
-                </tr>
-                <tr>
-                    <td>Eastside 2014</td>
-                    <td class="data">{{ eastside_complaints_2014_median_wait_time }}</td>
-                </tr>
-            </tbody>            
-        </table>                
-
-        <h3>Kaplan-Meier mean wait</h3>
-        <table class="table table-striped table-bordered table-condensed">
-            <thead>
-                <tr>
-                    <th>Region</th>
-                    <th class="data">KMF avg days</th>
-                    <th class="data">CSR1 KMF avg</th>
-                    <th class="data">CSR2 KMF avg</th>
-                    <th class="data">CSR3 KMF avg</th>
-                </tr>                
-            </thead>
-            <tbody>
-                {% for region, value in regions.items %}
-                <tr>
-                    <td>{{ region }}</td>
-                    <td class="data">{{ value.mean_wait_kmf|floatformat:2 }}</td>
-                    <td class="data">{{ value.mean_wait_kmf_csr1|floatformat:2 }}</td>
-                    <td class="data">{{ value.mean_wait_kmf_csr2|floatformat:2 }}</td>
-                    <td class="data">{{ value.mean_wait_kmf_csr3|floatformat:2 }}</td>       
-                </tr>
-                {% endfor%}
-            </tbody>            
-        </table>
     
         <h3>Overall complaint numbers</h3>
         <table class="table table-striped table-bordered table-condensed">

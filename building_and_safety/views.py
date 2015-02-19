@@ -134,58 +134,18 @@ class ComplaintAnalysis(TemplateView):
         all_complaints = Complaint.objects.exclude(days_since_complaint__lt=0)
         kmf_fit = get_kmf_fit(all_complaints)
         median_wait_time_kmf = get_kmf_median(kmf_fit)
-        mean_wait_time_kmf = get_kmf_mean(kmf_fit)
 
         csr1 = all_complaints.filter(csr_priority="1")
         kmf_fit_csr1 = get_kmf_fit(csr1)
         median_wait_time_csr1_kmf = get_kmf_median(kmf_fit_csr1)
-        mean_wait_time_csr1_kmf = get_kmf_mean(kmf_fit_csr1)
 
         csr2 = all_complaints.filter(csr_priority="2")
         kmf_fit_csr2 = get_kmf_fit(csr2)   
         median_wait_time_csr2_kmf = get_kmf_median(kmf_fit_csr2)
-        mean_wait_time_csr2_kmf = get_kmf_mean(kmf_fit_csr2)
 
         csr3 = all_complaints.filter(csr_priority="3")
         kmf_fit_csr3 = get_kmf_fit(csr3)
         median_wait_time_csr3_kmf = get_kmf_median(kmf_fit_csr3)
-        mean_wait_time_csr3_kmf = get_kmf_mean(kmf_fit_csr3)
-
-        # Repeat the process, dividing complaints by year
-        complaints_2011 = Complaint.objects.filter(date_received__year=2011)
-        complaints_2012 = Complaint.objects.filter(date_received__year=2012)
-        complaints_2013 = Complaint.objects.filter(date_received__year=2013)
-        complaints_2014 = Complaint.objects.filter(date_received__year=2014)
-
-        complaints_2011_kmf_fit = get_kmf_fit(complaints_2011)
-        complaints_2012_kmf_fit = get_kmf_fit(complaints_2012)
-        complaints_2013_kmf_fit = get_kmf_fit(complaints_2013)
-        complaints_2014_kmf_fit = get_kmf_fit(complaints_2014)
-
-        complaints_2011_median_wait_time = get_kmf_median(complaints_2011_kmf_fit)
-        complaints_2012_median_wait_time = get_kmf_median(complaints_2012_kmf_fit)
-        complaints_2013_median_wait_time = get_kmf_median(complaints_2013_kmf_fit)
-        complaints_2014_median_wait_time = get_kmf_median(complaints_2014_kmf_fit)
-
-        # and again, for the East side
-        eastside_complaints_2011 = complaints_2011.filter(area_planning_commission="East Los Angeles")
-        eastside_complaints_2012 = complaints_2012.filter(area_planning_commission="East Los Angeles")
-        eastside_complaints_2013 = complaints_2013.filter(area_planning_commission="East Los Angeles")
-        eastside_complaints_2014 = complaints_2014.filter(area_planning_commission="East Los Angeles")
-
-        eastside_complaints_2011_kmf_fit = get_kmf_fit(eastside_complaints_2011)
-        eastside_complaints_2012_kmf_fit = get_kmf_fit(eastside_complaints_2012)
-        eastside_complaints_2013_kmf_fit = get_kmf_fit(eastside_complaints_2013)
-        eastside_complaints_2014_kmf_fit = get_kmf_fit(eastside_complaints_2014)
-
-        eastside_complaints_2011_median_wait_time = get_kmf_median(eastside_complaints_2011_kmf_fit)
-        eastside_complaints_2012_median_wait_time = get_kmf_median(eastside_complaints_2012_kmf_fit)
-        eastside_complaints_2013_median_wait_time = get_kmf_median(eastside_complaints_2013_kmf_fit)
-        eastside_complaints_2014_median_wait_time = get_kmf_median(eastside_complaints_2014_kmf_fit)
-
-        csr_1_complaints_2013 = complaints_2013.filter(csr_priority="1")
-        csr_1_complaints_2013_kmf = get_kmf_fit(csr_1_complaints_2013)
-        csr_1_complaints_2013_median_wait = get_kmf_median(csr_1_complaints_2013_kmf)
 
         region_names = ['Central','East Los Angeles','Harbor','North Valley','South Los Angeles','South Valley','West Los Angeles']
         regions = {}
@@ -203,15 +163,6 @@ class ComplaintAnalysis(TemplateView):
             # not just those older than a year
             regions[region]['avg_days_to_resolve'] = Complaint.objects.filter(area_planning_commission=region,is_closed=True, days_since_complaint__gte=0)\
                 .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
-            regions[region]['avg_days_csr1'] = Complaint.objects\
-                .filter(area_planning_commission=region,is_closed=True, csr_priority="1", days_since_complaint__gte=0)\
-                .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
-            regions[region]['avg_days_csr2'] = Complaint.objects\
-                .filter(area_planning_commission=region,is_closed=True, csr_priority="2", days_since_complaint__gte=0)\
-                .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
-            regions[region]['avg_days_csr3'] = Complaint.objects\
-                .filter(area_planning_commission=region,is_closed=True, csr_priority="3", days_since_complaint__gte=0)\
-                .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
             regions[region]['avg_complaints_per_year'] = get_avg_complaints_filed_per_year(region)
 
             region_csr1 = qs.filter(csr_priority="1")
@@ -227,11 +178,6 @@ class ComplaintAnalysis(TemplateView):
             regions[region]['median_wait_kmf_csr1'] = get_kmf_median(regional_kmf_fit_csr1)
             regions[region]['median_wait_kmf_csr2'] = get_kmf_median(regional_kmf_fit_csr2)
             regions[region]['median_wait_kmf_csr3'] = get_kmf_median(regional_kmf_fit_csr3)
-
-            regions[region]['mean_wait_kmf'] = get_kmf_mean(regional_kmf_fit)
-            regions[region]['mean_wait_kmf_csr1'] = get_kmf_mean(regional_kmf_fit_csr1)
-            regions[region]['mean_wait_kmf_csr2'] = get_kmf_mean(regional_kmf_fit_csr2)
-            regions[region]['mean_wait_kmf_csr3'] = get_kmf_mean(regional_kmf_fit_csr3)
 
             regions[region]['per_gt_30_days'] = calculate.percentage(regions[region]['gt_30_days'],regions[region]['total'])
             regions[region]['per_gt_90_days'] = calculate.percentage(regions[region]['gt_90_days'],regions[region]['total'])
