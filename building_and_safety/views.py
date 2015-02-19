@@ -12,6 +12,7 @@ from building_and_safety.models import Complaint
 
 from lifelines import KaplanMeierFitter
 
+
 def get_avg_complaints_filed_per_year(region):
     qs = Complaint.objects.filter(area_planning_commission=region, days_since_complaint__gte=0)\
             .extra(select={'year':"date_part('year',date_received)"}).values('year')\
@@ -67,50 +68,57 @@ def get_kmf_mean(kmf):
     return mean
 
 
-# Create your views here.
 class ComplaintAnalysis(TemplateView):
     template_name = "complaint_analysis.html"
 
     def get_context_data(self, **kwargs):
-        # Let's only grab complaints that are filed more than a year ago
+        # quick means of accessing both open and closed cases
         open_cases = Complaint.objects.filter(is_closed=False)
         closed_cases = Complaint.objects.filter(is_closed=True)
 
         # overall complaints not addressed within a year
-        over_one_year = Complaint.gt_one_year.filter(more_than_one_year=True)
+        over_one_year = Complaint.objects.filter(more_than_one_year=True)
         open_over_one_year = over_one_year.filter(is_closed=False)
         closed_over_one_year = over_one_year.filter(is_closed=True)
 
+        # total counts of cases, all priority levels
         total_count = Complaint.objects.all().count()
         total_csr1 = Complaint.objects.filter(csr_priority="1").count()
         total_csr2 = Complaint.objects.filter(csr_priority="2").count()
         total_csr3 = Complaint.objects.filter(csr_priority="3").count()
 
+        # Counts of open cases, all priority levels
         open_cases_count = open_cases.count()
         open_cases_csr1 = open_cases.filter(csr_priority="1").count()
         open_cases_csr2 = open_cases.filter(csr_priority="2").count()
         open_cases_csr3 = open_cases.filter(csr_priority="3").count()
 
+        # Counts of closed cases, all priority levels
         closed_cases_count = closed_cases.count()
         closed_cases_csr1 = closed_cases.filter(csr_priority="1").count()
         closed_cases_csr2 = closed_cases.filter(csr_priority="2").count()
         closed_cases_csr3 = closed_cases.filter(csr_priority="3").count()
 
+        # Counts of cases that went more than a year until response, all priority levels
         over_one_year_count = over_one_year.count()
         over_one_year_csr1 = over_one_year.filter(csr_priority="1").count()
         over_one_year_csr2 = over_one_year.filter(csr_priority="2").count()
         over_one_year_csr3 = over_one_year.filter(csr_priority="3").count()
 
+        # Counts of cases that have been open fore more than a year, all priority levels
         open_over_one_year_count = open_over_one_year.count()
         open_over_one_year_csr1 = open_over_one_year.filter(csr_priority="1").count()
         open_over_one_year_csr2 = open_over_one_year.filter(csr_priority="2").count()
         open_over_one_year_csr3 = open_over_one_year.filter(csr_priority="3").count()
 
+        # Counts of cases that were closed, but have been open for more than a year, all priority levels.
         closed_over_one_year_count = closed_over_one_year.count()
         closed_over_one_year_csr1 = closed_over_one_year.filter(csr_priority="1").count()
         closed_over_one_year_csr2 = closed_over_one_year.filter(csr_priority="2").count()
         closed_over_one_year_csr3 = closed_over_one_year.filter(csr_priority="3").count()
 
+        # Use Django's Avg() function to provide average response times across complaint priority levels
+        # While quick, this isn't a particularly accurate measure.
         avg_wait_time = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0)\
             .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
         avg_wait_time_csr1 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="1")\
@@ -120,6 +128,9 @@ class ComplaintAnalysis(TemplateView):
         avg_wait_time_csr3 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="3")\
             .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']        
 
+        # A much better means of getting expected wait times is to use a survival analysis function
+        # In this case, we use the Python package lifelines to establish our survival analysis
+        # We repeat this for all complaints, and for each CSR priority levels.
         all_complaints = Complaint.objects.exclude(days_since_complaint__lt=0)
         kmf_fit = get_kmf_fit(all_complaints)
         median_wait_time_kmf = get_kmf_median(kmf_fit)
@@ -139,9 +150,6 @@ class ComplaintAnalysis(TemplateView):
         kmf_fit_csr3 = get_kmf_fit(csr3)
         median_wait_time_csr3_kmf = get_kmf_median(kmf_fit_csr3)
         mean_wait_time_csr3_kmf = get_kmf_mean(kmf_fit_csr3)
-
-        region_names = ['Central','East Los Angeles','Harbor','North Valley','South Los Angeles','South Valley','West Los Angeles']
-        regions = {}
 
         complaints_2011 = Complaint.objects.filter(date_received__year=2011)
         complaints_2012 = Complaint.objects.filter(date_received__year=2012)
@@ -177,6 +185,8 @@ class ComplaintAnalysis(TemplateView):
         csr_1_complaints_2013_kmf = get_kmf_fit(csr_1_complaints_2013)
         csr_1_complaints_2013_median_wait = get_kmf_median(csr_1_complaints_2013_kmf)
 
+        region_names = ['Central','East Los Angeles','Harbor','North Valley','South Los Angeles','South Valley','West Los Angeles']
+        regions = {}
 
         for region in region_names:
             qs = Complaint.objects.filter(area_planning_commission=region, days_since_complaint__gte=0)
@@ -257,6 +267,10 @@ class ComplaintTypeBreakdown(TemplateView):
 
 
 class ComplaintsMap(TemplateView):
+    """
+    A map we use to display open and closed complaints older than one year in a Leaflet-based template.
+    In the HTML template, we pull in both the open_complaints_json and closed_complaints_json views.
+    """
     template_name = 'complaints_map.html'
 
     def get_context_data(self, **kwargs):
@@ -273,12 +287,6 @@ class ComplaintDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ComplaintDetail, self).get_context_data(**kwargs)
         return context
-
-
-class VisitedComplaints(ListView):
-    template_name = "visited_complaints.html"
-    model = Complaint
-    queryset = Complaint.objects.filter(lat_visited=True)
 
 
 class InspectionDistricts(TemplateView):
@@ -433,7 +441,7 @@ def open_complaints_json(request):
     """
     Pull all the open complaints that were open for more than a year.
     """
-    complaints = Complaint.gt_one_year\
+    complaints = Complaint.objects\
         .filter(is_closed=False, more_than_one_year=True).exclude(lat=None, lon=None)
 
     complaints = list(complaints)

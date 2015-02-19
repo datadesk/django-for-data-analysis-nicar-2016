@@ -50,7 +50,7 @@ $ python manage.py load_complaints
 
 This command creates a Complaint record for every row in our two csvs. Note that instead of saving every individual record as it's loaded, we use Django's bulk_create method to create them in batches of 500. This saves a ton of time as we're not hitting the database for row in the CSV.
 
-### What are we looking at here? Exploring the data ###
+## What are we looking at here? Exploring the data ##
 We can use basic Django commands to get a feel the data we're looking at. 
 
 ```bash
@@ -83,3 +83,6 @@ We can use this for more complicated questions too.
 ```
 
 Now we're on to something.
+
+## Views: Documenting and replicating your work ##
+One advantage of using Django is that all of our data manipulation can be stored in the views, and the output displayed in HTML templates. 

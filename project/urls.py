@@ -21,7 +21,6 @@ urlpatterns = patterns('',
     url(r'^api/csv/negative-date-complaints.csv', negative_date_cases_csv, name='negative-date-complaints'),
     url(r'^complaints-map/$', ComplaintsMap.as_view(), name='complaints-map'),
     url(r'^inspection_districts/$', InspectionDistricts.as_view(), name='inspection-districts'),
-    url(r'^visited_complaints/$', VisitedComplaints.as_view(), name='visited-complaints'),
 )
 
 if settings.DEBUG:

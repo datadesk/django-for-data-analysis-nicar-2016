@@ -74,7 +74,6 @@ class Complaint(models.Model):
 
     # Managers
     objects = models.Manager()
-    gt_one_year = managers.OlderThanOneYearManager()
 
     class Meta:
         ordering = ("-date_received",)
