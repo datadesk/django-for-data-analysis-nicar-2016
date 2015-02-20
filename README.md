@@ -73,6 +73,15 @@ Let's use this to answer a couple of basic questions about the data:
 1231
 ```
 
+Whats happening behind the scenes? Django's converting all of our queries to SQL, and executing them on the database. 
+
+We can see these, and it's helpful to see exactly what Django's trying to do when you're having trouble with a query.
+
+```bash
+>>> from django.db import connection
+>>> print connection.queries
+```
+
 We can use this for more complicated questions too. 
 - How are the complaints older than one year distributed throughout the planning commissions? Are some worse than others?
 

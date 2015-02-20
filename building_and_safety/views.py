@@ -144,39 +144,7 @@ class ComplaintAnalysis(TemplateView):
         median_wait_time_csr2_kmf = get_kmf_median(kmf_fit_csr2)
 
         csr3 = all_complaints.filter(csr_priority="3")
-        kmf_fit_csr3 = get_kmf_fit(csr
-class InspectionDistricts(TemplateView):
-    """
-    Render a template showing the number of open and closed cases for each 
-    LADBS inspection district
-    """
-    template_name = "inspection_districts.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(InspectionDistricts, self).get_context_data(**kwargs)
-        districts = Complaint.objects.order_by('ladbs_inspection_district')\
-                    .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district')
-        district_dict = collections.OrderedDict()
-
-        for d in districts:
-            district = {}
-            district_complaints = Complaint.objects.filter(days_since_complaint__gte=0,ladbs_inspection_district=d)
-            district["open"] = district_complaints.filter(is_closed=False).count()
-            district["closed"] = district_complaints.filter(is_closed=True).count() 
-            district["2011"] = district_complaints.filter(date_received__year=2011).count()
-            district["2012"] = district_complaints.filter(date_received__year=2012).count()
-            district["2013"] = district_complaints.filter(date_received__year=2013).count()
-            district["2014"] = district_complaints.filter(date_received__year=2014).count()
-            district["by_due"] = district_complaints.filter(past_due_date=True).count()
-            district["total"] = district["open"] + district["closed"]
-            district["percent_open"] = calculate.percentage(district["open"], district["total"])
-            district["percent_past_due"] = calculate.percentage(district["by_due"], district["total"])
-            district["region"] = ' / '.join(district_complaints.order_by('area_planning_commission')\
-                .values_list('area_planning_commission', flat=True).distinct('area_planning_commission'))
-            district_dict[d] = district
-
-        return locals()
-3)
+        kmf_fit_csr3 = get_kmf_fit(csr3)
         median_wait_time_csr3_kmf = get_kmf_median(kmf_fit_csr3)
 
         region_names = ['Central','East Los Angeles','Harbor','North Valley','South Los Angeles','South Valley','West Los Angeles']
@@ -193,7 +161,7 @@ class InspectionDistricts(TemplateView):
             # regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
             # regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
 
-            # want to grab average time to resolve for all complaints
+            # want to grab average time to resolve for all complaints_map
             # not just those older than a year
             regions[region]['avg_days_to_resolve'] = Complaint.objects.filter(area_planning_commission=region,is_closed=True, days_since_complaint__gte=0)\
                 .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
