@@ -1,6 +1,5 @@
 import json
 import logging
-import managers
 import calculate
 from datetime import datetime
 from django.db import models
@@ -48,10 +47,10 @@ class Complaint(models.Model):
     area_planning_commission = models.CharField(max_length=20, blank=True, null=True)
     case_number_csr = models.CharField(max_length=255, blank=True, null=True)
     response_days = models.CharField(max_length=4, null=True, blank=True, help_text="Since open and closed cases calculate this differently, it's useless.")
-
-    # Add-ons
     lat = models.FloatField(null=True)
     lon = models.FloatField(null=True)
+
+    # Add-ons
     full_address = models.CharField(max_length=255, blank=True, null=True)
     is_closed = models.BooleanField()
     gt_30_days = models.BooleanField(default=False)
