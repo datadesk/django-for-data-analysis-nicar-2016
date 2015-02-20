@@ -28,7 +28,7 @@ class Complaint(models.Model):
     """
     A list of complaints filed to the L.A. Department of Building and Safety
     """
-    csr = models.IntegerField(db_index=True)
+    csr = models.IntegerField(db_index=True, help_text='Customer Service Record number')
     ladbs_inspection_district = models.CharField(max_length=4, blank=True, null=True)
     address_house_number = models.CharField(max_length=10, blank=True, null=True)
     address_house_fraction = models.CharField(max_length=10, blank=True, null=True)
@@ -41,8 +41,8 @@ class Complaint(models.Model):
     date_closed = models.DateField(blank=True, null=True)
     date_due = models.DateField(blank=True, null=True)
     case_flag = models.BooleanField()
-    csr_priority = models.CharField(max_length=1, blank=True, null=True)
-    gis_pin = models.CharField(max_length=20, blank=True, null=True)
+    csr_priority = models.CharField(max_length=1, blank=True, null=True, help_text='Priority level, 1 is the most severe, 3 is a quality of life nuisance.')
+    gis_pin = models.CharField(max_length=20, blank=True, null=True, help_text='Parcel identification number')
     csr_problem_type = models.CharField(max_length=255, blank=True, null=True)
     area_planning_commission = models.CharField(max_length=20, blank=True, null=True)
     case_number_csr = models.CharField(max_length=255, blank=True, null=True)
@@ -53,10 +53,10 @@ class Complaint(models.Model):
     # Add-ons
     full_address = models.CharField(max_length=255, blank=True, null=True)
     is_closed = models.BooleanField()
-    gt_30_days = models.BooleanField(default=False)
-    gt_90_days = models.BooleanField(default=False)
-    gt_180_days = models.BooleanField(default=False)
-    more_than_one_year = models.BooleanField(default=False)
+    gt_30_days = models.BooleanField(default=False, verbose_name="Older than 30 days")
+    gt_90_days = models.BooleanField(default=False, verbose_name="Older than 90 days")
+    gt_180_days = models.BooleanField(default=False, verbose_name="Older than 180 days")
+    more_than_one_year = models.BooleanField(default=False, verbose_name="Older than one year")
     days_since_complaint = models.IntegerField(null=True, verbose_name="Days since complaint was filed",
         help_text="Days since the complaint was filed or days since filed until it was addressed.")
     past_due_date = models.BooleanField(default=False)
@@ -66,9 +66,9 @@ class Complaint(models.Model):
     inspector = models.CharField(max_length=255, blank=True, null=True)
     inspector_phone_number = models.CharField(max_length=255, blank=True, null=True)
     notes = models.TextField(null=True, blank=True)
-    lat_visited = models.BooleanField(default=False, verbose_name="Has been visited by an LAT reporter")
+    lat_visited = models.BooleanField(default=False, verbose_name="Whether a location has been visited by an LAT reporter")
     investigate_further = models.BooleanField(default=False)
-    housing_dept_related = models.BooleanField(default=False)
+    housing_dept_related = models.BooleanField(default=False, verbose_name="Many complaints actually fall under the jurisdiction of the housing department.")
 
     # Managers
     objects = models.Manager()

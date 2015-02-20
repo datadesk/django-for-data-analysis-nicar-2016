@@ -155,12 +155,6 @@ class ComplaintAnalysis(TemplateView):
             regions[region] = {}
             regions[region]['total'] = qs.count()
 
-            # Maybe we can add this on to the analysis page as part of the lesson
-            # regions[region]['gt_30_days'] = qs.filter(gt_30_days=True).count()
-            # regions[region]['gt_90_days'] = qs.filter(gt_90_days=True).count()
-            # regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
-            # regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
-
             # want to grab average time to resolve for all complaints_map
             # not just those older than a year
             regions[region]['avg_days_to_resolve'] = Complaint.objects.filter(area_planning_commission=region,is_closed=True, days_since_complaint__gte=0)\
@@ -181,10 +175,17 @@ class ComplaintAnalysis(TemplateView):
             regions[region]['median_wait_kmf_csr2'] = get_kmf_median(regional_kmf_fit_csr2)
             regions[region]['median_wait_kmf_csr3'] = get_kmf_median(regional_kmf_fit_csr3)
 
-            regions[region]['per_gt_30_days'] = calculate.percentage(regions[region]['gt_30_days'],regions[region]['total'])
-            regions[region]['per_gt_90_days'] = calculate.percentage(regions[region]['gt_90_days'],regions[region]['total'])
-            regions[region]['per_gt_180_days'] = calculate.percentage(regions[region]['gt_180_days'],regions[region]['total'])
-            regions[region]['per_gt_year'] = calculate.percentage(regions[region]['gt_year'],regions[region]['total'])
+            # Maybe we can add this on to the analysis page as part of the lesson
+            # regions[region]['gt_30_days'] = qs.filter(gt_30_days=True).count()
+            # regions[region]['gt_90_days'] = qs.filter(gt_90_days=True).count()
+            # regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
+            # regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
+
+            # use calculate to find percentages
+            # regions[region]['per_gt_30_days'] = calculate.percentage(regions[region]['gt_30_days'],regions[region]['total'])
+            # regions[region]['per_gt_90_days'] = calculate.percentage(regions[region]['gt_90_days'],regions[region]['total'])
+            # regions[region]['per_gt_180_days'] = calculate.percentage(regions[region]['gt_180_days'],regions[region]['total'])
+            # regions[region]['per_gt_year'] = calculate.percentage(regions[region]['gt_year'],regions[region]['total'])
 
         return locals()
 
