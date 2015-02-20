@@ -79,7 +79,8 @@ We can see these, and it's helpful to see exactly what Django's trying to do whe
 
 ```bash
 >>> from django.db import connection
->>> print connection.queries
+>>> print connection.queries[-1]
+{u'time': u'0.028', u'sql': u'SELECT COUNT(*) FROM "building_and_safety_complaint" WHERE "building_and_safety_complaint"."more_than_one_year" = true '}
 ```
 
 We can use this for more complicated questions too. 
