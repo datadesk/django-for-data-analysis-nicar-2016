@@ -134,29 +134,6 @@
             </tbody>            
         </table>    
     
-        <h3>Overall complaint numbers</h3>
-        <table class="table table-striped table-bordered table-condensed">
-            <thead>
-                <tr>
-                    <th>Region</th>
-                    <th class="data">CSR 1</th>
-                    <th class="data">CSR 2</th>
-                    <th class="data">CSR 3</th>
-                    <th class="data">Total</th>
-                </tr>                
-            </thead>
-            <tbody>
-                {% for region, value in regions.items %}
-                <tr>
-                    <td>{{ region }}</td>
-                    <td class="data">{{ value.csr1|intcomma }} <span class="small">({{ value.csr1_percent|floatformat:2 }}%)</span></td>
-                    <td class="data">{{ value.csr2|intcomma }} <span class="small">({{ value.csr2_percent|floatformat:2 }}%)</span></td>
-                    <td class="data">{{ value.csr3|intcomma }} <span class="small">({{ value.csr3_percent|floatformat:2 }}%)</span></td>       
-                    <td class="data">{{ value.total|intcomma }}</td>       
-                </tr>
-                {% endfor%}
-            </tbody>            
-        </table>
     
     </div>
 </div>

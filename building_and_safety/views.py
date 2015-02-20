@@ -144,7 +144,39 @@ class ComplaintAnalysis(TemplateView):
         median_wait_time_csr2_kmf = get_kmf_median(kmf_fit_csr2)
 
         csr3 = all_complaints.filter(csr_priority="3")
-        kmf_fit_csr3 = get_kmf_fit(csr3)
+        kmf_fit_csr3 = get_kmf_fit(csr
+class InspectionDistricts(TemplateView):
+    """
+    Render a template showing the number of open and closed cases for each 
+    LADBS inspection district
+    """
+    template_name = "inspection_districts.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(InspectionDistricts, self).get_context_data(**kwargs)
+        districts = Complaint.objects.order_by('ladbs_inspection_district')\
+                    .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district')
+        district_dict = collections.OrderedDict()
+
+        for d in districts:
+            district = {}
+            district_complaints = Complaint.objects.filter(days_since_complaint__gte=0,ladbs_inspection_district=d)
+            district["open"] = district_complaints.filter(is_closed=False).count()
+            district["closed"] = district_complaints.filter(is_closed=True).count() 
+            district["2011"] = district_complaints.filter(date_received__year=2011).count()
+            district["2012"] = district_complaints.filter(date_received__year=2012).count()
+            district["2013"] = district_complaints.filter(date_received__year=2013).count()
+            district["2014"] = district_complaints.filter(date_received__year=2014).count()
+            district["by_due"] = district_complaints.filter(past_due_date=True).count()
+            district["total"] = district["open"] + district["closed"]
+            district["percent_open"] = calculate.percentage(district["open"], district["total"])
+            district["percent_past_due"] = calculate.percentage(district["by_due"], district["total"])
+            district["region"] = ' / '.join(district_complaints.order_by('area_planning_commission')\
+                .values_list('area_planning_commission', flat=True).distinct('area_planning_commission'))
+            district_dict[d] = district
+
+        return locals()
+3)
         median_wait_time_csr3_kmf = get_kmf_median(kmf_fit_csr3)
 
         region_names = ['Central','East Los Angeles','Harbor','North Valley','South Los Angeles','South Valley','West Los Angeles']
@@ -154,10 +186,12 @@ class ComplaintAnalysis(TemplateView):
             qs = Complaint.objects.filter(area_planning_commission=region, days_since_complaint__gte=0)
             regions[region] = {}
             regions[region]['total'] = qs.count()
-            regions[region]['gt_30_days'] = qs.filter(gt_30_days=True).count()
-            regions[region]['gt_90_days'] = qs.filter(gt_90_days=True).count()
-            regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
-            regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
+
+            # Maybe we can add this on to the analysis page as part of the lesson
+            # regions[region]['gt_30_days'] = qs.filter(gt_30_days=True).count()
+            # regions[region]['gt_90_days'] = qs.filter(gt_90_days=True).count()
+            # regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
+            # regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
 
             # want to grab average time to resolve for all complaints
             # not just those older than a year
@@ -183,14 +217,6 @@ class ComplaintAnalysis(TemplateView):
             regions[region]['per_gt_90_days'] = calculate.percentage(regions[region]['gt_90_days'],regions[region]['total'])
             regions[region]['per_gt_180_days'] = calculate.percentage(regions[region]['gt_180_days'],regions[region]['total'])
             regions[region]['per_gt_year'] = calculate.percentage(regions[region]['gt_year'],regions[region]['total'])
-
-            regions[region]['csr1'] = region_csr1.count()
-            regions[region]['csr2'] = region_csr2.count()
-            regions[region]['csr3'] = region_csr3.count()
-
-            regions[region]['csr1_percent'] = calculate.percentage(region_csr1.count(), regions[region]['total'])
-            regions[region]['csr2_percent'] = calculate.percentage(region_csr2.count(), regions[region]['total'])
-            regions[region]['csr3_percent'] = calculate.percentage(region_csr3.count(), regions[region]['total'])
 
         return locals()
 
@@ -243,145 +269,6 @@ class ComplaintDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ComplaintDetail, self).get_context_data(**kwargs)
         return context
-
-
-class InspectionDistricts(TemplateView):
-    """
-    Render a template showing the number of open and closed cases for each 
-    LADBS inspection district
-    """
-    template_name = "inspection_districts.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(InspectionDistricts, self).get_context_data(**kwargs)
-        districts = Complaint.objects.order_by('ladbs_inspection_district')\
-                    .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district')
-        district_dict = collections.OrderedDict()
-
-        for d in districts:
-            district = {}
-            district_complaints = Complaint.objects.filter(days_since_complaint__gte=0,ladbs_inspection_district=d)
-            district["open"] = district_complaints.filter(is_closed=False).count()
-            district["closed"] = district_complaints.filter(is_closed=True).count() 
-            district["2011"] = district_complaints.filter(date_received__year=2011).count()
-            district["2012"] = district_complaints.filter(date_received__year=2012).count()
-            district["2013"] = district_complaints.filter(date_received__year=2013).count()
-            district["2014"] = district_complaints.filter(date_received__year=2014).count()
-            district["by_due"] = district_complaints.filter(past_due_date=True).count()
-            district["total"] = district["open"] + district["closed"]
-            district["percent_open"] = calculate.percentage(district["open"], district["total"])
-            district["percent_past_due"] = calculate.percentage(district["by_due"], district["total"])
-            district["region"] = ' / '.join(district_complaints.order_by('area_planning_commission')\
-                .values_list('area_planning_commission', flat=True).distinct('area_planning_commission'))
-            district_dict[d] = district
-
-        return locals()
-
-
-class AreaPlanningCommissions(TemplateView):
-    """
-    Render a template showing the number of open and closed cases for each 
-    Area Planning Comission
-    """
-    template_name = "area_planning_commissions.html"
-
-    def get_context_data(self, **kwargs):
-        regions = ["East Los Angeles","Central","South Los Angeles","Harbor","North Valley","South Valley","West Los Angeles"]
-        apc_dict = collections.OrderedDict()
-
-        all_complaints = Complaint.objects.filter(days_since_complaint__gte=0)
-        all_complaints_2011 = all_complaints.filter(date_received__year=2011)
-        all_complaints_2012 = all_complaints.filter(date_received__year=2012)
-        all_complaints_2013 = all_complaints.filter(date_received__year=2013)
-        all_complaints_2014 = all_complaints.filter(date_received__year=2014)
-
-        all_complaints_total = all_complaints.count()
-        all_complaints_past_due = all_complaints.filter(past_due_date=True).count()
-        all_complaints_percent_past_due = calculate.percentage(all_complaints_past_due, all_complaints_total)
-        all_complaints_districts = all_complaints.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-        all_complaints_per_inspector = all_complaints_total / all_complaints_districts
-
-        all_complaints_2011_total = all_complaints_2011.count()
-        all_complaints_2011_past_due = all_complaints_2011.filter(past_due_date=True).count()
-        all_complaints_2011_percent_past_due = calculate.percentage(all_complaints_2011_past_due, all_complaints_2011_total)
-        all_complaints_2011_districts = all_complaints_2011.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-        all_complaints_2011_per_inspector = all_complaints_2011_total / all_complaints_2011_districts
-
-        all_complaints_2012_total = all_complaints_2012.count()
-        all_complaints_2012_past_due = all_complaints_2012.filter(past_due_date=True).count()
-        all_complaints_2012_percent_past_due = calculate.percentage(all_complaints_2012_past_due, all_complaints_2012_total)
-        all_complaints_2012_districts = all_complaints_2012.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-        all_complaints_2012_per_inspector = all_complaints_2012_total / all_complaints_2012_districts
-
-        all_complaints_2013_total = all_complaints_2013.count()
-        all_complaints_2013_past_due = all_complaints_2013.filter(past_due_date=True).count()
-        all_complaints_2013_percent_past_due = calculate.percentage(all_complaints_2013_past_due, all_complaints_2013_total)
-        all_complaints_2013_districts = all_complaints_2013.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-        all_complaints_2013_per_inspector = all_complaints_2013_total / all_complaints_2013_districts
-
-        all_complaints_2014_total = all_complaints_2014.count()
-        all_complaints_2014_past_due = all_complaints_2014.filter(past_due_date=True).count()
-        all_complaints_2014_percent_past_due = calculate.percentage(all_complaints_2014_past_due, all_complaints_2014_total)
-        all_complaints_2014_districts = all_complaints_2014.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-        all_complaints_2014_per_inspector = all_complaints_2014_total / all_complaints_2014_districts
-
-        for r in regions:
-            region = {}
-            region_complaints = Complaint.objects.filter(days_since_complaint__gte=0,area_planning_commission=r)
-            region_complaints_2011 = region_complaints.filter(date_received__year=2011)
-            region_complaints_2012 = region_complaints.filter(date_received__year=2012)
-            region_complaints_2013 = region_complaints.filter(date_received__year=2013)
-            region_complaints_2014 = region_complaints.filter(date_received__year=2014)
-
-            districts_count = region_complaints.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-            districts_count_2011 = region_complaints_2011.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-            districts_count_2012 = region_complaints_2012.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-            districts_count_2013 = region_complaints_2013.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-            districts_count_2014 = region_complaints_2014.order_by('ladbs_inspection_district')\
-                .values_list('ladbs_inspection_district', flat=True).distinct('ladbs_inspection_district').count()
-
-            region["total_complaints"] = region_complaints.count()
-            region["past_due"] = region_complaints.filter(past_due_date=True).count()
-            region["percent_past_due"] = calculate.percentage(region["past_due"], region["total_complaints"])
-            region["districts"] = districts_count
-            region["complaints_per_inspector"] = region["total_complaints"] / districts_count
-
-            region["2011_total"] = region_complaints_2011.count()
-            region["2011_past_due"] = region_complaints_2011.filter(past_due_date=True).count()
-            region["2011_percent_past_due"] = calculate.percentage(region["2011_past_due"], region["2011_total"])
-            region["2011_districts"] = districts_count_2011
-            region["2011_complaints_per_inspector"] = region["2011_total"] / districts_count_2011
-
-            region["2012_total"] = region_complaints_2012.count()
-            region["2012_past_due"] = region_complaints_2012.filter(past_due_date=True).count()
-            region["2012_percent_past_due"] = calculate.percentage(region["2012_past_due"], region["2012_total"])
-            region["2012_districts"] = districts_count_2012
-            region["2012_complaints_per_inspector"] = region["2012_total"] / districts_count_2012
-
-            region["2013_total"] = region_complaints_2013.count()
-            region["2013_past_due"] = region_complaints_2013.filter(past_due_date=True).count()
-            region["2013_percent_past_due"] = calculate.percentage(region["2013_past_due"], region["2013_total"])
-            region["2013_districts"] = districts_count_2013
-            region["2013_complaints_per_inspector"] = region["2013_total"] / districts_count_2013
-
-            region["2014_total"] = region_complaints_2014.count()
-            region["2014_past_due"] = region_complaints_2014.filter(past_due_date=True).count()
-            region["2014_percent_past_due"] = calculate.percentage(region["2014_past_due"], region["2014_total"])
-            region["2014_districts"] = districts_count_2014
-            region["2014_complaints_per_inspector"] = region["2014_total"] / districts_count_2014
-
-            apc_dict[r] = region 
-
-        return locals()
 
 
 def negative_date_cases_csv(request):
