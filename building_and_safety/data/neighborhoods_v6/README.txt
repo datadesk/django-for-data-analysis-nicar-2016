@@ -1,1 +1,0 @@
-The sixth version of neighborhoods defined by the Los Angeles Times. Covers Los Angeles and Orange counties.
