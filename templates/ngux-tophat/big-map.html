@@ -22,16 +22,6 @@
             <hr />
         </span>
         <a id="tophat-logo" href="http://www.latimes.com/"></a>
-        <div class="tophat-links">
-            {% include "ngux-tophat/nav/links.html" %}
-            <div class="tophat-sharebuttons visible-desktop">
-                <div class="sharebuttons">
-                    <i class="LATFacebook" data-socialshare-type="facebook"></i>
-                    <i class="LATTwitter" data-socialshare-type="twitter"></i>
-                    <i class="LATEmail" data-socialshare-type="email"></i>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 {% endblock %}
@@ -116,49 +106,6 @@
 
             {% block big-map-canvas %}
             <div id="big-map-canvas"></div>
-            {% endblock %}
-
-            {% block cube-ad %}
-            <div id="big-map-cube" class="visible-desktop">
-                {% include "ngux-tophat/ads/cube.html" %}
-            </div>
-            {% endblock %}
-
-            {% block about-latimes %}
-            <div class="modal" id="tos-modal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><i class="LATClose01"></i></button>
-                            <h1>About latimes.com</h1>
-                        </div>
-
-                        <div class="modal-body">
-
-                            <p>The Los Angeles Times is the largest metropolitan daily newspaper in the country, 
-                            with a daily readership of 1.4 million and 2.5 million on Sunday, more than 22 million unique 
-                            latimes.com visitors monthly and a combined print and online local weekly audience of 4.1 million. 
-                            The Pulitzer Prize-winning Times has been covering Southern California for more than 130 years.</p>
-
-                            <div class="tos">
-                                <a href="http://www.latimes.com/lat-terms,0,7374802.story">Terms of Service</a> | 
-                                <a href="http://privacy.tribune.com">Privacy Policy</a> | 
-                                <a href="http://www.latimes.com/lat-about-our-ads,0,3875412.htmlstory">About Our Ads</a> | 
-                                <a href="http://www.latimes.com/services/site/la-reprint-request-splash,0,6731163.htmlstory">© <script type="text/javascript">document.write(new Date().getFullYear())</script></a> | 
-                                <a href="http://www.latimes.com/about/">About This Site</a>
-                            </div>
-                        </div> 
-
-                    </div>
-                </div>
-            </div>
-            <script type="text/javascript">
-                $(document).ready(function(){
-                    var href = "<a style='cursor:pointer;' onclick=\"$('#tos-modal').modal('toggle');\">About latimes.com</a> | "
-                    $(".leaflet-control-attribution").prepend(href);
-                });
-            </script>
             {% endblock %}
 
         </div>

@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" {% block extra-html %}{% endblock %}>
 <head>
-    {% block chartbeat-top %}<script type='text/javascript'>var _sf_startpt=(new Date()).getTime()</script>{% endblock %}
-
     <!-- METADATA -->
     <title>{% block title %}Los Angeles Times{% endblock %}</title>
     {% block meta %}
         <meta charset="utf-8" />
-        <meta name="description" content="{% block description %}{% endblock %}" />
-        <meta name="keywords" content="{% block keywords %}data desk, los angeles times, latimes, l.a. times{% endblock %}" />
         {% block viewport %}<meta name="viewport" content="width=device-width, initial-scale=1.0">{% endblock %}
         <link rel="shortcut icon" type="image/x-icon" href="http://d1qqc1e9kvmdh8.cloudfront.net/img/favicon.ico">
-        <link rel="publisher" href="https://plus.google.com/u/0/112727226361732924638" />
-        <meta name="google-site-verification" content="a9pAUAoFTyj7Nut3H5OiQ-fUyyqdwdVT7VcFGICrpTo" />
         {% block extra-meta %}{% endblock %}
     {% endblock %}
 
@@ -35,18 +29,14 @@
     {% endblock %}
     {% block jquery %}<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>{% endblock %}
     {% block bootstrap %}<script type="text/javascript" src="http://d1qqc1e9kvmdh8.cloudfront.net/bootstrap/2.3.2/js/bootstrap.min.js"></script>{% endblock %}
-    {% block underscore %}<script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/underscore-1.5.2-min.js" type="text/javascript"></script>{% endblock %} 
-    {% block gigya %}<script type="text/javascript" src="http://cdn.gigya.com/js/socialize.js?apiKey=3__DtSKSbXYhP8sIktzK9JpdlsamQDyMMY2b-8HnY2yXO2rNPXmUqNbpeL2SWdyKfZ"></script>{% endblock %}
-    {% block tophat-js %}<script type="text/javascript" src="http://d1qqc1e9kvmdh8.cloudfront.net/js/ngux-tophat-0.2.2.min.js"></script>{% endblock %}
-    <!--[if lte IE 7]><script type="text/javascript" src="http://d1qqc1e9kvmdh8.cloudfront.net/js/icons-ie7.js"></script><![endif]-->
-    {% block ad-js %}<script type="text/javascript" src="http://d1qqc1e9kvmdh8.cloudfront.net/js/ngux-ads-2.4.1.min.js"></script>{% endblock %}
+    {% block underscore %}<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.1/underscore-min.js" type="text/javascript"></script>{% endblock %} 
     {% endblock %}
 
     {% block extra-js %}{% endblock %}
     {% block extra-rss %}{% endblock %}
     {% block extra-head %}{% endblock %}
 </head>
-<body {% block extra-body %}data-ad-path="4011/trb.latimes{% block ad-path %}/news/datadesk{% endblock %}" data-ad-ptype="{% block ad-ptype %}s{% endblock %}" data-ad-iframe-url="{% block ad-iframe %}/static/ngux-tophat-ad-iframe.html{% endblock %}"{% endblock %} >
+<body>
     <!-- NAV -->
     {% block nav %}
     <nav title="Navigation">
@@ -56,69 +46,16 @@
 
     {% block container %}
     <!-- CONTENT GOES HERE -->
-    <div class="container" id="container">
-        {% block banner-ad %}
-            {% include "ngux-tophat/ads/banner.html" %}
-        {% endblock %}
-        
+    <div class="container" id="container">        
         {% block content %}
         {% endblock %}
     </div>
-    {% endblock %}
-
-    {% block stats %}
-        <!-- Google Analytics code -->
-        <script type="text/javascript">
-              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-              ga('create', '{% block google-analytics-id %}UA-22575524-1{% endblock %}', 'latimes.com');
-              ga('send', 'pageview');
-        </script>
-
-        {% block omniture %}
-            <script type="text/javascript">
-                ((((window.trb || (window.trb = {})).data || (trb.data = {})).metrics || (trb.data.metrics = {})).thirdparty = {
-                    // Page naming convention:
-                    //  <site-slug>:<app-slug>:<path>:<datadesk-slug>-<page-slug>:<content-type>.
-                    // Example: 
-                    //  lat:projects.latimes.com:local:data-pat-tillman:graphic.
-                    //  (Don't miss the period at the end.)
-                    pageName: 'lat:{% block omniture-pageName %}{% endblock %}.',
-                    channel: '{% block omniture-channel %}local{% endblock %}', // Path
-                    server: '{% block omniture-server %}www.latimes.com{% endblock %}', // Full domain
-                    hier1: 'latimes:{% block omniture-full-tribune-path %}local{% endblock %}', // Path (with latimes prefix)
-                    hier2: '{% block omniture-full-latimes-path %}local{% endblock %}', // Path (again)
-                    prop2: '{% block omniture-base-latimes-path %}local{% endblock %}', // Path (again!)
-                    prop38: '{% block omniture-contenttype %}graphic{% endblock %}', // Content type
-                    eVar1: {% block omniture-url %}window.location.href{% endblock %}, // This URL
-                    eVar2: {% block omniture-referring-url %}document.referrer{% endblock %}, // The referring URL
-                    prop57: 'D=c38',
-                    eVar20: 'latimes',
-                    eVar21: 'D=c38',
-                    eVar34: 'D=ch',
-                    eVar35: 'D=gn'
-                });
-            </script>
-            <script src="http://www.latimes.com/thirdpartyservice?disablenav=true"></script>
-        {% endblock %}
-
     {% endblock %}
 
     <footer>
     {% block footer %}
         <div id="footer-container">
             <div id="footer">
-                <a class="sub-logo" href="http://www.latimes.com/"></a>
-                <div id="tos">
-                    <a href="http://www.latimes.com/lat-terms,0,7374802.story">Terms of Service</a> | 
-                    <a href="http://privacy.tribune.com">Privacy Policy</a> | 
-                    <a href="http://www.latimes.com/lat-about-our-ads,0,3875412.htmlstory">About Our Ads</a> | 
-                    <a href="http://www.latimes.com/services/site/la-reprint-request-splash,0,6731163.htmlstory">&copy; <script type="text/javascript">document.write(new Date().getFullYear())</script></a> | 
-                    <a href="http://www.latimes.com/about/">About This Site</a>
-                </div>
             </div>
         </div>
     {% endblock %}
@@ -126,31 +63,6 @@
 
 {% block body-bottom %}{% endblock %}
 
-{% block chartbeat-bottom %}
-<script type="text/javascript">
-var _sf_async_config={};
-    /** CONFIGURATION START **/
-    _sf_async_config.uid = {% block chartbeat-uid %}3908{% endblock %};
-    _sf_async_config.domain = '{% block chartbeat-domain %}www.latimes.com{% endblock %}';
-    _sf_async_config.useCanonical = true;
-    _sf_async_config.sections = '{% block chartbeat-sections %}{% endblock %}';
-    _sf_async_config.authors = '{% block chartbeat-authors %}Data Desk{% endblock %}';
-    /** CONFIGURATION END **/
-    (function(){
-      function loadChartbeat() {
-        window._sf_endpt=(new Date()).getTime();
-        var e = document.createElement('script');
-        e.setAttribute('language', 'javascript');
-        e.setAttribute('type', 'text/javascript');
-        e.setAttribute('src', '//static.chartbeat.com/js/chartbeat.js');
-        document.body.appendChild(e);
-      }
-      var oldonload = window.onload;
-      window.onload = (typeof window.onload != 'function') ?
-         loadChartbeat : function() { oldonload(); loadChartbeat(); };
-    })();
-</script>
-{% endblock %}
 </body>
     <!--Good with data?-->
     <!--Tired of grinding on the same old apps?-->

@@ -41,34 +41,12 @@
     <script src="http://d1qqc1e9kvmdh8.cloudfront.net/js/leaflet-0.7.2/leaflet.js"></script>
 {% endblock %}
 
-{% block nav %}
-    <div id="tophat-container">
-        <div id="tophat" class="tophat-small">
-            <span id="tophat-dropdown" class="tophat-dropdown-small">
-                <hr />
-                <hr />
-                <hr />
-            </span>
-            <a id="tophat-logo" href="http://www.latimes.com/"></a>
-            <div id="tophat-title" class="hidden-desktop">          
-                {{object.headline|safe}}
-            </div>
-            <div class="tophat-links">
-                {% include "ngux-tophat/nav/links.html" %}
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
-{% block banner-ad %}{% endblock %}
-
 {% block content %}
 <div class="row-fluid map-holder" id="map-holder">
 
     <button id="show-intro" class="porteno-btn btn btn-primary btn-sm" style="display:none;">Show intro</button>
 
     <div class="title-holder visible-desktop">
-        {% include 'ngux-tophat/share-buttons.html' %}
         <h1>Building and safety complaints open one year after filing</h1>
         <p class="byline">
             By <span class="author">Armand Emamdjomeh</span>
