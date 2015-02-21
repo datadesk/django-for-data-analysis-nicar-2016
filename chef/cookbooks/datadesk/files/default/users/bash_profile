@@ -1,8 +1,0 @@
-. .bashrc
-
-alias l='ls -alFh'
-alias c='clear'
-
-export PIP_DOWNLOAD_CACHE=/tmp/pip
-export DJANGO_SETTINGS_MODULE=project.settings
-export EDITOR=vim

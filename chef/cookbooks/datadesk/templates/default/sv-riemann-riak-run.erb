@@ -1,7 +1,0 @@
-#!/bin/sh
-
-exec 2>&1
-ulimit -n 4096
-ulimit -a
-
-exec chpst -u nobody riemann-riak --host <%= @options[:host][:fqdn] %> --data-dir /srv/riak

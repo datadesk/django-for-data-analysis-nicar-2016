@@ -1,8 +1,0 @@
-<VirtualHost *:<%= @apache_port %>>
-    ServerName <%= @server_name %>
-    ServerAlias <%= @server_name %>
-    WSGIScriptAlias / /apps/<%= @app_name %>/repo/apache/django.wsgi
-    WSGIDaemonProcess <%= @app_name %> user=<%= @apps_user %> python-path=/apps/<%= @app_name %>/repo:/apps/<%= @app_name %>/lib/python2.7/site-packages display-name=%{GROUP} processes=2 threads=15
-    WSGIProcessGroup <%= @app_name %>
-    WSGIApplicationGroup %{GLOBAL}
-</VirtualHost>
