@@ -7,6 +7,11 @@ In addition to making front-facing web apps, Django can also be used internally 
 
 To do this, we'll use a publicly available dataset from the [City of L.A.'s data portal](https://data.lacity.org/) on [response times to complaints](https://data.lacity.org/browse?q=building%20and%20safety%20customer%20service%20request&sortBy=relevance&utf8=%E2%9C%93) filed to the Department of Building and Safety, as well as our [Mapping L.A. neighborhoods](http://boundaries.latimes.com/sets/). 
 
+We'll learn how to:
+- Load data from a CSV into Django models,  
+- Create queries and views to help us analyze the data,
+- Use these views to create tables and vizualizations that we can use for publication.  
+
 ## Setup ##
 
 ### Installation ###

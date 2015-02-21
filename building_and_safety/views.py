@@ -179,7 +179,7 @@ class ComplaintAnalysis(TemplateView):
             # regions[region]['gt_30_days'] = qs.filter(gt_30_days=True).count()
             # regions[region]['gt_90_days'] = qs.filter(gt_90_days=True).count()
             # regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
-            # regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
+            regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
 
             # use calculate to find percentages
             # regions[region]['per_gt_30_days'] = calculate.percentage(regions[region]['gt_30_days'],regions[region]['total'])
