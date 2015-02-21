@@ -121,3 +121,33 @@ Quit the server with CONTROL-C.
 
 Open up the views.py file in your text editor, and look at the `class ComplaintAnalysis(TemplateView)`
 
+
+
+## Visualizing the data: Let's make a map ##
+Take a look at the view `ComplaintsMap`.
+
+What's happening here? It doesn't look like anything's in the view, right? Let's take a look at the template. Open up `templates/complaints_map.html`
+
+This template calls two other views through a `$.getJSON()` call - `open_complaints_json` and `closed_complaints_json`.
+
+These two views are essentially the same, pulling in all geocoded complaints that waited more than a year for a response, except one pulls in closed and one pulls in open complaints. 
+
+Both use a method on the Complaint model to export relevant fields of the model to a GeoJSON object. 
+
+```
+features = [complaint.as_geojson_dict() for complaint in complaints]
+```
+
+```
+objects = {
+    'type': "FeatureCollection",
+    'features': features
+}
+```
+
+
+## What can we do from here? ##
+
+
+
+
