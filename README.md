@@ -319,6 +319,9 @@ Like anything, there are a few disadvantages to using Django as a reporting fram
   - There's no doubt that setting up a Django project takes a lot of time to get started and running. Models and loader scripts take planning, and we're all on a constant time crunch. And not every project merits this, sometimes you can get the results you need with a few quick pivot tables or R scripts. But the saved time in the analysis and publication phases make it well worth the input for me. 
 - With huge databases (and a slow computer) the queries can take forever
   - This can be a problem with large datasets, but there are a few solutions. Caching is one. Django has a number of [built-in caching options](https://docs.djangoproject.com/en/1.7/topics/cache/) to help out with this. Another possible option is to bake out any visualizations that will be used for publication. [Django-bakery](https://github.com/datadesk/django-bakery) can help with this. 
+- Check, check, check your data
+  - Because it's so easy to swap things around, or filter a queryset, it's easy to think you're looking at one thing, but you're actually looking at another. What if we had filtered for complaints over 90 days, when we thought we were looking at 180? 
+  - Fortunately, since everything is written down and traceable in the views, it's fairly easy to spot and correct possible errors before publication. 
 
 
 ## What can we do from here? ##
