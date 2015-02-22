@@ -7,3 +7,5 @@ DEBUG|17/Feb/2015 15:27:34|load_complaints|21202|140520595380032|Loading complai
 DEBUG|17/Feb/2015 15:39:31|load_complaints|29959|139653649094464|Loading complaints to database.
 DEBUG|17/Feb/2015 15:41:37|load_complaints|31525|140286174476096|Loading complaints to database.
 DEBUG|17/Feb/2015 15:42:55|load_complaints|32534|140456510490432|Loading complaints to database.
+DEBUG|22/Feb/2015 13:18:55|load_complaints|20522|140735263539984|flushing complaints
+DEBUG|22/Feb/2015 13:19:23|load_complaints|20522|140735263539984|Loading complaints to database.

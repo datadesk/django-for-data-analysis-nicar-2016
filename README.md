@@ -124,7 +124,7 @@ Open up the views.py file in your text editor, and look at the `class ComplaintA
 
 
 ## Visualizing the data: Let's make a map ##
-Take a look at the view [`ComplaintsMap`](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L217).
+Take a look at the view `ComplaintsMap`.
 
 What's happening here? It doesn't look like anything's in the view, right? Let's take a look at the template. Open up `templates/complaints_map.html`
 
@@ -177,11 +177,37 @@ response = json.dumps(objects)
 return HttpResponse(response, content_type='text/json')
 ```
 
-Load the URL [http://localhost:8000/complaints](http://localhost:8000/complaints)
+Load the URL [http://localhost:8000/complaints](http://localhost:8000/complaints). It should load a map in your browser. 
 
+What is this map loading in? What's it showing us? How does this demonstrate the flexibility of using a Django backend instead of exporting our results from SQL or another database format? 
+
+Take a look at the views for `open_complaints_json` and `closed_complaints_json` - we're filtering for all complaints older than a year, and excluding any without geocoded lat/lon points. 
+
+Say, later in the editing process, we want to export only complaints older than 180 days, instead of a year. In Django, this is easy:
+
+```
+complaints = Complaint.objects\
+        .filter(is_closed=True, gt_180_days=True).exclude(lat=None, lon=None)
+```
+
+Go ahead and change that in the `open_complaints_json` and `closed_complaints_json` views now, and reload the map. You'll see the changes instantly. Instead of having to go back to the database, re-enter our SQL, and re-export our files, Django takes care of all of that for you. 
+
+Later, if we decide not to include the closed complaints, for example, we can simply remove that call in the [template](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/templates/complaints_map.html#L207). 
+
+
+## Pitfalls of Django ##
+Like anything, there are a few disadvantages to using Django as a reporting framework.
+
+- It's a lot of up-front work. 
+  - There's no doubt that setting up a Django project takes a lot of time to get started and running. Models and loader scripts take planning, and we're all on a constant time crunch. And not every project merits this, sometimes you can get the results you need with a few quick pivot tables or R scripts. But the saved time in the analysis and publication phases make it well worth the input for me. 
+- With huge databases (and a slow computer) the queries can take forever
+  - This can be a problem with large datasets, but there are a few solutions. Caching is one. Django has a number of [built-in caching options](https://docs.djangoproject.com/en/1.7/topics/cache/) to help out with this. Another possible option is to bake out any visualizations that will be used for publication. [Django-bakery](https://github.com/datadesk/django-bakery) can help with this. 
 
 
 ## What can we do from here? ##
+We skipped it for this lesson, but in the original story, we used [GeoDjango](https://docs.djangoproject.com/en/1.7/ref/contrib/gis/) and a GIS-enabled database to allow for geospatial queries on the data - This allowed us to relate complaints to [L.A. Times Neighborhoods](http://boundaries.latimes.com/set/la-county-neighborhoods-current/) shapes, and to census tracts and LADBS inspection districts. 
+
+Using GeoDjango, you can also set a buffer around a point, which is what LAT Alum Ken Schwencke did for [this piece](http://homicide.latimes.com/post/westmont-homicides/) analyzing homicides in the unincorporated neighborhood of Westmont and along a two-mile stretch of Vermont Ave. called "Death Alley."
 
 
 
