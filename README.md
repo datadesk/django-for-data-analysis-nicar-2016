@@ -292,6 +292,8 @@ response = json.dumps(objects)
 return HttpResponse(response, content_type='text/json')
 ```
 
+Try this out - go to [http://localhost:8000/api/complaints.json](http://localhost:8000/api/complaints.json). It loads a GeoJSON object! All those rows in the database are automatically generated in GeoJSON format. 
+
 Load the URL [http://localhost:8000/complaints](http://localhost:8000/complaints). It should load a map in your browser. 
 
 What is this map loading in? What's it showing us? How does this demonstrate the flexibility of using a Django backend instead of exporting our results from SQL or another database format? 
