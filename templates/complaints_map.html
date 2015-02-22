@@ -218,6 +218,7 @@
 
             map.addLayer(complaintsLayer);
             map.addLayer(closedComplaintsLayer);
+            L.control.layers(null, complaintLayers, {collapsed: false, position:'bottomright'}).addTo(map);
         });
 
     });
@@ -239,7 +240,6 @@
     });
 
     new L.Control.Zoom({ position: 'topright' }).addTo(map);
-    // L.control.layers(null, complaintLayers, {collapsed: false, position:'bottomright'}).addTo(map);
 
     map.on('zoomend', function(){
         var currentZoom = map.getZoom(),

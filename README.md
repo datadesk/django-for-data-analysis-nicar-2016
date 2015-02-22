@@ -119,7 +119,12 @@ Starting development server at http://0.0.0.0:8000/
 Quit the server with CONTROL-C.
 ```
 
-Open up the views.py file in your text editor, and look at the `class ComplaintAnalysis(TemplateView)`
+Open up the views.py file in your text editor, and look at the [ComplaintAnalysis](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L71) view.
+
+There's a lot going on here. We've already seen that, for some reason, there were more complaints open after a year in East L.A. But is this because they receive more complaints in general? Are some types of complaints addressed more quickly than others?
+
+To find the median time to address a complaint, we used a fancy statistical method called a survival analaysis, employing a Python library called [Lifelines](http://lifelines.readthedocs.org/en/latest/index.html). This takes into account the closure rate for complaints that are still open and haven't been closed yet. 
+
 
 
 
