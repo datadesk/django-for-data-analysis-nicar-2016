@@ -124,7 +124,7 @@ Open up the views.py file in your text editor, and look at the `class ComplaintA
 
 
 ## Visualizing the data: Let's make a map ##
-Take a look at the view `ComplaintsMap`.
+Take a look at the view [`ComplaintsMap`](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L217).
 
 What's happening here? It doesn't look like anything's in the view, right? Let's take a look at the template. Open up `templates/complaints_map.html`
 
@@ -138,12 +138,47 @@ Both use a method on the Complaint model to export relevant fields of the model 
 features = [complaint.as_geojson_dict() for complaint in complaints]
 ```
 
+This refers back the `as_geojson_dict()` method on the Complaint model. This method takes properties from the model and returns them in a geojson dict format:
+
+```
+def as_geojson_dict(self):
+  """
+  Method to return each feature in the DB as a geojson object.
+  """
+  as_dict = {
+      "type": "Feature",
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              float(self.lon),
+              float(self.lat)
+          ]
+      },
+      "properties": {
+          "address": self.full_address,
+          "csr": self.csr,
+          "date": dateformat.format(self.date_received, 'F j, Y'),
+          "closed": self.get_closed_date(),
+          "type": self.csr_problem_type,
+          "priority": self.csr_priority
+      }
+  }
+  return as_dict
+```
+
+We get this dict for each item in the queryset, and then form them into a geojson object, that is returned when we request the view. 
+
 ```
 objects = {
     'type': "FeatureCollection",
     'features': features
 }
+response = json.dumps(objects)
+return HttpResponse(response, content_type='text/json')
 ```
+
+Load the URL [http://localhost:8000/complaints](http://localhost:8000/complaints)
+
 
 
 ## What can we do from here? ##
