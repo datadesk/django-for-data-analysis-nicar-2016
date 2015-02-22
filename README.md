@@ -78,7 +78,7 @@ Let's use this to answer a couple of basic questions about the data:
 1231
 ```
 
-Whats happening behind the scenes? Django's converting all of our queries to SQL, and executing them on the database. 
+Whats happening behind the scenes? Django's converting all of our queries to SQL, and executing them on the database. When we write code like `complaints = Complaint.objects.all()` Django is creating a [queryset](https://docs.djangoproject.com/en/1.7/ref/models/querysets/), an easy way to filter and slice our data without hitting the database. The database is only queried once we call something that evaluates the queryset, like `.count()`.
 
 We can see these, and it's helpful to see exactly what Django's trying to do when you're having trouble with a query.
 
@@ -125,6 +125,116 @@ There's a lot going on here. We've already seen that, for some reason, there wer
 
 To find the median time to address a complaint, we used a fancy statistical method called a survival analaysis, employing a Python library called [Lifelines](http://lifelines.readthedocs.org/en/latest/index.html). This takes into account the closure rate for complaints that are still open and haven't been closed yet. 
 
+Let's take apart this view:
+```
+class ComplaintAnalysis(TemplateView):
+    # The HTML template we're going to use, found in the /templates directory
+    template_name = "complaint_analysis.html"
+```
+
+This defines the ComplaintAnalysis as a [template view](https://docs.djangoproject.com/en/1.7/ref/class-based-views/base/#templateview), and sets the HTML template that we're going to build with the data generated from the view. You can either open complaint_analysis.html in your text editor, or follow the [link here](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/templates/complaint_analysis.html). 
+
+```
+# quick means of accessing both open and closed cases
+open_cases = Complaint.objects.filter(is_closed=False)
+closed_cases = Complaint.objects.filter(is_closed=True)
+
+# overall complaints not addressed within a year
+over_one_year = Complaint.objects.filter(more_than_one_year=True)
+open_over_one_year = over_one_year.filter(is_closed=False)
+closed_over_one_year = over_one_year.filter(is_closed=True)
+```
+We then split our complaints into four groups: open, closed, open over a year, and closed over a year. We'll use these throughout the rest of the view.
+
+```
+# total counts of cases, all priority levels
+total_count = Complaint.objects.all().count()
+total_csr1 = Complaint.objects.filter(csr_priority="1").count()
+total_csr2 = Complaint.objects.filter(csr_priority="2").count()
+total_csr3 = Complaint.objects.filter(csr_priority="3").count()
+
+# Counts of open cases, all priority levels
+open_cases_count = open_cases.count()
+open_cases_csr1 = open_cases.filter(csr_priority="1").count()
+open_cases_csr2 = open_cases.filter(csr_priority="2").count()
+open_cases_csr3 = open_cases.filter(csr_priority="3").count()
+
+# Counts of closed cases, all priority levels
+closed_cases_count = closed_cases.count()
+closed_cases_csr1 = closed_cases.filter(csr_priority="1").count()
+closed_cases_csr2 = closed_cases.filter(csr_priority="2").count()
+closed_cases_csr3 = closed_cases.filter(csr_priority="3").count()
+
+# Counts of cases that went more than a year until response, all priority levels
+over_one_year_count = over_one_year.count()
+over_one_year_csr1 = over_one_year.filter(csr_priority="1").count()
+over_one_year_csr2 = over_one_year.filter(csr_priority="2").count()
+over_one_year_csr3 = over_one_year.filter(csr_priority="3").count()
+
+# Counts of cases that have been open fore more than a year, all priority levels
+open_over_one_year_count = open_over_one_year.count()
+open_over_one_year_csr1 = open_over_one_year.filter(csr_priority="1").count()
+open_over_one_year_csr2 = open_over_one_year.filter(csr_priority="2").count()
+open_over_one_year_csr3 = open_over_one_year.filter(csr_priority="3").count()
+
+# Counts of cases that were closed, but have been open for more than a year, all priority levels.
+closed_over_one_year_count = closed_over_one_year.count()
+closed_over_one_year_csr1 = closed_over_one_year.filter(csr_priority="1").count()
+closed_over_one_year_csr2 = closed_over_one_year.filter(csr_priority="2").count()
+closed_over_one_year_csr3 = closed_over_one_year.filter(csr_priority="3").count()
+```
+
+Woah, this is a lot of lines of code! We're basically just filtering different counts of complaints, for different priority levels
+
+- All complaints
+- Open complaints
+- Closed complaints
+- Complaints that waited for more than a year and are still open
+- Complaints that waited for more than a year and have since been closed. 
+
+```
+# Use Django's Avg() function to provide average response times across complaint priority levels
+# While quick, this isn't a particularly accurate measure.
+avg_wait_time = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0)\
+    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
+avg_wait_time_csr1 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="1")\
+    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']        
+avg_wait_time_csr2 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="2")\
+    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']        
+avg_wait_time_csr3 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="3")\
+    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg'] 
+```
+
+Next, we use Django's Avg() function to find average response times across priority levels. This is a quick and easy method, but since a small number of complaints will stretch the averages, it's not a particularly accurate measure. This is why we use the Kaplan-Meier fit, which will return us a median wait time, and even accounts for complaints that are still open (otherwise, we'd only be able to account for complaints that are closed, which would leave out a large number of our complaint set.)
+
+```
+all_complaints = Complaint.objects.exclude(days_since_complaint__lt=0)
+kmf_fit = get_kmf_fit(all_complaints)
+median_wait_time_kmf = get_kmf_median(kmf_fit)
+```
+
+Let's take a quick look at the functions `get_kmf_fit()` and `get_kmf_median()`.
+
+```
+# Get the average wait time using a Kaplan-Meier Survival analysis estimate
+# Make arrays of the days since complaint, and whether a case is 'closed'
+# this creates the observations, and whether a "death" has been observed
+def get_kmf_fit(qs):
+    t = qs.values_list('days_since_complaint', flat=True)
+    c = qs.values_list('is_closed', flat=True)
+    kmf = KaplanMeierFitter()
+    kmf.fit(t, event_observed=c)
+    return kmf
+
+
+# Return the mean of our KMF curve
+def get_kmf_median(kmf):
+    return kmf.median_
+
+```
+`get_kmf_fit()` takes the queryset we pass into it, in this case all_complaints (we toss out any complaits with a negative response time since that would really muck up our analysis), and organizes the values in the days_since_complaint and is_closed columns into a list. The quick summary of what it does is match up the days since a complaint to whether the complaint has been closed or not. We then fit that to a Kaplan-Meier curve and return the `kmf` object. `get_kmf_median` simply returns the `median_` value of that object. 
+
+We use this method to find the median response time to all complaints, and priority level 1, 2 and 3 complaints. 
 
 
 

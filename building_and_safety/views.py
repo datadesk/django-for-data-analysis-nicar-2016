@@ -44,31 +44,8 @@ def get_kmf_median(kmf):
     return kmf.median_
 
 
-# Use our KMF fit to try and establish an average response time
-# basically extracts the survival function from the curve,
-# which is a pandas data frame
-def get_kmf_mean(kmf):
-    df = kmf.survival_function_
-    df.reset_index(level=0, inplace=True)
-    mean = 0
-    # iterate through the rows in our data frame
-    row_iterator = df.iterrows()
-    last = row_iterator.next()
-    for row in row_iterator:
-        # convert the series objects from this and the next row to a dictionary
-        n = last[1].to_dict()
-        d = row[1].to_dict()
-        # subtract the next value from the current, and multiply by the KM-estimate
-        v = (d['timeline'] - n['timeline']) * n['KM-estimate']
-        # add to our mean value
-        mean += v
-        # store the current row as the previous row
-        last = row
-
-    return mean
-
-
 class ComplaintAnalysis(TemplateView):
+    # The HTML template we're going to use, found in the /templates directory
     template_name = "complaint_analysis.html"
 
     def get_context_data(self, **kwargs):
