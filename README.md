@@ -311,6 +311,52 @@ Go ahead and change that in the `open_complaints_json` and `closed_complaints_js
 
 Later, if we decide not to include the closed complaints, for example, we can simply remove that call in the [template](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/templates/complaints_map.html#L207). 
 
+You can also change the information that's fed into the GeoJSON object. Maybe we want to add the area planning commission, and the number of days since the complaint was filed? 
+
+Let's add this in line 148 of models.py 
+
+```
+"properties": {
+    "address": self.full_address,
+    "csr": self.csr,
+    "date": dateformat.format(self.date_received, 'F j, Y'),
+    "closed": self.get_closed_date(),
+    "type": self.csr_problem_type,
+    "priority": self.csr_priority,
+    "apc": self.area_planning_commission, 
+    "days_since_complaint": self.days_since_complaint
+}
+```
+
+And we'll modify our leaflet tooltip to pull in this information in complaints_map.html. On line 166, we feed those properties to our underscore template:
+
+```
+var context = {
+    address: props["address"],
+    csr: props["csr"],
+    date: props["date"],
+    closed_date: props["closed"],
+    priority: priority,
+    problem: props["type"],
+    area_planning_commission: props["area_planning_commission"],
+    days_since_complaint: props["days_since_complaint"]
+};
+``` 
+
+And update the underscore template on line 74.
+```
+<script type="text/template" id="tooltip-template">
+    <h4><a href="/complaint/<%= csr %>/"><%= address %></a></h4>
+    <p>CSR number <a href="/complaint/<%= csr %>/"><%= csr %></a></p>
+    <p>Received <%= date %></p>
+    <% if (closed_date !== null) { %><p>Closed <%= closed_date %></p><% } %>
+    <p>Priority <%= priority %> complaint</p>
+    <p><%= problem %></p>
+    <p><%= days_since_complaint %> days since complaint was filed.</p>
+    <p><%= area_planning_commission %> planning commission</p>
+</script>
+```
+
 
 ## Pitfalls of Django ##
 Like anything, there are a few disadvantages to using Django as a reporting framework.

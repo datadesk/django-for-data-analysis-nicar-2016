@@ -169,7 +169,7 @@
             date: props["date"],
             closed_date: props["closed"],
             priority: priority,
-            problem: props["type"],
+            problem: props["type"]
         };
 
         var popupContent = _.template(tooltipTemplate, context);
@@ -198,7 +198,7 @@
 
     $.getJSON('/api/complaints.json', function(data) {
         var features = data.features;
-        // Only filtering in level 2 complaints, temporarily
+
         complaintsLayer = L.geoJson(features, {
             onEachFeature: onEachFeature,
             pointToLayer: pointToLayer
