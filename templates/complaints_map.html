@@ -168,11 +168,12 @@
             csr: props["csr"],
             date: props["date"],
             closed_date: props["closed"],
-            priority: priority,
+            priority: props["priority"],
             problem: props["type"]
         };
 
-        var popupContent = _.template(tooltipTemplate, context);
+        var popupContent = _.template(tooltipTemplate);
+        popupContent = popupContent(context);
         layer.bindPopup(popupContent);
 
         layer.on('mouseover', function(){ 
