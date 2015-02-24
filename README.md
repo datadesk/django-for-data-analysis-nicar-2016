@@ -312,6 +312,43 @@ regions[region]['per_gt_year'] = calculate.percentage(regions[region]['gt_year']
 
 Now let's take a look at this in the template. Open up complaint_analysis.html in your text editor and in your browser at [http://localhost:8000/complaint_analysis/](http://localhost:8000/complaint_analysis/).  
 
+This page is two HTML tables. Notice the values wrapped in `{{foo}}` curly brackets. These are the variables from our view that get fed into the template. We can use them in a number of ways, here, we simply feed them in as table values. 
+
+You'll also see values like `|intcomma` or `|floatformat:1`. These are brought in from the [humanize](https://docs.djangoproject.com/en/1.7/ref/contrib/humanize/) set of template filters, that make numbers easier to read and understand. See the load statement in line 2, `{% load humanize toolbox_tags %}` that brings in this set of filters.
+
+Go ahead and remove one of the `floatformat` filters and reload the page. Rounding is good! 
+
+We have summary data for all complaints, and for complants broken down by region. Let's use the new variables we created in the view on what percentage of complaints took longer than 30, 90 and 180 days to build a new table. 
+
+Below the regional breakdown table, but before the `{% endblock %}` tag (around line 114), type or paste in this HTML, and reload the page. 
+
+```
+<h3>Wait times</h3>
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+        <tr>
+            <th>Region</th>
+            <th class="data">% > 30 days</th>
+            <th class="data">% > 90 days</th>
+            <th class="data">% > 180 days</th>
+            <th class="data">% > 1 yr</th>
+        </tr>                
+    </thead>
+    <tbody>
+        {% for region, value in regions.items %}
+        <tr>
+            <td>{{ region }}</td>
+            <td class="data">{{ value.per_gt_30_days|floatformat:2 }}</td>
+            <td class="data">{{ value.per_gt_90_days|floatformat:2 }}</td>
+            <td class="data">{{ value.per_gt_180_days|floatformat:2 }}</td>
+            <td class="data">{{ value.per_gt_year|floatformat:2 }}</td>
+        </tr>
+        {% endfor%}
+    </tbody>            
+</table>    
+```
+
+Using this method you can analyze and present your data in a number of ways that can help you find and understand the story. 
 
 
 ## Visualizing the data: Let's make a map ##
