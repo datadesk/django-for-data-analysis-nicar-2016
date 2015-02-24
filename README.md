@@ -236,6 +236,82 @@ def get_kmf_median(kmf):
 
 We use this method to find the median response time to all complaints, and priority level 1, 2 and 3 complaints. 
 
+Since it seems like response times are slower in the eastern parts of the city, let's also break this down by areas. We make a list of the seven different planning commission areas, and then make a dict to place the data returned. 
+
+```
+region_names = ['Central','East Los Angeles','Harbor','North Valley','South Los Angeles','South Valley','West Los Angeles']
+regions = {}
+```
+
+Then we iterate over those region names, creating a queryset and aggregate counts for each area. 
+
+```
+# Iterate over each name in our region_names list
+for region in region_names:
+    # Filter for complaints in each region
+    qs = Complaint.objects.filter(area_planning_commission=region, days_since_complaint__gte=0)
+    # create a data dictionary for the region
+    regions[region] = {}
+    # get a count of how many complaints total are in the queryset
+    regions[region]['total'] = qs.count()
+```
+
+Let's also find the average days to resolve a complaint in each area, and the volume of complaints each area receives in a year. 
+
+```
+regions[region]['avg_days_to_resolve'] = Complaint.objects.filter(area_planning_commission=region,is_closed=True, days_since_complaint__gte=0)\
+    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
+regions[region]['avg_complaints_per_year'] = get_avg_complaints_filed_per_year(region)
+```
+
+Again, average days to resolve isn't a great measure, so let's use our survival analysis function again to find the median response time for each priority level of complaint. This is basically the exact same thing we did above, but for a smaller queryset of complaints confined to each planning commission area. 
+
+```
+# Separate the complaints into their respective priority levels 
+region_csr1 = qs.filter(csr_priority="1")
+region_csr2 = qs.filter(csr_priority="2")
+region_csr3 = qs.filter(csr_priority="3")
+
+# Find the KMF fit for all complaints in the area and by each priority level
+regional_kmf_fit = get_kmf_fit(qs)
+regional_kmf_fit_csr1 = get_kmf_fit(region_csr1)
+regional_kmf_fit_csr2 = get_kmf_fit(region_csr2)
+regional_kmf_fit_csr3 = get_kmf_fit(region_csr3)
+
+# Get the median value from the KMF fit. 
+regions[region]['median_wait_kmf'] = get_kmf_median(regional_kmf_fit)
+regions[region]['median_wait_kmf_csr1'] = get_kmf_median(regional_kmf_fit_csr1)
+regions[region]['median_wait_kmf_csr2'] = get_kmf_median(regional_kmf_fit_csr2)
+regions[region]['median_wait_kmf_csr3'] = get_kmf_median(regional_kmf_fit_csr3)
+```
+
+Last, we also find the number of complants greater than a year in each area.
+
+```
+regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
+```
+
+Now lets add a few of our own things into the view. We have complaints over a year, but where are the response times breaking down? Let's also find complaints older than 30, 90 and 180 days. Go ahead and type or copy/paste this under the above line of code.
+
+```
+# Also grab counts of the number of complaints greater than 30, 90 and 180 days
+regions[region]['gt_30_days'] = qs.filter(gt_30_days=True).count()
+regions[region]['gt_90_days'] = qs.filter(gt_90_days=True).count()
+regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
+```
+
+And let's use `latimes-calculate` to find the what proportion of the total complaints have a wait time greater than 30, 90, 180 days and one year.
+
+```
+# use calculate to find percentages
+regions[region]['per_gt_30_days'] = calculate.percentage(regions[region]['gt_30_days'],regions[region]['total'])
+regions[region]['per_gt_90_days'] = calculate.percentage(regions[region]['gt_90_days'],regions[region]['total'])
+regions[region]['per_gt_180_days'] = calculate.percentage(regions[region]['gt_180_days'],regions[region]['total'])
+regions[region]['per_gt_year'] = calculate.percentage(regions[region]['gt_year'],regions[region]['total'])
+``` 
+
+Now let's take a look at this in the template. Open up complaint_analysis.html in your text editor and in your browser at [http://localhost:8000/complaint_analysis/](http://localhost:8000/complaint_analysis/).  
+
 
 
 ## Visualizing the data: Let's make a map ##
@@ -328,7 +404,7 @@ Let's add this in line 148 of models.py
 }
 ```
 
-And we'll modify our leaflet tooltip to pull in this information in complaints_map.html. On line 166, we feed those properties to our underscore template:
+And we'll modify our leaflet tooltip to pull in this information in complaints_map.html. On line 166, we feed those properties to our underscore template.:
 
 ```
 var context = {
@@ -338,7 +414,7 @@ var context = {
     closed_date: props["closed"],
     priority: priority,
     problem: props["type"],
-    area_planning_commission: props["area_planning_commission"],
+    apc: props["apc"],
     days_since_complaint: props["days_since_complaint"]
 };
 ``` 
@@ -353,9 +429,12 @@ And update the underscore template on line 74.
     <p>Priority <%= priority %> complaint</p>
     <p><%= problem %></p>
     <p><%= days_since_complaint %> days since complaint was filed.</p>
-    <p><%= area_planning_commission %> planning commission</p>
+    <p><%= apc %> planning commission</p>
 </script>
 ```
+
+So you can pretty quickly add or remove properties from your data and your templates. 
+
 
 
 ## Pitfalls of Django ##
