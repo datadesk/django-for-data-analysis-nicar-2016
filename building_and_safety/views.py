@@ -3,7 +3,7 @@ import csv
 import calculate
 import collections
 from datetime import datetime
-from django.db.models import Count, Avg
+from django.db.models import Count
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -43,56 +43,45 @@ def get_kmf_fit(qs):
 def get_kmf_median(kmf):
     return kmf.median_
 
+def get_counts_by_csr(qs):
+    counts = {}
+    counts["csr1"] = qs.filter(csr_priority="1").count()
+    counts["csr2"] = qs.filter(csr_priority="2").count()
+    counts["csr3"] = qs.filter(csr_priority="3").count()
+    return counts
 
 class ComplaintAnalysis(TemplateView):
     # The HTML template we're going to use, found in the /templates directory
     template_name = "complaint_analysis.html"
 
     def get_context_data(self, **kwargs):
+        # quick notation to access all complaints
+        complaints = Complaint.objects.all()
+
         # quick means of accessing both open and closed cases
-        open_cases = Complaint.objects.filter(is_closed=False)
-        closed_cases = Complaint.objects.filter(is_closed=True)
+        open_cases = complaints.filter(is_closed=False)
+        closed_cases = complaints.filter(is_closed=True)
 
         # overall complaints not addressed within a year
-        over_one_year = Complaint.objects.filter(more_than_one_year=True)
+        over_one_year = complaints.filter(more_than_one_year=True)
         open_over_one_year = over_one_year.filter(is_closed=False)
         closed_over_one_year = over_one_year.filter(is_closed=True)
 
         # total counts of cases, all priority levels
-        total_count = Complaint.objects.all().count()
-        total_csr1 = Complaint.objects.filter(csr_priority="1").count()
-        total_csr2 = Complaint.objects.filter(csr_priority="2").count()
-        total_csr3 = Complaint.objects.filter(csr_priority="3").count()
+        total_count = complaints.all().count()
+        total_by_csr = get_counts_by_csr(complaints)
 
         # Counts of open cases, all priority levels
         open_cases_count = open_cases.count()
-        open_cases_csr1 = open_cases.filter(csr_priority="1").count()
-        open_cases_csr2 = open_cases.filter(csr_priority="2").count()
-        open_cases_csr3 = open_cases.filter(csr_priority="3").count()
-
-        # Counts of closed cases, all priority levels
-        closed_cases_count = closed_cases.count()
-        closed_cases_csr1 = closed_cases.filter(csr_priority="1").count()
-        closed_cases_csr2 = closed_cases.filter(csr_priority="2").count()
-        closed_cases_csr3 = closed_cases.filter(csr_priority="3").count()
-
-        # Counts of cases that went more than a year until response, all priority levels
-        over_one_year_count = over_one_year.count()
-        over_one_year_csr1 = over_one_year.filter(csr_priority="1").count()
-        over_one_year_csr2 = over_one_year.filter(csr_priority="2").count()
-        over_one_year_csr3 = over_one_year.filter(csr_priority="3").count()
+        open_by_csr = get_counts_by_csr(open_cases)
 
         # Counts of cases that have been open fore more than a year, all priority levels
         open_over_one_year_count = open_over_one_year.count()
-        open_over_one_year_csr1 = open_over_one_year.filter(csr_priority="1").count()
-        open_over_one_year_csr2 = open_over_one_year.filter(csr_priority="2").count()
-        open_over_one_year_csr3 = open_over_one_year.filter(csr_priority="3").count()
+        open_over_one_year_by_csr = get_counts_by_csr(open_over_one_year)
 
         # Counts of cases that were closed, but have been open for more than a year, all priority levels.
         closed_over_one_year_count = closed_over_one_year.count()
-        closed_over_one_year_csr1 = closed_over_one_year.filter(csr_priority="1").count()
-        closed_over_one_year_csr2 = closed_over_one_year.filter(csr_priority="2").count()
-        closed_over_one_year_csr3 = closed_over_one_year.filter(csr_priority="3").count()
+        closed_over_one_year_by_csr = get_counts_by_csr(closed_over_one_year)
 
         # A much better means of getting expected wait times is to use a survival analysis function
         # In this case, we use a Kaplan-Meier estimator from the Python package lifelines

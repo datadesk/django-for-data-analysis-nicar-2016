@@ -196,6 +196,8 @@ We could use Django's built-in Avg() function to calculate the response times fo
 
 ```
 # Use Django's Avg() function to provide average response times across complaint priority levels
+>>> from django.db.models import Avg
+>>> from building_and_safety.models import Complaint
 >>> closed_complaints = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0)
 >>> closed_complaints.aggregate(Avg('days_since_complaint'))
 {'days_since_complaint__avg': 28.575226413962696}

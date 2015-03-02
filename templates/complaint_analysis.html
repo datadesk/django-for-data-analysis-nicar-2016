@@ -28,37 +28,30 @@
                 <tr>
                     <td>Complaints older than a year not inspected or otherwise addressed as of 7/13/2014</td>
                     <td class="data">{{ open_over_one_year_count|intcomma }}</td>
-                    <td class="data">{{ open_over_one_year_csr1|intcomma }}</td>    
-                    <td class="data">{{ open_over_one_year_csr2|intcomma }}</td>    
-                    <td class="data">{{ open_over_one_year_csr3|intcomma }}</td>    
+                    <td class="data">{{ open_over_one_year_by_csr.csr1|intcomma }}</td>    
+                    <td class="data">{{ open_over_one_year_by_csr.csr2|intcomma }}</td>    
+                    <td class="data">{{ open_over_one_year_by_csr.csr3|intcomma }}</td>    
                 </tr>
                 <tr>
                     <td>Complaints waited more than a year before inspection or other action</td>
                     <td class="data">{{ closed_over_one_year_count|intcomma }}</td>
-                    <td class="data">{{ closed_over_one_year_csr1|intcomma }}</td>    
-                    <td class="data">{{ closed_over_one_year_csr2|intcomma }}</td>    
-                    <td class="data">{{ closed_over_one_year_csr3|intcomma }}</td>    
+                    <td class="data">{{ closed_over_one_year_by_csr.csr1|intcomma }}</td>    
+                    <td class="data">{{ closed_over_one_year_by_csr.csr2|intcomma }}</td>    
+                    <td class="data">{{ closed_over_one_year_by_csr.csr3|intcomma }}</td>    
                 </tr>
                 <tr>
                     <td>Total complaints not inspected or otherwise addressed as of 7/13/2014</td>
                     <td class="data">{{ open_cases_count|intcomma }}</td>
-                    <td class="data">{{ open_cases_csr1|intcomma }}</td>    
-                    <td class="data">{{ open_cases_csr2|intcomma }}</td>    
-                    <td class="data">{{ open_cases_csr3|intcomma }}</td>    
-                </tr>
-                <tr>
-                    <td>Total complaints inspected or other action taken</td>
-                    <td class="data">{{ closed_cases_count|intcomma }}</td>
-                    <td class="data">{{ closed_cases_csr1|intcomma }}</td>    
-                    <td class="data">{{ closed_cases_csr2|intcomma }}</td>    
-                    <td class="data">{{ closed_cases_csr3|intcomma }}</td>    
+                    <td class="data">{{ open_by_csr.csr1|intcomma }}</td>    
+                    <td class="data">{{ open_by_csr.csr2|intcomma }}</td>    
+                    <td class="data">{{ open_by_csr.csr3|intcomma }}</td>    
                 </tr>
                 <tr>
                     <td>Total Complaints</td>
                     <td class="data">{{ total_count|intcomma }}</td>
-                    <td class="data">{{ total_csr1|intcomma }}</td>    
-                    <td class="data">{{ total_csr2|intcomma }}</td>    
-                    <td class="data">{{ total_csr3|intcomma }}</td>    
+                    <td class="data">{{ total_by_csr.csr1|intcomma }}</td>    
+                    <td class="data">{{ total_by_csr.csr2|intcomma }}</td>    
+                    <td class="data">{{ total_by_csr.csr3|intcomma }}</td>    
                 </tr>
                 <tr>
                     <td>Median days wait until complaint is inspected or otherwise addressed (KMF survival analysis)</td>
