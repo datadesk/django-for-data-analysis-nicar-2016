@@ -1,6 +1,6 @@
 DEBUG = True
 DEVELOPMENT, PRODUCTION = True, False
-DEBUG_TOOLBAR = True
+DEBUG_TOOLBAR = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
