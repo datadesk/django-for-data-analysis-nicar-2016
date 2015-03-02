@@ -61,13 +61,6 @@
                     <td class="data">{{ total_csr3|intcomma }}</td>    
                 </tr>
                 <tr>
-                    <td>Avg. days wait until complaint is inspected or otherwise addressed (closed cases)</td>
-                    <td class="data">{{ avg_wait_time|floatformat:2 }}</td>
-                    <td class="data">{{ avg_wait_time_csr1|floatformat:2 }}</td>    
-                    <td class="data">{{ avg_wait_time_csr2|floatformat:2 }}</td>    
-                    <td class="data">{{ avg_wait_time_csr3|floatformat:2 }}</td>    
-                </tr>
-                <tr>
                     <td>Median days wait until complaint is inspected or otherwise addressed (KMF survival analysis)</td>
                     <td class="data">{{ median_wait_time_kmf }}</td>
                     <td class="data">{{ median_wait_time_csr1_kmf }}</td>    
@@ -85,7 +78,6 @@
                     <th class="data">> 1 yr to response</th>
                     <th class="data">total complaints</th>
                     <th class="data">Avg complaints / yr.</th>
-                    <th class="data">Avg days to inspect</th>
                     <th class="data">Median days</th>
                     <th class="data">CSR1 KMF median</th>
                     <th class="data">CSR2 KMF median</th>
@@ -99,7 +91,6 @@
                     <td class="data">{{ value.gt_year|intcomma }}</td>
                     <td class="data">{{ value.total|intcomma }}</td>
                     <td class="data">{{ value.avg_complaints_per_year|floatformat:0|intcomma }}</td>
-                    <td class="data">{{ value.avg_days_to_resolve|floatformat:2 }}</td>
                     <td class="data">{{ value.median_wait_kmf }}</td>
                     <td class="data">{{ value.median_wait_kmf_csr1 }}</td>
                     <td class="data">{{ value.median_wait_kmf_csr2 }}</td>

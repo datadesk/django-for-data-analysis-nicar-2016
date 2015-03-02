@@ -192,20 +192,22 @@ Woah, this is a lot of lines of code! We're basically just filtering different c
 - Complaints that waited for more than a year and are still open
 - Complaints that waited for more than a year and have since been closed. 
 
+We could use Django's built-in Avg() function to calculate the response times for the different priority levels of complaints, and in some cases it would be applicable, so let's see how to do that. 
+
 ```
 # Use Django's Avg() function to provide average response times across complaint priority levels
-# While quick, this isn't a particularly accurate measure.
-avg_wait_time = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0)\
-    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
-avg_wait_time_csr1 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="1")\
-    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']        
-avg_wait_time_csr2 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="2")\
-    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']        
-avg_wait_time_csr3 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="3")\
-    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg'] 
+>>> closed_complaints = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0)
+>>> closed_complaints.aggregate(Avg('days_since_complaint'))
+{'days_since_complaint__avg': 28.575226413962696}
+
+# access the number through the property of the dict
+>>> closed_complaints.aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
+28.575226413962696
 ```
 
-Next, we use Django's Avg() function to find average response times across priority levels. This is a quick and easy method, but since a small number of complaints will stretch the averages, it's not a particularly accurate measure. This is why we use the Kaplan-Meier fit, which will return us a median wait time, and even accounts for complaints that are still open (otherwise, we'd only be able to account for complaints that are closed, which would leave out a large number of our complaint set.)
+But we'd have a few problems with that. First, a small number of complaints that took an extraordinary amount of time to close will distort the average. Also, if we calculated the average of closed cases, this wouldn't include the cases still in the system that have yet to be closed. Those have response times too, and we have to account for them. 
+ 
+This is why we use the Kaplan-Meier fit, which will return us a median wait time, and establishes a closure rate for accounts for complaints that are still open.
 
 ```
 all_complaints = Complaint.objects.exclude(days_since_complaint__lt=0)

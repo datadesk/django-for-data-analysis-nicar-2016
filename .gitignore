@@ -5,5 +5,4 @@ django.log
 *.pyc
 *.*~
 .DS_Store
-homicides_v2/
 settings_dev.py

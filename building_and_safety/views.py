@@ -94,17 +94,6 @@ class ComplaintAnalysis(TemplateView):
         closed_over_one_year_csr2 = closed_over_one_year.filter(csr_priority="2").count()
         closed_over_one_year_csr3 = closed_over_one_year.filter(csr_priority="3").count()
 
-        # Use Django's Avg() function to provide average response times across complaint priority levels
-        # While quick, this isn't a particularly accurate measure.
-        avg_wait_time = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0)\
-            .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
-        avg_wait_time_csr1 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="1")\
-            .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']        
-        avg_wait_time_csr2 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="2")\
-            .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']        
-        avg_wait_time_csr3 = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0, csr_priority="3")\
-            .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']        
-
         # A much better means of getting expected wait times is to use a survival analysis function
         # In this case, we use a Kaplan-Meier estimator from the Python package lifelines
         # We repeat this for all complaints, and for each CSR priority levels.
@@ -135,9 +124,6 @@ class ComplaintAnalysis(TemplateView):
             regions[region] = {}
             # get a count of how many complaints total are in the queryset
             regions[region]['total'] = qs.count()
-
-            regions[region]['avg_days_to_resolve'] = Complaint.objects.filter(area_planning_commission=region,is_closed=True, days_since_complaint__gte=0)\
-                .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
             regions[region]['avg_complaints_per_year'] = get_avg_complaints_filed_per_year(region)
 
             # Separate the complaints into their respective priority levels 
