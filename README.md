@@ -29,7 +29,8 @@ $ python manage.py migrate
 ```
 
 ## Getting started: The Models ##
-- First, let's look at our models. There are a couple of fields we're concerned with or need more explanation.
+- First, let's look at our models, and how they correspond to our source data CSVs. There are a couple of fields we're concerned with or need more explanation. In your text editor or browser, open up [models.py](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/models.py) and [building_and_safety/data/Building_and_Safety_Customer_Service_Request__out.csv](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/data/Building_and_Safety_Customer_Service_Request_out.csv)
+
   - **csr** - this is a complaint ID, and can serve as our primary key
   - **ladbs_inspection_district** - How LADBS divides their inspectors, one per district. After reporting this out further we found that these actually change quite a bit from year-to-year.
   - **date_received** - date the complaint was received.
