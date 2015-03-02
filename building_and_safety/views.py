@@ -55,19 +55,19 @@ class ComplaintAnalysis(TemplateView):
     template_name = "complaint_analysis.html"
 
     def get_context_data(self, **kwargs):
-        # quick notation to access all complaints
+        # Quick notation to access all complaints
         complaints = Complaint.objects.all()
 
-        # quick means of accessing both open and closed cases
+        # Quick means of accessing both open and closed cases
         open_cases = complaints.filter(is_closed=False)
         closed_cases = complaints.filter(is_closed=True)
 
-        # overall complaints not addressed within a year
+        # Overall complaints not addressed within a year
         over_one_year = complaints.filter(more_than_one_year=True)
         open_over_one_year = over_one_year.filter(is_closed=False)
         closed_over_one_year = over_one_year.filter(is_closed=True)
 
-        # total counts of cases, all priority levels
+        # Total counts of cases, all priority levels
         total_count = complaints.all().count()
         total_by_csr = get_counts_by_csr(complaints)
 
@@ -108,14 +108,14 @@ class ComplaintAnalysis(TemplateView):
         # Iterate over each name in our region_names list
         for region in region_names:
             # Filter for complaints in each region
-            qs = Complaint.objects.filter(area_planning_commission=region, days_since_complaint__gte=0)
+            qs = complaints.filter(area_planning_commission=region, days_since_complaint__gte=0)
             # create a data dictionary for the region
             regions[region] = {}
             # get a count of how many complaints total are in the queryset
             regions[region]['total'] = qs.count()
             regions[region]['avg_complaints_per_year'] = get_avg_complaints_filed_per_year(region)
 
-            # Separate the complaints into their respective priority levels 
+            # Separate the complaints into querysets of their respective priority levels 
             region_csr1 = qs.filter(csr_priority="1")
             region_csr2 = qs.filter(csr_priority="2")
             region_csr3 = qs.filter(csr_priority="3")

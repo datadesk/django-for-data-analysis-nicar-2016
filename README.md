@@ -135,12 +135,15 @@ class ComplaintAnalysis(TemplateView):
 This defines the ComplaintAnalysis as a [template view](https://docs.djangoproject.com/en/1.7/ref/class-based-views/base/#templateview), and sets the HTML template that we're going to build with the data generated from the view. You can either open complaint_analysis.html in your text editor, or follow the [link here](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/templates/complaint_analysis.html). 
 
 ```
-# quick means of accessing both open and closed cases
-open_cases = Complaint.objects.filter(is_closed=False)
-closed_cases = Complaint.objects.filter(is_closed=True)
+# Quick notation to access all complaints
+complaints = Complaint.objects.all()
 
-# overall complaints not addressed within a year
-over_one_year = Complaint.objects.filter(more_than_one_year=True)
+# Quick means of accessing both open and closed cases
+open_cases = complaints.filter(is_closed=False)
+closed_cases = complaints.filter(is_closed=True)
+
+# Overall complaints not addressed within a year
+over_one_year = complaints.filter(more_than_one_year=True)
 open_over_one_year = over_one_year.filter(is_closed=False)
 closed_over_one_year = over_one_year.filter(is_closed=True)
 ```
@@ -148,51 +151,36 @@ We then split our complaints into four groups: open, closed, open over a year, a
 
 ```
 # total counts of cases, all priority levels
-total_count = Complaint.objects.all().count()
-total_csr1 = Complaint.objects.filter(csr_priority="1").count()
-total_csr2 = Complaint.objects.filter(csr_priority="2").count()
-total_csr3 = Complaint.objects.filter(csr_priority="3").count()
+total_count = complaints.all().count()
+total_by_csr = get_counts_by_csr(complaints)
 
 # Counts of open cases, all priority levels
 open_cases_count = open_cases.count()
-open_cases_csr1 = open_cases.filter(csr_priority="1").count()
-open_cases_csr2 = open_cases.filter(csr_priority="2").count()
-open_cases_csr3 = open_cases.filter(csr_priority="3").count()
-
-# Counts of closed cases, all priority levels
-closed_cases_count = closed_cases.count()
-closed_cases_csr1 = closed_cases.filter(csr_priority="1").count()
-closed_cases_csr2 = closed_cases.filter(csr_priority="2").count()
-closed_cases_csr3 = closed_cases.filter(csr_priority="3").count()
-
-# Counts of cases that went more than a year until response, all priority levels
-over_one_year_count = over_one_year.count()
-over_one_year_csr1 = over_one_year.filter(csr_priority="1").count()
-over_one_year_csr2 = over_one_year.filter(csr_priority="2").count()
-over_one_year_csr3 = over_one_year.filter(csr_priority="3").count()
+open_by_csr = get_counts_by_csr(open_cases)
 
 # Counts of cases that have been open fore more than a year, all priority levels
 open_over_one_year_count = open_over_one_year.count()
-open_over_one_year_csr1 = open_over_one_year.filter(csr_priority="1").count()
-open_over_one_year_csr2 = open_over_one_year.filter(csr_priority="2").count()
-open_over_one_year_csr3 = open_over_one_year.filter(csr_priority="3").count()
+open_over_one_year_by_csr = get_counts_by_csr(open_over_one_year)
 
 # Counts of cases that were closed, but have been open for more than a year, all priority levels.
 closed_over_one_year_count = closed_over_one_year.count()
-closed_over_one_year_csr1 = closed_over_one_year.filter(csr_priority="1").count()
-closed_over_one_year_csr2 = closed_over_one_year.filter(csr_priority="2").count()
-closed_over_one_year_csr3 = closed_over_one_year.filter(csr_priority="3").count()
+closed_over_one_year_by_csr = get_counts_by_csr(closed_over_one_year)
 ```
 
-Woah, this is a lot of lines of code! We're basically just filtering different counts of complaints, for different priority levels
+We use a helper function here to get counts of complaints for each priority level:
 
-- All complaints
-- Open complaints
-- Closed complaints
-- Complaints that waited for more than a year and are still open
-- Complaints that waited for more than a year and have since been closed. 
+```
+def get_counts_by_csr(qs):
+    counts = {}
+    counts["csr1"] = qs.filter(csr_priority="1").count()
+    counts["csr2"] = qs.filter(csr_priority="2").count()
+    counts["csr3"] = qs.filter(csr_priority="3").count()
+    return counts
+```
 
-We could use Django's built-in Avg() function to calculate the response times for the different priority levels of complaints, and in some cases it would be applicable, so let's see how to do that. 
+This function takes a queryset, and returns a dictionary of counts for each CSR. This is the programming adage of (DRY)[http://en.wikipedia.org/wiki/Don%27t_repeat_yourself], we're not repeating the same code many different times in our view.
+
+To calculate the response times for different priority levels of complaints, we could use Django's built-in Avg() function, but we'd have a few problems with that. In some cases though it might be applicable, so let's see how to do that. 
 
 ```
 # Use Django's Avg() function to provide average response times across complaint priority levels
@@ -207,7 +195,7 @@ We could use Django's built-in Avg() function to calculate the response times fo
 28.575226413962696
 ```
 
-But we'd have a few problems with that. First, a small number of complaints that took an extraordinary amount of time to close will distort the average. Also, if we calculated the average of closed cases, this wouldn't include the cases still in the system that have yet to be closed. Those have response times too, and we have to account for them. 
+So what are the problems here? First, a small number of complaints that took an extraordinary amount of time to close will distort the average. Also, if we calculated the average of closed cases, this wouldn't include the cases still in the system that have yet to be closed. Those have response times too, and we have to account for them. 
  
 This is why we use the Kaplan-Meier fit, which will return us a median wait time, and establishes a closure rate for accounts for complaints that are still open.
 
@@ -253,25 +241,23 @@ Then we iterate over those region names, creating a queryset and aggregate count
 # Iterate over each name in our region_names list
 for region in region_names:
     # Filter for complaints in each region
-    qs = Complaint.objects.filter(area_planning_commission=region, days_since_complaint__gte=0)
+    qs = complaints.filter(area_planning_commission=region, days_since_complaint__gte=0)
     # create a data dictionary for the region
     regions[region] = {}
     # get a count of how many complaints total are in the queryset
     regions[region]['total'] = qs.count()
 ```
 
-Let's also find the average days to resolve a complaint in each area, and the volume of complaints each area receives in a year. 
+Let's also find the volume of complaints each area receives in a year. 
 
 ```
-regions[region]['avg_days_to_resolve'] = Complaint.objects.filter(area_planning_commission=region,is_closed=True, days_since_complaint__gte=0)\
-    .aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
 regions[region]['avg_complaints_per_year'] = get_avg_complaints_filed_per_year(region)
 ```
 
-Again, average days to resolve isn't a great measure, so let's use our survival analysis function again to find the median response time for each priority level of complaint. This is basically the exact same thing we did above, but for a smaller queryset of complaints confined to each planning commission area. 
+And let's find the average days to resolve a complaint in each region. Again, average days to resolve isn't a great measure, so let's use our survival analysis function again to find the median response time for each priority level of complaint. This is basically the exact same thing we did above, but for a smaller queryset of complaints confined to each planning commission area. 
 
 ```
-# Separate the complaints into their respective priority levels 
+# Separate the complaints into querysets of their respective priority levels 
 region_csr1 = qs.filter(csr_priority="1")
 region_csr2 = qs.filter(csr_priority="2")
 region_csr3 = qs.filter(csr_priority="3")
@@ -295,7 +281,7 @@ Last, we also find the number of complants greater than a year in each area.
 regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
 ```
 
-Now lets add a few of our own things into the view. We have complaints over a year, but where are the response times breaking down? Let's also find complaints older than 30, 90 and 180 days. Go ahead and type or copy/paste this under the above line of code.
+Now lets add a few of our own things into the view. We have complaints over a year, but where are the response times breaking down? Let's also find complaints older than 30, 90 and 180 days. Go ahead and type or copy/paste this under the above line of code. Remember to indent properly! (You should be about three indentation levels over.)
 
 ```
 # Also grab counts of the number of complaints greater than 30, 90 and 180 days
