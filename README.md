@@ -138,7 +138,7 @@ Quit the server with CONTROL-C.
 
 First of all, let's cheat. Let's see what we're going to get first, and then look at how we get it. In your web browser, go to [http://localhost:8000/complaint_analysis](http://localhost:8000/complaint_analysis).
 
-![Analysis page](/images/logo.png)
+![Analysis page](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/table_demo.png)
 
 
 Open up the views.py file in your text editor, and look at the [ComplaintAnalysis](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L71) view.
