@@ -140,6 +140,9 @@ First of all, let's cheat. Let's see what we're going to get first, and then loo
 
 ![Analysis page](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/table_demo.png)
 
+We've got a table with some basic information about our complaints. How many have been addressed, how many are still open, and how many have hung around for a really long time. 
+
+In the second table, we also break this down by area planning commissions - areas used by the L.A. Department of City Planning to divide up the city. 
 
 Open up the views.py file in your text editor, and look at the [ComplaintAnalysis](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L71) view.
 
