@@ -237,6 +237,10 @@ Why do we need to do a survival analysis function here instead of just calculati
 
 Survival analysis was for use by actuaries and medical professionals originally developed to measure lifespans of individuals. It can be applied to not just actual births and deaths of people, but any instance where a "birth" or "death" can be observed. In this case, a "birth" is the opening of a complaint, and "death" is that complaint being visited and marked as "closed."
 
+The excellent [Lifelines documentation](http://lifelines.readthedocs.org/) has another example of survival analysis looking at the [tenure of world leaders](http://lifelines.readthedocs.org/en/latest/Intro%20to%20lifelines.html, where the "birth" is the start of their time in office and the "death" is their departure. 
+
+Another example was performed by Times database editor Doug Smith and data analyst Brian Kim in finding that youths in California's [privatized foster care](http://www.latimes.com/local/la-me-foster-care-dto-htmlstory.html#ixzz2phNFH4q4) remained in the foster system 11% longer than those in other types of homes — 378 days compared to 341 days.
+
 There are libraries in R that can do this as well, (see [survival](http://cran.r-project.org/web/packages/survival/index.html) and [KMsurv](http://cran.r-project.org/web/packages/KMsurv/index.html),) but using a Python library keeps this all in the same development stack. 
 
 
