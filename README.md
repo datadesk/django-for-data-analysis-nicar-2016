@@ -17,11 +17,21 @@ We'll learn how to:
 ### Installation ###
 If you're on a classroom-provided computer, or have already installed the requirements, skip down to [Database setup](https://github.com/datadesk/django-for-data-analysis-nicar-2015#database-setup). 
 
-Otherwise, install the requirements by typing or pasting the two commands below. This uses a Python data stack of NumPy, SciPy and Pandas, so it takes a loooong time to install. I highly recommend you do this before the class, if possible. 
+Otherwise, start by creating a virtual environment and clone the repo. 
+
+```bash
+$ virtualenv --no-site-packages django-for-data-analysis-nicar-2015
+$ cd django-for-data-analysis-nicar-2015
+$ . bin/activate
+$ git clone git@github.com:datadesk/django-for-data-analysis-nicar-2015.git repo
+$ cd repo
+```
+
+Then, install the requirements by typing or pasting the two commands below. This uses a Python data stack of NumPy, SciPy and Pandas, so it takes a loooong time to install. I highly recommend you do this before the class, if possible. 
 
 ```bash
 # we have to install numpy first due to some bugs with the numpy install
-$ pip install numpy==1.8.1 before requirements.txt 
+$ pip install numpy==1.8.1
 $ pip install -r requirements.txt
 ```
 
