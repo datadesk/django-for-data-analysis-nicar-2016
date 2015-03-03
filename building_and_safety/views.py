@@ -187,15 +187,6 @@ class ComplaintDetail(DetailView):
         return context
 
 
-def negative_date_cases_csv(request):
-    """
-    Get cases that were closed before they were opened in the database
-    Send these to DBS so they can figure out what's wrong with them.
-    """
-    qs = Complaint.objects.defer('more_than_one_year','gt_30_days','gt_90_days','gt_180_days','days_since_complaint','neighborhoodv6','full_address').filter(days_since_complaint__lt=0)
-    return djqscsv.render_to_csv_response(qs)
-
-
 def open_complaints_json(request):
     """
     Pull all the open complaints that were open for more than a year.
