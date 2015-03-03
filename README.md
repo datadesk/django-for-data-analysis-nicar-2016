@@ -359,6 +359,8 @@ regions[region]['per_gt_180_days'] = calculate.percentage(regions[region]['gt_18
 regions[region]['per_gt_year'] = calculate.percentage(regions[region]['gt_year'],regions[region]['total'])
 ``` 
 
+![Pasting python](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/pasting_python.gif)
+
 Now let's take a look at this in the template. Open up complaint_analysis.html in your text editor and in your browser at [http://localhost:8000/complaint_analysis/](http://localhost:8000/complaint_analysis/).  
 
 This page is two HTML tables. Notice the values wrapped in `{{foo}}` curly brackets. These are the variables from our view that get fed into the template. We can use them in a number of ways, here, we simply feed them in as table values. 
@@ -396,6 +398,8 @@ Below the regional breakdown table, but before the `{% endblock %}` tag (around 
     </tbody>            
 </table>    
 ```
+
+![Pasting the html](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/pasting_html.gif)
 
 Using this method you can analyze and present your data in a number of ways that can help you find and understand the story. 
 
