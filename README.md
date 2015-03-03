@@ -369,7 +369,7 @@ Go ahead and remove one of the `floatformat` filters and reload the page. Roundi
 
 We have summary data for all complaints, and for complants broken down by region. Let's use the new variables we created in the view on what percentage of complaints took longer than 30, 90 and 180 days to build a new table. 
 
-Below the regional breakdown table, but before the `{% endblock %}` tag (around line 114), type or paste in this HTML, and reload the page. 
+Below the regional breakdown table, but before the `{% endblock %}` tag (around [line 95](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/templates/complaint_analysis.html#L95)), type or paste in this HTML, and reload the page. 
 
 ```htmldjango
 <h3>Wait times</h3>
