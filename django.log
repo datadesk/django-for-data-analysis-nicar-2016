@@ -9,3 +9,5 @@ DEBUG|17/Feb/2015 15:41:37|load_complaints|31525|140286174476096|Loading complai
 DEBUG|17/Feb/2015 15:42:55|load_complaints|32534|140456510490432|Loading complaints to database.
 DEBUG|22/Feb/2015 13:18:55|load_complaints|20522|140735263539984|flushing complaints
 DEBUG|22/Feb/2015 13:19:23|load_complaints|20522|140735263539984|Loading complaints to database.
+DEBUG|02/Mar/2015 16:51:41|load_complaints|4151|140177281435456|flushing complaints
+DEBUG|02/Mar/2015 16:51:50|load_complaints|4151|140177281435456|Loading complaints to database.

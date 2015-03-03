@@ -24,6 +24,20 @@ $ pip install -r requirements.txt
 ```bash
 $ createdb django_data_analysis
 $ python manage.py syncdb
+```
+
+This will give you a couple of prompts:
+
+```bash
+You just installed Django's auth system, which means you don't have any superusers defined.
+Would you like to create one now? (yes/no): 
+```
+
+Enter "yes", and also your email address and password (it won't matter here, since we're not deploying anywhere, anyway.)
+
+Next, more setup to migrate the database.
+
+```bash
 $ python manage.py schemamigration building_and_safety --init
 $ python manage.py migrate 
 ```

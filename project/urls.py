@@ -17,7 +17,6 @@ urlpatterns = patterns('',
     url(r'^complaint_type_breakdown/$', ComplaintTypeBreakdown.as_view(), name='complaint_type_breakdown'),
     url(r'^api/complaints.json$', open_complaints_json, name='complaints-json'),
     url(r'^api/closed_complaints.json$', closed_complaints_json, name='closed-complaints-json'),
-    url(r'^api/csv/negative-date-complaints.csv', negative_date_cases_csv, name='negative-date-complaints'),
     url(r'^complaints-map/$', ComplaintsMap.as_view(), name='complaints-map'),
 )
 
