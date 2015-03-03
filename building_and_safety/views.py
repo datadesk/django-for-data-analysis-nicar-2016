@@ -43,12 +43,14 @@ def get_kmf_fit(qs):
 def get_kmf_median(kmf):
     return kmf.median_
 
+
 def get_counts_by_csr(qs):
     counts = {}
     counts["csr1"] = qs.filter(csr_priority="1").count()
     counts["csr2"] = qs.filter(csr_priority="2").count()
     counts["csr3"] = qs.filter(csr_priority="3").count()
     return counts
+
 
 class ComplaintAnalysis(TemplateView):
     # The HTML template we're going to use, found in the /templates directory
