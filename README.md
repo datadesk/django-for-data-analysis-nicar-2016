@@ -386,6 +386,8 @@ Using this method you can analyze and present your data in a number of ways that
 
 
 ## Visualizing the data: Let's make a map ##
+![Complaints map](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/map_screenshot.png)
+
 Take a look at the view `ComplaintsMap`.
 
 What's happening here? It doesn't look like anything's in the view, right? Let's take a look at the template. Open up `templates/complaints_map.html`
