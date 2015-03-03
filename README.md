@@ -68,7 +68,7 @@ Let's use this to answer a couple of basic questions about the data:
 - How many are still unaddressed?
 - How many complaints went more than a year before being addressed?
 
-```bash
+```python
 >>> from building_and_safety.models import *
 >>> complaints = Complaint.objects.all()
 >>> complaints.count()
@@ -83,7 +83,7 @@ Whats happening behind the scenes? Django's converting all of our queries to SQL
 
 We can see these, and it's helpful to see exactly what Django's trying to do when you're having trouble with a query.
 
-```bash
+```python
 >>> from django.db import connection
 >>> print connection.queries[-1]
 {u'time': u'0.028', u'sql': u'SELECT COUNT(*) FROM "building_and_safety_complaint" WHERE "building_and_safety_complaint"."more_than_one_year" = true '}
@@ -92,7 +92,7 @@ We can see these, and it's helpful to see exactly what Django's trying to do whe
 We can use this for more complicated questions too. 
 - How are the complaints older than one year distributed throughout the planning commissions? Are some worse than others?
 
-```bash
+```python
 >>> from django.db.models import Count
 >>> complaints.filter(more_than_one_year=True).values('area_planning_commission').annotate(count=Count("csr")).order_by('-count')
 [{'count': 618, 'area_planning_commission': u'East Los Angeles'}, {'count': 394, 'area_planning_commission': u'Central'}, {'count': 86, 'area_planning_commission': u'West Los Angeles'}, {'count': 60, 'area_planning_commission': u'South Valley'}, {'count': 56, 'area_planning_commission': u'South Los Angeles'}, {'count': 8, 'area_planning_commission': u'North Valley'}, {'count': 7, 'area_planning_commission': u''}, {'count': 2, 'area_planning_commission': u'Harbor'}]
@@ -347,7 +347,7 @@ Below the regional breakdown table, but before the `{% endblock %}` tag (around 
             <td class="data">{{ value.per_gt_180_days|floatformat:2 }}</td>
             <td class="data">{{ value.per_gt_year|floatformat:2 }}</td>
         </tr>
-        {% endfor%}
+        {% endfor %}
     </tbody>            
 </table>    
 ```
