@@ -12,7 +12,9 @@ We'll learn how to:
 - Create queries and views to help us analyze the data,
 - Use these views to create tables and vizualizations that we can use for publication.  
 
-That's a lot of ground to cover in 60 minutes, so this'll be like a cooking show. We'll walk through the steps, but the final product is mostly already baked. To demonstrate, here's Julia Child dancing with a turkey. 
+That's a lot of ground to cover in 60 minutes, so this'll be like a cooking show. We'll walk through the steps, but the final product is mostly already baked, just waiting in the oven. 
+
+To demonstrate, here's Julia Child dancing with a turkey. 
 
 ![Julia Child dancing with a turkey](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/turkey-dance.gif)
 
