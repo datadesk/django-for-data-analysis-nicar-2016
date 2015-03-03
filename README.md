@@ -127,7 +127,8 @@ There's a lot going on here. We've already seen that, for some reason, there wer
 To find the median time to address a complaint, we used a fancy statistical method called a survival analaysis, employing a Python library called [Lifelines](http://lifelines.readthedocs.org/en/latest/index.html). This takes into account the closure rate for complaints that are still open and haven't been closed yet. 
 
 Let's take apart this view:
-```
+
+```python
 class ComplaintAnalysis(TemplateView):
     # The HTML template we're going to use, found in the /templates directory
     template_name = "complaint_analysis.html"
@@ -135,7 +136,7 @@ class ComplaintAnalysis(TemplateView):
 
 This defines the ComplaintAnalysis as a [template view](https://docs.djangoproject.com/en/1.7/ref/class-based-views/base/#templateview), and sets the HTML template that we're going to build with the data generated from the view. You can either open complaint_analysis.html in your text editor, or follow the [link here](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/templates/complaint_analysis.html). 
 
-```
+```python
 # Quick notation to access all complaints
 complaints = Complaint.objects.all()
 
@@ -148,9 +149,10 @@ over_one_year = complaints.filter(more_than_one_year=True)
 open_over_one_year = over_one_year.filter(is_closed=False)
 closed_over_one_year = over_one_year.filter(is_closed=True)
 ```
+
 We then split our complaints into four groups: open, closed, open over a year, and closed over a year. We'll use these throughout the rest of the view.
 
-```
+```python
 # total counts of cases, all priority levels
 total_count = complaints.all().count()
 total_by_csr = get_counts_by_csr(complaints)
@@ -170,7 +172,7 @@ closed_over_one_year_by_csr = get_counts_by_csr(closed_over_one_year)
 
 We use a helper function here to get counts of complaints for each priority level:
 
-```
+```python
 def get_counts_by_csr(qs):
     counts = {}
     counts["csr1"] = qs.filter(csr_priority="1").count()
@@ -183,7 +185,7 @@ This function takes a queryset, and returns a dictionary of counts for each CSR.
 
 To calculate the response times for different priority levels of complaints, we could use Django's built-in Avg() function, but we'd have a few problems with that. In some cases though it might be applicable, so let's see how to do that. 
 
-```
+```python
 # Use Django's Avg() function to provide average response times across complaint priority levels
 >>> from django.db.models import Avg
 >>> from building_and_safety.models import Complaint
@@ -200,7 +202,7 @@ So what are the problems here? First, a small number of complaints that took an 
  
 This is why we use the Kaplan-Meier fit, which will return us a median wait time, and establishes a closure rate for accounts for complaints that are still open.
 
-```
+```python
 all_complaints = Complaint.objects.exclude(days_since_complaint__lt=0)
 kmf_fit = get_kmf_fit(all_complaints)
 median_wait_time_kmf = get_kmf_median(kmf_fit)
@@ -208,7 +210,7 @@ median_wait_time_kmf = get_kmf_median(kmf_fit)
 
 Let's take a quick look at the functions `get_kmf_fit()` and `get_kmf_median()`.
 
-```
+```python
 # Get the average wait time using a Kaplan-Meier Survival analysis estimate
 # Make arrays of the days since complaint, and whether a case is 'closed'
 # this creates the observations, and whether a "death" has been observed
@@ -225,6 +227,7 @@ def get_kmf_median(kmf):
     return kmf.median_
 
 ```
+
 `get_kmf_fit()` takes the queryset we pass into it, in this case all_complaints (we toss out any complaits with a negative response time since that would really muck up our analysis), and organizes the values in the days_since_complaint and is_closed columns into a list. The quick summary of what it does is match up the days since a complaint to whether the complaint has been closed or not. We then fit that to a Kaplan-Meier curve and return the `kmf` object. `get_kmf_median` simply returns the `median_` value of that object. 
 
 We use this method to find the median response time to all complaints, and priority level 1, 2 and 3 complaints. 
@@ -241,14 +244,14 @@ There are libraries in R that can do this as well, (see [survival](http://cran.r
 
 Since it seems like response times are slower in the eastern parts of the city, let's also break this down by areas. We make a list of the seven different planning commission areas, and then make a dict to place the data returned. 
 
-```
+```python
 region_names = ['Central','East Los Angeles','Harbor','North Valley','South Los Angeles','South Valley','West Los Angeles']
 regions = {}
 ```
 
 Then we iterate over those region names, creating a queryset and aggregate counts for each area. 
 
-```
+```python
 # Iterate over each name in our region_names list
 for region in region_names:
     # Filter for complaints in each region
@@ -261,13 +264,13 @@ for region in region_names:
 
 Let's also find the volume of complaints each area receives in a year. 
 
-```
+```python
 regions[region]['avg_complaints_per_year'] = get_avg_complaints_filed_per_year(region)
 ```
 
 And let's find the average days to resolve a complaint in each region. Again, average days to resolve isn't a great measure, so let's use our survival analysis function again to find the median response time for each priority level of complaint. This is basically the exact same thing we did above, but for a smaller queryset of complaints confined to each planning commission area. 
 
-```
+```python
 # Separate the complaints into querysets of their respective priority levels 
 region_csr1 = qs.filter(csr_priority="1")
 region_csr2 = qs.filter(csr_priority="2")
@@ -288,13 +291,13 @@ regions[region]['median_wait_kmf_csr3'] = get_kmf_median(regional_kmf_fit_csr3)
 
 Last, we also find the number of complants greater than a year in each area.
 
-```
+```python
 regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
 ```
 
 Now lets add a few of our own things into the view. We have complaints over a year, but where are the response times breaking down? Let's also find complaints older than 30, 90 and 180 days. Go ahead and type or copy/paste this under the above line of code. Remember to indent properly! (You should be about three indentation levels over.)
 
-```
+```python
 # Also grab counts of the number of complaints greater than 30, 90 and 180 days
 regions[region]['gt_30_days'] = qs.filter(gt_30_days=True).count()
 regions[region]['gt_90_days'] = qs.filter(gt_90_days=True).count()
@@ -303,7 +306,7 @@ regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
 
 And let's use `latimes-calculate` to find the what proportion of the total complaints have a wait time greater than 30, 90, 180 days and one year.
 
-```
+```python
 # use calculate to find percentages
 regions[region]['per_gt_30_days'] = calculate.percentage(regions[region]['gt_30_days'],regions[region]['total'])
 regions[region]['per_gt_90_days'] = calculate.percentage(regions[region]['gt_90_days'],regions[region]['total'])
@@ -323,7 +326,7 @@ We have summary data for all complaints, and for complants broken down by region
 
 Below the regional breakdown table, but before the `{% endblock %}` tag (around line 114), type or paste in this HTML, and reload the page. 
 
-```
+```htmldjango
 <h3>Wait times</h3>
 <table class="table table-striped table-bordered table-condensed">
     <thead>
@@ -363,13 +366,13 @@ These two views are essentially the same, pulling in all geocoded complaints tha
 
 Both use a method on the Complaint model to export relevant fields of the model to a GeoJSON object. 
 
-```
+```python
 features = [complaint.as_geojson_dict() for complaint in complaints]
 ```
 
 This refers back the `as_geojson_dict()` method on the Complaint model. This method takes properties from the model and returns them in a geojson dict format:
 
-```
+```python
 def as_geojson_dict(self):
   """
   Method to return each feature in the DB as a geojson object.
@@ -397,7 +400,7 @@ def as_geojson_dict(self):
 
 We get this dict for each item in the queryset, and then form them into a geojson object, that is returned when we request the view. 
 
-```
+```python
 objects = {
     'type': "FeatureCollection",
     'features': features
@@ -416,7 +419,7 @@ Take a look at the views for `open_complaints_json` and `closed_complaints_json`
 
 Say, later in the editing process, we want to export only complaints older than 180 days, instead of a year. In Django, this is easy:
 
-```
+```python
 complaints = Complaint.objects\
         .filter(is_closed=True, gt_180_days=True).exclude(lat=None, lon=None)
 ```
@@ -429,7 +432,7 @@ You can also change the information that's fed into the GeoJSON object. Maybe we
 
 Let's add this in line 148 of models.py 
 
-```
+```python
 "properties": {
     "address": self.full_address,
     "csr": self.csr,
@@ -444,7 +447,7 @@ Let's add this in line 148 of models.py
 
 And we'll modify our leaflet tooltip to pull in this information in complaints_map.html. On line 166, we feed those properties to our underscore template.:
 
-```
+```javascript
 var context = {
     address: props["address"],
     csr: props["csr"],
@@ -458,7 +461,8 @@ var context = {
 ``` 
 
 And update the underscore template on line 74.
-```
+
+```html
 <script type="text/template" id="tooltip-template">
     <h4><a href="/complaint/<%= csr %>/"><%= address %></a></h4>
     <p>CSR number <a href="/complaint/<%= csr %>/"><%= csr %></a></p>
