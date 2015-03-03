@@ -93,7 +93,9 @@ Let's use this to answer a couple of basic questions about the data:
 1231
 ```
 
-Whats happening behind the scenes? Django's converting all of our queries to SQL, and executing them on the database. When we write code like `complaints = Complaint.objects.all()` Django is creating a [queryset](https://docs.djangoproject.com/en/1.7/ref/models/querysets/), an easy way to filter and slice our data without hitting the database. The database is only queried once we call something that evaluates the queryset, like `.count()`.
+Whats happening behind the scenes? 
+
+Django's converting all of our queries to SQL, and executing them on the database. When we write code like `complaints = Complaint.objects.all()` Django is creating a [queryset](https://docs.djangoproject.com/en/1.7/ref/models/querysets/), an easy way to filter and slice our data without hitting the database. The database is only queried once we call something that evaluates the queryset, like `.count()`.
 
 We can see these, and it's helpful to see exactly what Django's trying to do when you're having trouble with a query.
 
@@ -134,9 +136,16 @@ Starting development server at http://0.0.0.0:8000/
 Quit the server with CONTROL-C.
 ```
 
+First of all, let's cheat. Let's see what we're going to get first, and then look at how we get it. In your web browser, go to [http://localhost:8000/complaint_analysis](http://localhost:8000/complaint_analysis).
+
+![Analysis page](/images/logo.png)
+
+
 Open up the views.py file in your text editor, and look at the [ComplaintAnalysis](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L71) view.
 
-There's a lot going on here. We've already seen that, for some reason, there were more complaints open after a year in East L.A. But is this because they receive more complaints in general? Are some types of complaints addressed more quickly than others?
+There's a lot going on here. We've already seen that, for some reason, there were more complaints open after a year in East L.A. 
+
+But is this because they receive more complaints in general? Are some types of complaints addressed more quickly than others?
 
 To find the median time to address a complaint, we used a fancy statistical method called a survival analaysis, employing a Python library called [Lifelines](http://lifelines.readthedocs.org/en/latest/index.html). This takes into account the closure rate for complaints that are still open and haven't been closed yet. 
 
