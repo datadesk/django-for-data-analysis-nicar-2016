@@ -229,6 +229,16 @@ def get_kmf_median(kmf):
 
 We use this method to find the median response time to all complaints, and priority level 1, 2 and 3 complaints. 
 
+### Why Lifelines? Why Survival Analysis? ###
+Why do we need to do a survival analysis function here instead of just calculating the averages of the values we do have? 
+
+Survival analysis was for use by actuaries and medical professionals originally developed to measure lifespans of individuals. It can be applied to not just actual births and deaths of people, but any instance where a "birth" or "death" can be observed. In this case, a "birth" is the opening of a complaint, and "death" is that complaint being visited and marked as "closed."
+
+There are libraries in R that can do this as well, (see [survival](http://cran.r-project.org/web/packages/survival/index.html) and [KMsurv](http://cran.r-project.org/web/packages/KMsurv/index.html),) but using a Python library keeps this all in the same development stack. 
+
+
+### Back to the view ###
+
 Since it seems like response times are slower in the eastern parts of the city, let's also break this down by areas. We make a list of the seven different planning commission areas, and then make a dict to place the data returned. 
 
 ```
