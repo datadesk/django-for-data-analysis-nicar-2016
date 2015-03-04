@@ -90,10 +90,12 @@ $ python manage.py migrate
 $ python manage.py load_complaints
 ```
 
-This command creates a Complaint record for every row in our two csvs. Note that instead of saving every individual record as it's loaded, we use Django's bulk_create method to create them in batches of 500. This saves a ton of time as we're not hitting the database for row in the CSV.
+Take a look at the management command, located in [building_and_safety/management/commands/load_complaints.py](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/management/commands/load_complaints.py)
+
+This command creates a Complaint record for every row in our two csvs. Note that instead of saving every individual record as it's loaded, we use Django's bulk_create method to create them in batches of 500. This saves a ton of time as we're not hitting the database for every row in the CSV.
 
 ## What are we looking at here? Exploring the data ##
-We can use basic Django commands to get a feel the data we're looking at. 
+We can use basic Django commands to get a feel of the data we're looking at. 
 
 ```bash
 $ python manage.py shell

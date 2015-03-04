@@ -131,8 +131,7 @@ class Command(BaseCommand):
                     lon = self.parse_lat_lon(row["Latitude/Longitude"])[0]
                     )
                 
-                # TODO 
-                # Note what's going on here
+                # Here, we call back to methods on the Complaint model. 
                 c.is_closed = self.get_is_closed(c)
                 c.days_since_complaint = c.get_days_since_complaint()
                 c.more_than_one_year = c.get_gt_t_days(365)
