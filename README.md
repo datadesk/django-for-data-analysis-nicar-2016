@@ -203,7 +203,7 @@ Another example was performed by Times database editor Doug Smith and data analy
 
 There are libraries in R that can do this as well, (see [survival](http://cran.r-project.org/web/packages/survival/index.html) and [KMsurv](http://cran.r-project.org/web/packages/KMsurv/index.html),) but using a Python library keeps this all in the same development stack.
 
-### Diving into the view ###
+## Diving into the views ##
 
 Open up the views.py file in your text editor, and look at the [ComplaintAnalysis](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L55) view.
 
@@ -298,14 +298,14 @@ This function makes two lists: one of the count of days since a complaint was cr
 
 We use this method to find the median response time to all complaints, as well as the response time for priority level 1, 2 and 3 complaints.
 
-Since it seems like response times are slower in the eastern parts of the city, let's also break this down by areas. We make a list of the seven different planning commission areas, and then make a dict to place the data returned. 
+Since it seems like response times are slower in the eastern parts of the city, let's break it down further. We make a list of the seven different planning commission areas, and then store the results in a dictionary. 
 
 ```python
 region_names = ['Central','East Los Angeles','Harbor','North Valley','South Los Angeles','South Valley','West Los Angeles']
 regions = {}
 ```
 
-Then we iterate over those region names, creating a queryset and aggregate counts for each area. 
+Then, we iterate over those region names, creating a queryset and aggregate counts for each area. 
 
 ```python
 # Iterate over each name in our region_names list
@@ -324,7 +324,7 @@ Let's also find the volume of complaints each area receives in a year.
 regions[region]['avg_complaints_per_year'] = get_avg_complaints_filed_per_year(region)
 ```
 
-And let's find the average days to resolve a complaint in each region. Again, average days to resolve isn't a great measure, so let's use our survival analysis function again to find the median response time for each priority level of complaint. This is basically the exact same thing we did above, but for a smaller queryset of complaints confined to each planning commission area. 
+Let's use survival analysis to find the median response time for each priority level of complaint. This is basically the same thing we did above, but for a smaller queryset of complaints confined to each planning commission area. 
 
 ```python
 # Separate the complaints into querysets of their respective priority levels 
@@ -351,7 +351,7 @@ Last, we also find the number of complants greater than a year in each area.
 regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
 ```
 
-Now lets add a few of our own things into the view. We have complaints over a year, but where are the response times breaking down? Let's also find complaints older than 30, 90 and 180 days. Go ahead and type or copy/paste this under the above line of code. Remember to indent properly! (You should be about three indentation levels over.)
+Now let's add a few of our own things into the view. We have complaints over a year, but where are the response times breaking down? Let's also find complaints older than 30, 90 and 180 days. Go ahead and type or copy/paste this under the above line of code. Remember to indent properly! (You should be about three indentation levels over.)
 
 ```python
 # Also grab counts of the number of complaints greater than 30, 90 and 180 days
