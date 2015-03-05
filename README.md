@@ -351,18 +351,13 @@ Last, we also find the number of complants greater than a year in each area.
 regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
 ```
 
-Now let's add a few of our own things into the view. We have complaints over a year, but where are the response times breaking down? Let's also find complaints older than 30, 90 and 180 days. Go ahead and type or copy/paste this under the above line of code. Remember to indent properly! (You should be about three indentation levels over.)
+Now let's add a few of our own things into the view. We have complaints over a year, but where are the response times breaking down? Let's also find the number of complaints older than 30, 90, 180 days and one year, and use `latimes-calculate` to find the what percentage of the total complaints fall in these categories. Go ahead and type or copy/paste this under the above line of code. Remember to indent properly!
 
 ```python
 # Also grab counts of the number of complaints greater than 30, 90 and 180 days
 regions[region]['gt_30_days'] = qs.filter(gt_30_days=True).count()
 regions[region]['gt_90_days'] = qs.filter(gt_90_days=True).count()
 regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
-```
-
-And let's use `latimes-calculate` to find the what proportion of the total complaints have a wait time greater than 30, 90, 180 days and one year.
-
-```python
 # use calculate to find percentages
 regions[region]['per_gt_30_days'] = calculate.percentage(regions[region]['gt_30_days'],regions[region]['total'])
 regions[region]['per_gt_90_days'] = calculate.percentage(regions[region]['gt_90_days'],regions[region]['total'])
