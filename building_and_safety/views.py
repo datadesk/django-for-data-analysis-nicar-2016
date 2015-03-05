@@ -137,7 +137,16 @@ class ComplaintAnalysis(TemplateView):
             regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
 
             # Paste response time breakdown here
-
+            # Also grab counts of the number of complaints greater than 30, 90 and 180 days
+            regions[region]['gt_30_days'] = qs.filter(gt_30_days=True).count()
+            regions[region]['gt_90_days'] = qs.filter(gt_90_days=True).count()
+            regions[region]['gt_180_days'] = qs.filter(gt_180_days=True).count()
+            # use calculate to find percentages
+            regions[region]['per_gt_30_days'] = calculate.percentage(regions[region]['gt_30_days'],regions[region]['total'])
+            regions[region]['per_gt_90_days'] = calculate.percentage(regions[region]['gt_90_days'],regions[region]['total'])
+            regions[region]['per_gt_180_days'] = calculate.percentage(regions[region]['gt_180_days'],regions[region]['total'])
+            regions[region]['per_gt_year'] = calculate.percentage(regions[region]['gt_year'],regions[region]['total'])
+            
         return locals()
 
 
