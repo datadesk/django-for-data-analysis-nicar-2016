@@ -5,16 +5,16 @@ So you know some SQL, or maybe done data analysis with R, but would prefer a mor
 
 In addition to making front-facing web apps, Django can also be used internally as a reporting and research tool to explore a dataset. 
 
-To do this, we'll use a publicly available dataset from the [City of L.A.'s data portal](https://data.lacity.org/) on [response times to complaints](https://data.lacity.org/browse?q=building%20and%20safety%20customer%20service%20request&sortBy=relevance&utf8=%E2%9C%93) filed to the Department of Building and Safety. We used this data to publish a [story on the varying response times](http://www.latimes.com/local/cityhall/la-me-building-safety-delay-20141219-story.html) to DBS complaints throughout the city, including especially slow response times on the Eastside.  
+To do this, we'll use a publicly available dataset from the [City of L.A.'s data portal](https://data.lacity.org/) on [response times to complaints](https://data.lacity.org/browse?q=building%20and%20safety%20customer%20service%20request&sortBy=relevance&utf8=%E2%9C%93) filed to the Department of Building and Safety. We used this data to publish a [story on the varying response times](http://www.latimes.com/local/cityhall/la-me-building-safety-delay-20141219-story.html) to DBS complaints throughout the city, including especially slow response times on the East side of L.A.
 
 We'll learn how to:
-- Load data from a CSV into Django models,  
-- Create queries and views to help us analyze the data,
-- Use these views to create tables and vizualizations that we can use for publication.  
+- Load data from a CSV into Django models.
+- Create queries and views to help us analyze the data.
+- Create tables and vizualizations that we can use for publication.  
 
-That's a lot of ground to cover in 60 minutes, so this'll be like a cooking show. We'll walk through the steps, but the final product is mostly already baked, just waiting in the oven. 
+That's a lot of ground to cover in 60 minutes, so this will be like a cooking show. We'll walk through the steps, but the final product is mostly already baked, just waiting in the oven. 
 
-To demonstrate, here's Julia Child dancing with a turkey. 
+To demonstrate, here's Julia Child dancing with a turkey:
 
 ![Julia Child dancing with a turkey](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/turkey-dance.gif)
 
