@@ -416,7 +416,11 @@ Below the regional breakdown table, but before the `{% endblock %}` tag (around 
 </table>    
 ```
 
+---------
+
 ![Pasting the html](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/pasting_html.gif)
+
+---------
 
 Using this method you can analyze and present your data in a number of ways that can help you find and understand the story. 
 
