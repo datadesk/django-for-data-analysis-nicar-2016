@@ -556,5 +556,5 @@ We skipped it for this lesson, but in the original story, we used [GeoDjango](ht
 Using GeoDjango, you can also set a buffer around a point, which is what LAT Alum Ken Schwencke did for [this piece](http://homicide.latimes.com/post/westmont-homicides/) analyzing homicides in the unincorporated neighborhood of Westmont and along a two-mile stretch of Vermont Ave. called "Death Alley."
 
 
-
+![Julia Child brandishing cutlery over a fish](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/fish.gif)
 
