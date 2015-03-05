@@ -137,44 +137,42 @@ We can use this for more complicated questions too. How are the complaints older
 >>> complaints.filter(more_than_one_year=True).values('area_planning_commission').annotate(count=Count("csr")).order_by('-count')
 [{
     'count': 618,
-    'area_planning_commission': u 'East Los Angeles'
+    'area_planning_commission': u'East Los Angeles'
 }, {
     'count': 394,
-    'area_planning_commission': u 'Central'
+    'area_planning_commission': u'Central'
 }, {
     'count': 86,
-    'area_planning_commission': u 'West Los Angeles'
+    'area_planning_commission': u'West Los Angeles'
 }, {
     'count': 60,
-    'area_planning_commission': u 'South Valley'
+    'area_planning_commission': u'South Valley'
 }, {
     'count': 56,
-    'area_planning_commission': u 'South Los Angeles'
+    'area_planning_commission': u'South Los Angeles'
 }, {
     'count': 8,
-    'area_planning_commission': u 'North Valley'
+    'area_planning_commission': u'North Valley'
 }, {
     'count': 7,
-    'area_planning_commission': u ''
+    'area_planning_commission': u''
 }, {
     'count': 2,
-    'area_planning_commission': u 'Harbor'
+    'area_planning_commission': u'Harbor'
 }]
 ```
 
 Now we're on to something.
 
 ## Views: Documenting and replicating your work ##
-One advantage of using Django is that all of our data manipulation can be stored in the views, and the output displayed in HTML templates. 
+One advantage of using Django is that all of our data manipulation can be stored in views, and the output displayed in HTML templates. 
 
-We've already created a few views that start to explore the data, so let's start exploring. 
+We've already created a few views that summarize the data, so let's take a look.
 
-Exit the python interpreter, if you still have it running, by pressing `CTRL-D`, and start the Django server.
+Exit the Python interpreter, if you still have it running, by pressing `CTRL-D`, and start the Django server.
 
 ```bash
-$ fab rs
-Removing .pyc files
-[localhost] local: python manage.py runserver 0.0.0.0:8000
+$ python manage.py runserver
 Validating models...
 
 0 errors found
@@ -184,21 +182,19 @@ Starting development server at http://0.0.0.0:8000/
 Quit the server with CONTROL-C.
 ```
 
-First of all, let's cheat. Let's see what we're going to get first, and then look at how we get it. In your web browser, go to [http://localhost:8000/complaint_analysis](http://localhost:8000/complaint_analysis).
+In the spirit of a cooking show, let's cheat. Let's see what we're going to get first, and then look at how we get it. In your web browser, go to [http://localhost:8000/complaint_analysis](http://localhost:8000/complaint_analysis).
 
 ![Analysis page](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/table_demo.png)
 
-We've got a table with some basic information about our complaints. How many have been addressed, how many are still open, and how many have hung around for a really long time. 
+Here is a table with some basic information about our complaints. How many have been addressed, how many are still open, and how many have hung around for a really long time. 
 
 In the second table, we also break this down by area planning commissions - areas used by the L.A. Department of City Planning to divide up the city. 
 
-Open up the views.py file in your text editor, and look at the [ComplaintAnalysis](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L71) view.
+Open up the views.py file in your text editor, and look at the [ComplaintAnalysis](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L55) view.
 
-There's a lot going on here. We've already seen that, for some reason, there were more complaints open after a year in East L.A. 
+There's a lot going on here. We know there were more complaints open after a year in East L.A. than other parts of the city. But is this because they receive more complaints in general? Are some types of complaints addressed more quickly than others?
 
-But is this because they receive more complaints in general? Are some types of complaints addressed more quickly than others?
-
-To find the median time to address a complaint, we used a fancy statistical method called a survival analaysis, employing a Python library called [Lifelines](http://lifelines.readthedocs.org/en/latest/index.html). This takes into account the closure rate for complaints that are still open and haven't been closed yet. 
+To find the median time to address a complaint, we used a statistical method called a survival analaysis, employing a Python library called [Lifelines](http://lifelines.readthedocs.org/en/latest/index.html). This takes into account the closure rate for complaints that are still open and haven't been closed yet. 
 
 Let's take apart this view:
 
