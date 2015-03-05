@@ -87,15 +87,13 @@ There are also a few fields that we're calculating at the time we load the data:
   - **gt_30_days**, **gt_90_days**, **gt_180_days**, **more_than_one_year** - Different booleans to make it easy to access cases of a certain age.
 
 
-Then, let's load the complaints data:
+Then, let's load the complaints data using a custom management command you can see here: [building_and_safety/management/commands/load_complaints.py](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/management/commands/load_complaints.py)
 
 ```bash
 $ python manage.py load_complaints
 ```
 
-Take a look at the management command, located in [building_and_safety/management/commands/load_complaints.py](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/management/commands/load_complaints.py)
-
-This command creates a Complaint record for every row in our two csvs. Note that instead of saving every individual record as it's loaded, we use Django's bulk_create method to create them in batches of 500. This saves a ton of time as we're not hitting the database for every row in the CSV.
+The city provides two CSVs of data -- one for open cases and another for closed. This command creates a Complaint record for every row in our two csvs. Note that instead of saving every individual record as it's loaded, we use Django's bulk_create method to create them in batches of 500. This saves time because we're not hitting the database for every row in the CSV.
 
 ## What are we looking at here? Exploring the data ##
 We can use basic Django commands to get a feel of the data we're looking at. 
