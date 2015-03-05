@@ -70,21 +70,21 @@ $ python manage.py migrate
 ## Getting started: The Models ##
 - First, let's look at our models, and how they correspond to our source data CSVs. There are a couple of fields we're concerned with or need more explanation. In your text editor or browser, open up [models.py](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/models.py) and [building_and_safety/data/Building_and_Safety_Customer_Service_Request__out.csv](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/data/Building_and_Safety_Customer_Service_Request_out.csv)
 
-  - **csr** - this is a complaint ID, and can serve as our primary key
+  - **csr** - This stands for customer service request ID, and can serve as our primary key.
   - **ladbs_inspection_district** - How LADBS divides their inspectors, one per district. After reporting this out further we found that these actually change quite a bit from year-to-year.
-  - **date_received** - date the complaint was received.
+  - **date_received** - Date the complaint was received.
   - **date_closed** - "Closed" is a funny term here. This is actually the date that an inspector visited the location of a complaint. In many cases this is when an inspector determines whether a complaint is valid or not. So really "closed" just means an inspector has visited a complaint.
-  - **date_due** - arbitrary measure of time that the LADBS would like to address a complaint by. They apparently don't place a whole lot of meaning on this, and not all complaints have due dates.
+  - **date_due** - Arbitrary measure of time that the LADBS would like to address a complaint by. They apparently don't place a whole lot of meaning on this, and not all complaints have due dates.
   - **csr_priority** - This is the priority level that LADBS responds to the complaints. Level 1 is often life-threatening, level 2 is quality of life issues, and level 3 is more like a nuisance.
-  - **area_planning_commission** - one of the seven different planning department areas the complaint is located in. We used this and the neighborhood level for most of our analysis. 
-  - **response_days** - good reason to vet your data. We realized this was calculated differently for open and closed days, so was essentially useless. Instead we calculated this on our own. 
+  - **area_planning_commission** - One of the seven different planning department areas the complaint is located in. We used this and the neighborhood level for most of our analysis. 
+  - **response_days** - This should reflect the number of days it takes to respond to a complaint, however it is calculated differently for open and closed cases. So, this is a good example of why you need to understand your data. We calculated this field manually. 
 
 
-- There are also a few fields that we're calculating on load 
-  - **full_address** - caching the address by concatenating the seven different types of address field in the data
-  - **is_closed** - easier way to find whether a case is "closed" or not. 
-  - **days_since_complaint** - basically a useful version of the **response_days** field above. Calculated by finding the difference between the date received and the date closed. 
-  - **gt_30_days**, **gt_90_days**, **gt_180_days**, **more_than_one_year** - different booleans to make it easy to access cases of a certain age level. 
+- There are also a few fields that we're calculating at the time we load the data:
+  - **full_address** - Caching the address by concatenating the seven different address fields.
+  - **is_closed** - An easier way to find whether a case is "closed" or not. 
+  - **days_since_complaint** - Our calculated "response_days" field from above. Finds the difference between the date received and the date closed. 
+  - **gt_30_days**, **gt_90_days**, **gt_180_days**, **more_than_one_year** - Different booleans to make it easy to access cases of a certain age.
 
 
 - load Complaints data
