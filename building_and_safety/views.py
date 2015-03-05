@@ -136,6 +136,8 @@ class ComplaintAnalysis(TemplateView):
 
             regions[region]['gt_year'] = qs.filter(more_than_one_year=True).count()
 
+            # Paste response time breakdown here
+
         return locals()
 
 
