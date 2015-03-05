@@ -164,7 +164,7 @@ We can use this for more complicated questions too. How are the complaints older
 
 Now we're on to something.
 
-## Views: Documenting and replicating your work ##
+## The views: A first look ##
 One advantage of using Django is that all of our data manipulation can be stored in views, and the output displayed in HTML templates. 
 
 We've already created a few views that summarize the data, so let's take a look.
@@ -190,16 +190,18 @@ Here is a table with some basic information about our complaints. How many have 
 
 In the second table, we also break this down by area planning commissions - areas used by the L.A. Department of City Planning to divide up the city. 
 
-### Why Lifelines? Why Survival Analysis? ###
-Why do we need to do a survival analysis function here instead of just calculating the averages of the values we do have? 
+## A primer on survival analysis ##
+For our analysis, we want to get the median time it takes to close a complaint. Simply calculating the median based on complaints that are already closed leaves out all of the complaints that are still open -- including those that have lingered in the system unaddressed for more than a year.
 
-Survival analysis was for use by actuaries and medical professionals originally developed to measure lifespans of individuals. It can be applied to not just actual births and deaths of people, but any instance where a "birth" or "death" can be observed. In this case, a "birth" is the opening of a complaint, and "death" is that complaint being visited and marked as "closed."
+Using a statistical method called survival analysis can help us account for complaints still open, and give us a more accurate closure time.
+
+Survival analysis was created for use by actuaries and medical professionals to measure lifespans of individuals. It can be used to analyze not only literal births and deaths, but also any instance where a "birth" or "death" can be observed. In this case, a "birth" is the opening of a complaint, and "death" is that complaint being visited and marked as "closed."
 
 The excellent [Lifelines documentation](http://lifelines.readthedocs.org/) has another example of survival analysis looking at the [tenure of world leaders](http://lifelines.readthedocs.org/en/latest/Intro%20to%20lifelines.html, where the "birth" is the start of their time in office and the "death" is their departure. 
 
 Another example was performed by Times database editor Doug Smith and data analyst Brian Kim in finding that youths in California's [privatized foster care](http://www.latimes.com/local/la-me-foster-care-dto-htmlstory.html#ixzz2phNFH4q4) remained in the foster system 11% longer than those in other types of homes — 378 days compared to 341 days.
 
-There are libraries in R that can do this as well, (see [survival](http://cran.r-project.org/web/packages/survival/index.html) and [KMsurv](http://cran.r-project.org/web/packages/KMsurv/index.html),) but using a Python library keeps this all in the same development stack. 
+There are libraries in R that can do this as well, (see [survival](http://cran.r-project.org/web/packages/survival/index.html) and [KMsurv](http://cran.r-project.org/web/packages/KMsurv/index.html),) but using a Python library keeps this all in the same development stack.
 
 ### Diving into the view ###
 
@@ -207,9 +209,7 @@ Open up the views.py file in your text editor, and look at the [ComplaintAnalysi
 
 There's a lot going on here. We know there were more complaints open after a year in East L.A. than other parts of the city. But is this because they receive more complaints in general? Are some types of complaints addressed more quickly than others?
 
-To find the median time to address a complaint, we used a statistical method called a survival analaysis, employing a Python library called [Lifelines](http://lifelines.readthedocs.org/en/latest/index.html). This takes into account the closure rate for complaints that are still open and haven't been closed yet. 
-
-Let's take apart this view:
+To find the median time to address a complaint, we use survival analaysis. Let's take apart this view:
 
 ```python
 class ComplaintAnalysis(TemplateView):
@@ -266,24 +266,7 @@ def get_counts_by_csr(qs):
 
 This function takes a queryset, and returns a dictionary of counts for each CSR. This is the programming adage of (DRY)[http://en.wikipedia.org/wiki/Don%27t_repeat_yourself], we're not repeating the same code many different times in our view.
 
-To calculate the response times for different priority levels of complaints, we could use Django's built-in Avg() function, but we'd have a few problems with that. In some cases though it might be applicable, so let's see how to do that. 
-
-```python
-# Use Django's Avg() function to provide average response times across complaint priority levels
->>> from django.db.models import Avg
->>> from building_and_safety.models import Complaint
->>> closed_complaints = Complaint.objects.filter(is_closed=True, days_since_complaint__gte=0)
->>> closed_complaints.aggregate(Avg('days_since_complaint'))
-{'days_since_complaint__avg': 28.575226413962696}
-
-# access the number through the property of the dict
->>> closed_complaints.aggregate(Avg('days_since_complaint'))['days_since_complaint__avg']
-28.575226413962696
-```
-
-So what are the problems here? First, a small number of complaints that took an extraordinary amount of time to close will distort the average. Also, if we calculated the average of closed cases, this wouldn't include the cases still in the system that have yet to be closed. Those have response times too, and we have to account for them. 
- 
-This is why we use the Kaplan-Meier fit, which will return us a median wait time, and establishes a closure rate for accounts for complaints that are still open.
+To calculate the response times for different priority levels of complaints, we use the Kaplan-Meier fit from our survival analysis library. It will return us a median wait time, and establish a closure rate for accounts for complaints that are still open.
 
 ```python
 all_complaints = Complaint.objects.exclude(days_since_complaint__lt=0)
@@ -311,12 +294,9 @@ def get_kmf_median(kmf):
 
 ```
 
-`get_kmf_fit()` takes the queryset we pass into it, in this case all_complaints (we toss out any complaits with a negative response time since that would really muck up our analysis), and organizes the values in the days_since_complaint and is_closed columns into a list. The quick summary of what it does is match up the days since a complaint to whether the complaint has been closed or not. We then fit that to a Kaplan-Meier curve and return the `kmf` object. `get_kmf_median` simply returns the `median_` value of that object. 
+This function makes two lists: one of the count of days since a complaint was created and another of whether the complaint has been closed. Those lists are then fitted to a Kaplan-Meier curve, and the function returns the `kmf` object. `get_kmf_median` simply returns the `median_` value of that object.
 
-We use this method to find the median response time to all complaints, and priority level 1, 2 and 3 complaints. 
-
-
-### Edit meeeeee ###
+We use this method to find the median response time to all complaints, as well as the response time for priority level 1, 2 and 3 complaints.
 
 Since it seems like response times are slower in the eastern parts of the city, let's also break this down by areas. We make a list of the seven different planning commission areas, and then make a dict to place the data returned. 
 
