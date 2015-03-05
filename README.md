@@ -73,9 +73,9 @@ First, let's look at our models, and how they correspond to our source data CSVs
 
 |CSR Number|LADBS Inspection District|Address House Number|Address House Fraction Number|Address Street Direction|Address Street Name|Address Street Suffix|Address Street Suffix Direction|Address Street Zip|Date Received|Date Closed|Due Date|Case Flag|CSR Priority|GIS Parcel Identification Number (PIN)|CSR Problem Type|Area Planning Commission (APC)|Case Number Related to CSR|Response Days|Latitude/Longitude|
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|263018|4500|19841| |W|VENTURA|BLVD| |91367|3/1/2011||3/21/2011|N|3|174B113   358|"ISSUES REGARDING ADULT ENTERTAINMENT LOCATIONS (CLUBS, CABARETS, BOOK AND VIDEO STORES)"|South Valley|||"(34.1725, -118.5653)"|
-|265325|2142|972| |N|NORMANDIE|AVE| |90029|4/7/2011||5/5/2011|N|3|144B197  1166|FENCES WALLS AND HEDGES THAT ARE TOO HIGH|Central|||"(34.08833, -118.30032)"|
-|265779|2142|1402| |N|ALEXANDRIA|AVE| |90027|4/14/2011||5/12/2011|N|3|147B197   909|FENCES WALLS AND HEDGES THAT ARE TOO HIGH|Central|||"(34.0967, -118.29815)"|
+|263018|4500|19841| |W|VENTURA|BLVD| |91367|3/1/2011||3/21/2011|N|3|174B113   358|"ISSUES REGARDING ADULT ENTERTAINMENT LOCATIONS (CLUBS, CABARETS, BOOK AND VIDEO STORES)"|South Valley|||(34.1725, -118.5653)|
+|265325|2142|972| |N|NORMANDIE|AVE| |90029|4/7/2011||5/5/2011|N|3|144B197  1166|FENCES WALLS AND HEDGES THAT ARE TOO HIGH|Central|||(34.08833, -118.30032)|
+|265779|2142|1402| |N|ALEXANDRIA|AVE| |90027|4/14/2011||5/12/2011|N|3|147B197   909|FENCES WALLS AND HEDGES THAT ARE TOO HIGH|Central|||(34.0967, -118.29815)|
 
   - **csr** - This stands for customer service request ID, and can serve as our primary key.
   - **ladbs_inspection_district** - How LADBS divides their inspectors, one per district. After reporting this out further we found that these actually change quite a bit from year-to-year.
