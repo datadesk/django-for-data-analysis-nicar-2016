@@ -37,6 +37,9 @@ $ cd repo
 Then, install the requirements by typing or pasting the two commands below. This uses a Python data stack of NumPy, SciPy and Pandas, so it takes a loooong time to install. I highly recommend you do this before the class, if possible. 
 
 ```bash
+# If you're using Ubuntu, and have not installed SciPy before
+# you may need to install these system libraries
+$ sudo apt-get install gfortran libopenblas-dev liblapack-dev
 # we have to install numpy first due to some bugs with the numpy install
 $ pip install numpy==1.8.1
 $ pip install -r requirements.txt
