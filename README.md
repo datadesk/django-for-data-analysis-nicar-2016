@@ -58,7 +58,7 @@ You just installed Django's auth system, which means you don't have any superuse
 Would you like to create one now? (yes/no): 
 ```
 
-Enter "yes", and also your email address and password (it won't matter here, since we're not deploying anywhere, anyway.)
+Enter "yes", and pick a username and password you will remember. You can skip the email field.
 
 Next, more setup to migrate the database.
 
