@@ -96,7 +96,7 @@ $ python manage.py load_complaints
 The city provides two CSVs of data -- one for open cases and another for closed. This command creates a Complaint record for every row in our two csvs. Note that instead of saving every individual record as it's loaded, we use Django's bulk_create method to create them in batches of 500. This saves time because we're not hitting the database for every row in the CSV.
 
 ## What are we looking at here? Exploring the data ##
-We can use basic Django commands to get a feel of the data we're looking at. 
+We can use our shell to explore the data with Django's query sets.
 
 ```bash
 $ python manage.py shell
@@ -130,13 +130,36 @@ We can see these, and it's helpful to see exactly what Django's trying to do whe
 {u'time': u'0.028', u'sql': u'SELECT COUNT(*) FROM "building_and_safety_complaint" WHERE "building_and_safety_complaint"."more_than_one_year" = true '}
 ```
 
-We can use this for more complicated questions too. 
-- How are the complaints older than one year distributed throughout the planning commissions? Are some worse than others?
+We can use this for more complicated questions too. How are the complaints older than one year distributed throughout the planning commissions? Are some worse than others?
 
 ```python
 >>> from django.db.models import Count
 >>> complaints.filter(more_than_one_year=True).values('area_planning_commission').annotate(count=Count("csr")).order_by('-count')
-[{'count': 618, 'area_planning_commission': u'East Los Angeles'}, {'count': 394, 'area_planning_commission': u'Central'}, {'count': 86, 'area_planning_commission': u'West Los Angeles'}, {'count': 60, 'area_planning_commission': u'South Valley'}, {'count': 56, 'area_planning_commission': u'South Los Angeles'}, {'count': 8, 'area_planning_commission': u'North Valley'}, {'count': 7, 'area_planning_commission': u''}, {'count': 2, 'area_planning_commission': u'Harbor'}]
+[{
+    'count': 618,
+    'area_planning_commission': u 'East Los Angeles'
+}, {
+    'count': 394,
+    'area_planning_commission': u 'Central'
+}, {
+    'count': 86,
+    'area_planning_commission': u 'West Los Angeles'
+}, {
+    'count': 60,
+    'area_planning_commission': u 'South Valley'
+}, {
+    'count': 56,
+    'area_planning_commission': u 'South Los Angeles'
+}, {
+    'count': 8,
+    'area_planning_commission': u 'North Valley'
+}, {
+    'count': 7,
+    'area_planning_commission': u ''
+}, {
+    'count': 2,
+    'area_planning_commission': u 'Harbor'
+}]
 ```
 
 Now we're on to something.
