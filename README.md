@@ -46,6 +46,15 @@ $ pip install -r requirements.txt
 ```
 
 ### Database setup ###
+If you're on a classroom-provided computer, a couple of commands to start. Open your terminal and type or paste:
+
+```bash
+$ workon adv_django
+$ cd /training/AdvDjango
+```
+
+Everybody now: 
+
 ```bash
 $ createdb django_data_analysis
 $ python manage.py syncdb
