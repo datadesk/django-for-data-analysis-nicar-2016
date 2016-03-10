@@ -27,10 +27,10 @@ If you're on a classroom-provided computer, or have already installed the requir
 Otherwise, start by creating a virtual environment and clone the repo. 
 
 ```bash
-$ virtualenv django-for-data-analysis-nicar-2015
-$ cd django-for-data-analysis-nicar-2015
+$ virtualenv django-for-data-analysis-nicar-2016
+$ cd django-for-data-analysis-nicar-2016
 $ . bin/activate
-$ git clone git@github.com:datadesk/django-for-data-analysis-nicar-2015.git repo
+$ git clone git@github.com:datadesk/django-for-data-analysis-nicar-2016.git repo
 $ cd repo
 ```
 
