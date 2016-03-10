@@ -16,21 +16,21 @@ That's a lot of ground to cover in 60 minutes, so this will be like a cooking sh
 
 To demonstrate, here's Julia Child dancing with a turkey:
 
-![Julia Child dancing with a turkey](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/turkey-dance.gif)
+![Julia Child dancing with a turkey](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2016/master/templates/static/img/turkey-dance.gif)
 
 
 ## Setup ##
 
 ### Installation ###
-If you're on a classroom-provided computer, or have already installed the requirements, skip down to [Database setup](https://github.com/datadesk/django-for-data-analysis-nicar-2015#database-setup). 
+If you're on a classroom-provided computer, or have already installed the requirements, skip down to [Database setup](https://github.com/datadesk/django-for-data-analysis-nicar-2016#database-setup). 
 
 Otherwise, start by creating a virtual environment and clone the repo. 
 
 ```bash
-$ virtualenv django-for-data-analysis-nicar-2015
-$ cd django-for-data-analysis-nicar-2015
+$ virtualenv django-for-data-analysis-nicar-2016
+$ cd django-for-data-analysis-nicar-2016
 $ . bin/activate
-$ git clone git@github.com:datadesk/django-for-data-analysis-nicar-2015.git repo
+$ git clone git@github.com:datadesk/django-for-data-analysis-nicar-2016.git repo
 $ cd repo
 ```
 
@@ -77,7 +77,7 @@ $ python manage.py migrate
 ```
 
 ## Getting started: The Models ##
-First, let's look at our models, and how they correspond to our source data CSVs. There are a couple of fields we're concerned with or need more explanation. In your text editor or browser, open up [models.py](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/models.py) and [building_and_safety/data/Building_and_Safety_Customer_Service_Request__out.csv](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/data/Building_and_Safety_Customer_Service_Request_out.csv)
+First, let's look at our models, and how they correspond to our source data CSVs. There are a couple of fields we're concerned with or need more explanation. In your text editor or browser, open up [models.py](https://github.com/datadesk/django-for-data-analysis-nicar-2016/blob/master/building_and_safety/models.py) and [building_and_safety/data/Building_and_Safety_Customer_Service_Request__out.csv](https://github.com/datadesk/django-for-data-analysis-nicar-2016/blob/master/building_and_safety/data/Building_and_Safety_Customer_Service_Request_out.csv)
 
 
 |CSR Number|LADBS Inspection District|Address House Number|Address House Fraction Number|Address Street Direction|Address Street Name|Address Street Suffix|Address Street Suffix Direction|Address Street Zip|Date Received|Date Closed|Due Date|Case Flag|CSR Priority|GIS Parcel Identification Number (PIN)|CSR Problem Type|Area Planning Commission (APC)|Case Number Related to CSR|Response Days|Latitude/Longitude|
@@ -103,7 +103,7 @@ There are also a few fields that we're calculating at the time we load the data:
   - **gt_30_days**, **gt_90_days**, **gt_180_days**, **more_than_one_year** - Different booleans to make it easy to access cases of a certain age.
 
 
-Then, let's load the complaints data using a custom management command you can see here: [building_and_safety/management/commands/load_complaints.py](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/management/commands/load_complaints.py)
+Then, let's load the complaints data using a custom management command you can see here: [building_and_safety/management/commands/load_complaints.py](https://github.com/datadesk/django-for-data-analysis-nicar-2016/blob/master/building_and_safety/management/commands/load_complaints.py)
 
 ```bash
 $ python manage.py load_complaints
@@ -192,7 +192,7 @@ $ python manage.py runserver
 Validating models...
 
 0 errors found
-February 20, 2015 - 16:40:36
+February 20, 2016 - 16:40:36
 Django version 1.6.5, using settings 'project.settings'
 Starting development server at http://0.0.0.0:8000/
 Quit the server with CONTROL-C.
@@ -200,7 +200,7 @@ Quit the server with CONTROL-C.
 
 In the spirit of a cooking show, let's cheat. Let's see what we're going to get first, and then look at how we get it. In your web browser, go to [http://localhost:8000/complaint_analysis](http://localhost:8000/complaint_analysis).
 
-![Analysis page](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/table_demo.png)
+![Analysis page](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2016/master/templates/static/img/table_demo.png)
 
 Here is a table with some basic information about our complaints. How many have been addressed, how many are still open, and how many have hung around for a really long time. 
 
@@ -221,7 +221,7 @@ There are libraries in R that can do this as well, (see [survival](http://cran.r
 
 ## Diving into the views ##
 
-Open up the views.py file in your text editor, and look at the [ComplaintAnalysis](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/building_and_safety/views.py#L55) view.
+Open up the views.py file in your text editor, and look at the [ComplaintAnalysis](https://github.com/datadesk/django-for-data-analysis-nicar-2016/blob/master/building_and_safety/views.py#L55) view.
 
 There's a lot going on here. We know there were more complaints open after a year in East L.A. than other parts of the city. But is this because they receive more complaints in general? Are some types of complaints addressed more quickly than others?
 
@@ -233,7 +233,7 @@ class ComplaintAnalysis(TemplateView):
     template_name = "complaint_analysis.html"
 ```
 
-This defines the ComplaintAnalysis as a [template view](https://docs.djangoproject.com/en/1.7/ref/class-based-views/base/#templateview), and sets the HTML template that we're going to build with the data generated from the view. You can either open complaint_analysis.html in your text editor, or follow the [link here](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/templates/complaint_analysis.html). 
+This defines the ComplaintAnalysis as a [template view](https://docs.djangoproject.com/en/1.7/ref/class-based-views/base/#templateview), and sets the HTML template that we're going to build with the data generated from the view. You can either open complaint_analysis.html in your text editor, or follow the [link here](https://github.com/datadesk/django-for-data-analysis-nicar-2016/blob/master/templates/complaint_analysis.html). 
 
 ```python
 # Quick notation to access all complaints
@@ -383,7 +383,7 @@ regions[region]['per_gt_year'] = calculate.percentage(regions[region]['gt_year']
 
 ----------
 
-![Pasting python](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/pasting_python.gif)
+![Pasting python](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2016/master/templates/static/img/pasting_python.gif)
 
 ----------
 
@@ -397,7 +397,7 @@ Go ahead and remove one of the `floatformat` filters and reload the page. Roundi
 
 We have summary data for all complaints, and for complants broken down by region. Let's use the new variables we created in the view on what percentage of complaints took longer than 30, 90 and 180 days to build a new table. 
 
-Below the regional breakdown table, but before the `{% endblock %}` tag (around [line 95](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/templates/complaint_analysis.html#L95)), type or paste in this HTML, and reload the page. 
+Below the regional breakdown table, but before the `{% endblock %}` tag (around [line 95](https://github.com/datadesk/django-for-data-analysis-nicar-2016/blob/master/templates/complaint_analysis.html#L95)), type or paste in this HTML, and reload the page. 
 
 ```htmldjango
 <h3>Wait times</h3>
@@ -427,7 +427,7 @@ Below the regional breakdown table, but before the `{% endblock %}` tag (around 
 
 ---------
 
-![Pasting the html](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/pasting_html.gif)
+![Pasting the html](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2016/master/templates/static/img/pasting_html.gif)
 
 ---------
 
@@ -435,7 +435,7 @@ Using this method you can analyze and present your data in a number of ways that
 
 
 ## Visualizing the data: Let's make a map ##
-![Complaints map](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/map_screenshot.png)
+![Complaints map](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2016/master/templates/static/img/map_screenshot.png)
 
 Take a look at the view `ComplaintsMap`.
 
@@ -507,7 +507,7 @@ complaints = Complaint.objects\
 
 Go ahead and change that in the `open_complaints_json` and `closed_complaints_json` views now, and reload the map. You'll see the changes instantly. Instead of having to go back to the database, re-enter our SQL, and re-export our files, Django takes care of all of that for you. 
 
-Later, if we decide not to include the closed complaints, for example, we can simply remove that call in the [template](https://github.com/datadesk/django-for-data-analysis-nicar-2015/blob/master/templates/complaints_map.html#L207). 
+Later, if we decide not to include the closed complaints, for example, we can simply remove that call in the [template](https://github.com/datadesk/django-for-data-analysis-nicar-2016/blob/master/templates/complaints_map.html#L207). 
 
 You can also change the information that's fed into the GeoJSON object. Maybe we want to add the area planning commission, and the number of days since the complaint was filed? 
 
@@ -580,5 +580,5 @@ We skipped it for this lesson, but in the original story, we used [GeoDjango](ht
 Using GeoDjango, you can also set a buffer around a point, which is what LAT Alum Ken Schwencke did for [this piece](http://homicide.latimes.com/post/westmont-homicides/) analyzing homicides in the unincorporated neighborhood of Westmont and along a two-mile stretch of Vermont Ave. called "Death Alley."
 
 
-![Julia Child brandishing cutlery over a fish](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2015/master/templates/static/img/fish.gif)
+![Julia Child brandishing cutlery over a fish](https://raw.githubusercontent.com/datadesk/django-for-data-analysis-nicar-2016/master/templates/static/img/fish.gif)
 
