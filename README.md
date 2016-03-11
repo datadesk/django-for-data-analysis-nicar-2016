@@ -124,7 +124,7 @@ Let's use this to answer a couple of basic questions about the data:
 - How many complaints went more than a year before being addressed?
 
 ```python
->>> from building_and_safety.models import *
+>>> from building_and_safety.models import Complaint
 >>> complaints = Complaint.objects.all()
 >>> complaints.count()
 71120
