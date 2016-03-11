@@ -50,7 +50,7 @@ If you're on a classroom-provided computer, a couple of commands to start. Open 
 
 ```bash
 $ workon adv_django
-$ cd /training/AdvDjango
+$ cd /data/advanced_django
 ```
 
 Everybody now: 
