@@ -280,7 +280,7 @@ def get_counts_by_csr(qs):
     return counts
 ```
 
-This function takes a queryset, and returns a dictionary of counts for each CSR. This is the programming adage of (DRY)[http://en.wikipedia.org/wiki/Don%27t_repeat_yourself], we're not repeating the same code many different times in our view.
+This function takes a queryset, and returns a dictionary of counts for each CSR. This is the programming adage of [DRY](http://en.wikipedia.org/wiki/Don%27t_repeat_yourself), we're not repeating the same code many different times in our view.
 
 To calculate the response times for different priority levels of complaints, we use the Kaplan-Meier fit from our survival analysis library. It will return us a median wait time, and establish a closure rate for accounts for complaints that are still open.
 
