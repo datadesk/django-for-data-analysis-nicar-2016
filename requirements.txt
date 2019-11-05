@@ -9,7 +9,7 @@ boto==2.31.1
 certifi==14.05.14
 coverage==3.7.1
 django-debug-toolbar==1.2.1
-ecdsa==0.11
+ecdsa==0.13.3
 greeking==1.0.0
 latimes-calculate==0.2.30
 lifelines==0.4.3
