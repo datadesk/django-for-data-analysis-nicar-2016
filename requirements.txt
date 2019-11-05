@@ -26,7 +26,7 @@ python-coveralls==2.4.2
 python-dateutil==2.2
 python-memcached==1.53
 pytz==2014.4
-requests==2.3.0
+requests==2.20.0
 scipy==0.14.0
 sh==1.09
 six==1.4.1
