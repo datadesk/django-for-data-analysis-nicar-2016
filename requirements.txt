@@ -1,6 +1,6 @@
 Django==1.6.5
 Fabric==1.9.0
-PyYAML==3.11
+PyYAML==5.4
 South==1.0
 numpy==1.8.1
 argparse==1.2.1
